@@ -54,8 +54,12 @@ What the fork changes, in order of landing:
    signs with a personal team, ships under the fixed bundle id
    `com.globocodes.manicemu`, shows as **Manic MP** on the home screen so it
    sits next to the App Store app, and drops the entitlements a free Apple ID
-   cannot hold (iCloud/CloudKit, ubiquity, App Group, push). It keeps extended
-   virtual addressing and the increased memory limit. Files:
+   cannot hold (iCloud/CloudKit, ubiquity, App Group, push, and extended
+   virtual addressing, which Apple refuses to personal teams). It keeps the
+   increased memory limit. The target also no longer links `StoreKit.framework`
+   explicitly: Xcode reads that as the In-App Purchase capability, which
+   personal teams cannot have either; Swift auto-links StoreKit, so the
+   purchase code still compiles (and is inert in the `SIDE_LOAD` build). Files:
    `ManicEmu/ManicEmu/ManicEmu-Sideload.entitlements`,
    `ManicEmu/ManicEmu/Resources/Config-SideloadRelease.xcconfig`.
 2. GameCube netplay (Dolphin core whitelisted for RetroArch netplay), a lobby,
@@ -116,8 +120,10 @@ Developer Program changes only the `DEVELOPMENT_TEAM` line in
 `Config-Local.xcconfig`; profiles then last a year.
 
 If Xcode reports that the profile does not support a capability, remove that
-key from `ManicEmu-Sideload.entitlements` and build again; neither of the two
-kept entitlements is required for GameCube to run.
+key from `ManicEmu-Sideload.entitlements` and build again. With the paid
+Developer Program, add `com.apple.developer.kernel.extended-virtual-addressing`
+back to that file: it gives the Dolphin core a larger address space, which
+matters for JIT/fastmem on heavier titles.
 
 ## At a Glance
 

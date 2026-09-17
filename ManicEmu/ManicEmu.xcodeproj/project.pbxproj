@@ -720,7 +720,6 @@
 		5790952C303C7D9100A53656 /* JXBanner in Frameworks */ = {isa = PBXBuildFile; productRef = 578E23B62FD2B7D400A2749A /* JXBanner */; };
 		5790952D303C7D9100A53656 /* FluentDarkModeKit in Frameworks */ = {isa = PBXBuildFile; productRef = 579E54502FD4237B000F08E7 /* FluentDarkModeKit */; };
 		5790952E303C7D9100A53656 /* IceCream in Frameworks */ = {isa = PBXBuildFile; productRef = 576C8C713032B5D800AEB08F /* IceCream */; };
-		5790952F303C7D9100A53656 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 576F0DB52D86796100D2A1BA /* StoreKit.framework */; };
 		57909530303C7D9100A53656 /* BlankSlate in Frameworks */ = {isa = PBXBuildFile; productRef = 578E23A42FD2AA0600A2749A /* BlankSlate */; };
 		57909531303C7D9100A53656 /* DeltaCore in Frameworks */ = {isa = PBXBuildFile; productRef = 578E23F42FD31ADD00A2749A /* DeltaCore */; };
 		57909532303C7D9100A53656 /* VisualEffectView in Frameworks */ = {isa = PBXBuildFile; productRef = 578E26DD2FD41E4D00A2749A /* VisualEffectView */; };
@@ -6648,7 +6647,6 @@
 				5790952C303C7D9100A53656 /* JXBanner in Frameworks */,
 				5790952D303C7D9100A53656 /* FluentDarkModeKit in Frameworks */,
 				5790952E303C7D9100A53656 /* IceCream in Frameworks */,
-				5790952F303C7D9100A53656 /* StoreKit.framework in Frameworks */,
 				57909530303C7D9100A53656 /* BlankSlate in Frameworks */,
 				57909531303C7D9100A53656 /* DeltaCore in Frameworks */,
 				57909532303C7D9100A53656 /* VisualEffectView in Frameworks */,
