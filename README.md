@@ -62,8 +62,18 @@ What the fork changes, in order of landing:
    purchase code still compiles (and is inert in the `SIDE_LOAD` build). Files:
    `ManicEmu/ManicEmu/ManicEmu-Sideload.entitlements`,
    `ManicEmu/ManicEmu/Resources/Config-SideloadRelease.xcconfig`.
-2. GameCube netplay (Dolphin core whitelisted for RetroArch netplay), a lobby,
-   Google Drive save sync and a Pi save hub follow in later phases; see the
+2. **GameCube netplay** (Phase B). Dolphin joins RetroArch netplay in the
+   sideload build. Stock netplay is rollback only, which a Dolphin savestate
+   is far too large for, and syncs only a joypad's buttons; so the vendored
+   RetroArch is our fork, [globocodes/RetroArch](https://github.com/globocodes/RetroArch)
+   branch `multiplayer`, which adds `netplay_lockstep` and
+   `netplay_analog_joypads`. Manic MP turns both on for Dolphin at launch and
+   adds input latency, desync check interval and "Share Controller 1" to the
+   Netplay settings, plus "Connect to Address" in the in-game Netplay sheet
+   for hosts no list can show (a Tailscale peer). Files: `Sources/Tools/Others/EmulationCore.swift`,
+   `Sources/Business/OnlinePlay/Views/LibretroNetplayView.swift`,
+   `Sources/Business/Play/VIewControllers/PlayViewController.swift`.
+3. A lobby, Google Drive save sync and a Pi save hub follow in later phases; see the
    blueprint in magic-mirror.
 
 ### Build the fork (Mac, Xcode 26)

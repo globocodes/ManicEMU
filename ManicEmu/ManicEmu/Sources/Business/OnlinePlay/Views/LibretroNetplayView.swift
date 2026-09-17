@@ -115,6 +115,26 @@ class LibretroNetplayView: BaseView {
         case password
         case spectator
         case spectatePassword
+        /// Manic MP: tuning for the fork's lockstep netplay. Kept last so the stock
+        /// items keep their section indices; hidden outside the sideload build.
+        case inputLatency
+        case checkFrames
+        case shareController
+        
+        static var shown: [IdleItem] {
+#if SIDE_LOAD
+            return allCases
+#else
+            return allCases.filter({ !$0.isManicMP })
+#endif
+        }
+        
+        var isManicMP: Bool {
+            switch self {
+            case .inputLatency, .checkFrames, .shareController: return true
+            default: return false
+            }
+        }
         
         var configKey: String {
             switch self {
@@ -123,6 +143,9 @@ class LibretroNetplayView: BaseView {
             case .password: return "netplay_password"
             case .spectator: return "netplay_start_as_spectator"
             case .spectatePassword: return "netplay_spectate_password"
+            case .inputLatency: return "netplay_input_latency_frames_min"
+            case .checkFrames: return "netplay_check_frames"
+            case .shareController: return "netplay_request_device_p1"
             }
         }
         
@@ -133,6 +156,9 @@ class LibretroNetplayView: BaseView {
             case .password: return R.string.localizable.serverPassword()
             case .spectator: return R.string.localizable.netplaySpectatorMode()
             case .spectatePassword: return R.string.localizable.serverSpectateOnlyPassword()
+            case .inputLatency: return "Input Latency Frames"
+            case .checkFrames: return "Desync Check Interval"
+            case .shareController: return "Share Controller 1"
             }
         }
         
@@ -148,6 +174,12 @@ class LibretroNetplayView: BaseView {
                 return R.string.localizable.netplaySpectatorModeDesc()
             case .spectatePassword:
                 return R.string.localizable.serverSpectateOnlyPasswordDesc()
+            case .inputLatency:
+                return "Frames your own input is held back so the other players' input can arrive in time. GameCube netplay never rewinds: too low and the game stutters on every late packet, too high and the controls feel heavy. Use the same value on every device. 3 suits a home network; try 5-8 over the internet."
+            case .checkFrames:
+                return "Every this many frames the players compare game memory, and a player that has drifted reloads the host's state. 0 turns the check off; use that if the game pauses at regular intervals."
+            case .shareController:
+                return "Every player drives controller 1 together, for single-player games like Animal Crossing. Turn it on for every device in the session."
             }
         }
         
@@ -157,14 +189,38 @@ class LibretroNetplayView: BaseView {
             case .useRelay: return .symbol(.wifi)
             case .password, .spectatePassword: return .symbolImage(R.image.key_iconSymbols())
             case .spectator: return .symbol(.eye)
+            case .inputLatency: return .symbol(.timer)
+            case .checkFrames: return .symbol(.sliderHorizontal3)
+            case .shareController: return .symbol(.dpadLeftFilled)
             }
         }
         
         var isSwitch: Bool {
             switch self {
-            case .publicAnnounce, .useRelay, .spectator: return true
-            case .password, .spectatePassword: return false
+            case .publicAnnounce, .useRelay, .spectator, .shareController: return true
+            case .password, .spectatePassword, .inputLatency, .checkFrames: return false
             }
+        }
+        
+        /// Non-nil for the items edited as a whole number.
+        var integerLimits: (min: Int, max: Int, fallback: Int)? {
+            switch self {
+            case .inputLatency: return (0, 15, 0)
+            case .checkFrames: return (0, 3600, 600)
+            default: return nil
+            }
+        }
+        
+        /// Everything written when the item changes; the share switch is three
+        /// RetroArch settings that only make sense together.
+        func configs(isOn: Bool) -> [String: String] {
+            guard self == .shareController else {
+                return [configKey: isOn ? "true" : "false"]
+            }
+            /// 2 = OR the digital buttons, 2 = take the larger analog deflection.
+            return ["netplay_request_device_p1": isOn ? "true" : "false",
+                    "netplay_share_digital": isOn ? "2" : "0",
+                    "netplay_share_analog": isOn ? "2" : "0"]
         }
         
         var defaultBool: Bool {
@@ -177,8 +233,13 @@ class LibretroNetplayView: BaseView {
         case host
         case internet
         case lan
+        /// Manic MP: join by address, for hosts no list can show (a tailnet peer).
+        case direct
         case disconnect
     }
+    
+    private static let directAddressKey = "ManicMPNetplayDirectAddress"
+    private static let defaultNetplayPort = 55435
     
     private var runtimeSections: [RuntimeSection] = []
     
@@ -244,7 +305,7 @@ class LibretroNetplayView: BaseView {
     
     //MARK: - 未运行游戏
     private func buildIdleSections() -> [ASListPage.Section] {
-        IdleItem.allCases.enumerated().map { index, item in
+        IdleItem.shown.enumerated().map { index, item in
             ASListPage.Section(cells: [makeIdleCell(for: item)],
                                header: makeHeader(item.detail))
         }
@@ -257,10 +318,19 @@ class LibretroNetplayView: BaseView {
                                                              state: boolValue(for: item) ? .on : .off,
                                                              enablePressEffect: false)
         }
+        if item.integerLimits != nil {
+            return .iconTitleDetailChevronCell(icon: item.icon,
+                                               title: item.title,
+                                               chevronTitle: "\(intValue(for: item))")
+        }
         let password = stringValue(for: item)
         return .iconTitleDetailChevronCell(icon: item.icon,
                                            title: item.title,
                                            chevronTitle: password.isEmpty ? nil : password)
+    }
+    
+    private func intValue(for item: IdleItem) -> Int {
+        Int(stringValue(for: item)) ?? item.integerLimits?.fallback ?? 0
     }
     
     private func boolValue(for item: IdleItem) -> Bool {
@@ -276,7 +346,10 @@ class LibretroNetplayView: BaseView {
     }
     
     private func writeConfig(_ key: String, value: String) {
-        let configs = [key: value]
+        writeConfigs([key: value])
+    }
+    
+    private func writeConfigs(_ configs: [String: String]) {
         LibretroCore.sharedInstance().updateLibretroConfigs(configs)
         if PlayViewController.isGaming {
             LibretroCore.sharedInstance().updateRuningLibretroConfigs(configs)
@@ -305,6 +378,15 @@ class LibretroNetplayView: BaseView {
             lanCells.append(contentsOf: session.lanHosts.map({ makeHostCell($0) }))
             sections.append(ASListPage.Section(cells: lanCells,
                                                header: makeHeader(R.string.localizable.refreshNetplayLANListDesc())))
+#if SIDE_LOAD
+            runtimeSections.append(.direct)
+            let lastAddress = UserDefaults.standard.string(forKey: Self.directAddressKey)
+            sections.append(ASListPage.Section(cells: [
+                .iconTitleDetailChevronCell(icon: .symbol(.wifi),
+                                            title: "Connect to Address",
+                                            chevronTitle: lastAddress)
+            ], header: makeHeader("Join a host by address when it is on neither list, such as a device on your Tailscale network: its tailnet IP or name, optionally followed by :port (default \(Self.defaultNetplayPort)). The host must have started hosting first.")))
+#endif
         }
         
         if session.isConnected {
@@ -426,10 +508,27 @@ class LibretroNetplayView: BaseView {
         guard let item = IdleItem(rawValue: indexPath.section) else { return }
         if item.isSwitch {
             guard let isOn = subActions?.extraValue as? Bool else { return }
-            writeConfig(item.configKey, value: isOn ? "true" : "false")
+            writeConfigs(item.configs(isOn: isOn))
             listView.updateCellData(cellData.updateNormalSwitch(state: isOn ? .on : .off),
                                     indexPath: indexPath,
                                     reloadView: false)
+        } else if let limits = item.integerLimits {
+            LimitedTextInputView.show(icon: item.icon,
+                                      title: item.title,
+                                      detail: item.detail,
+                                      text: "\(intValue(for: item))",
+                                      placeholder: item.title,
+                                      limitedType: .integer(min: limits.min, max: limits.max)) { [weak self] result in
+                guard let self, let value = result as? Int else { return }
+                var configs = [item.configKey: "\(value)"]
+                if item == .inputLatency {
+                    /// A fixed latency: RetroArch would otherwise raise it by itself.
+                    configs["netplay_input_latency_frames_range"] = "0"
+                }
+                self.writeConfigs(configs)
+                self.listView.updateCellData(cellData.updateNormalChevron(title: "\(value)"),
+                                             indexPath: indexPath)
+            }
         } else {
             showPasswordEditor(for: item, cellData: cellData, indexPath: indexPath)
         }
@@ -479,8 +578,40 @@ class LibretroNetplayView: BaseView {
                     connect(to: host)
                 }
             }
+        case .direct:
+            showDirectConnectEditor()
         case .disconnect:
             disconnect()
+        }
+    }
+    
+    private func showDirectConnectEditor() {
+        LimitedTextInputView.show(icon: .symbol(.wifi),
+                                  title: "Connect to Address",
+                                  detail: "Tailnet IP or name of the host, optionally followed by :port.",
+                                  text: UserDefaults.standard.string(forKey: Self.directAddressKey),
+                                  placeholder: "100.x.y.z",
+                                  limitedType: .normal(maxTextSize: 255),
+                                  keyboadType: .URL) { [weak self] result in
+            guard let self, let text = result as? String else { return }
+            let input = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            var address = input
+            var port = Self.defaultNetplayPort
+            /// One colon means host:port; more than one is a bare IPv6 address.
+            let parts = input.components(separatedBy: ":")
+            if parts.count == 2, let parsed = Int(parts[1]), parsed > 0, parsed < 65536 {
+                address = parts[0]
+                port = parsed
+            }
+            guard !address.isEmpty else { return }
+            UserDefaults.standard.set(input, forKey: Self.directAddressKey)
+            let host = LibretroHost()
+            host.nickname = address
+            host.address = address
+            host.port = port
+            host.hostMethod = .manual
+            host.connectable = true
+            self.connect(to: host)
         }
     }
     

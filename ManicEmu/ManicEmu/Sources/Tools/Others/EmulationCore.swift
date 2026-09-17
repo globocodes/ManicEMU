@@ -266,8 +266,42 @@ enum EmulationCore: CaseIterable {
                 .gpSP,
                 .MesenS:
             return true
+#if SIDE_LOAD
+        /// Manic MP: Dolphin's savestates are far too large for rollback, so it
+        /// joins through the fork's lockstep netplay (`usesLockstepNetplay`).
+        case .Dolphin:
+            return true
+#endif
         default:
             return false
         }
+    }
+    
+    /// Manic MP: netplay that never rewinds. RetroArch's rollback netplay keeps a
+    /// savestate for each of 62 buffered frames and takes one every frame; a Dolphin
+    /// state is tens of MB, so that neither fits in memory nor in a frame. Lockstep
+    /// (`netplay_lockstep` in the RetroArch fork) waits for every player's real
+    /// input instead, hidden behind a fixed input latency.
+    var usesLockstepNetplay: Bool {
+        self == .Dolphin
+    }
+    
+    /// RetroArch settings written at every launch. They live in one shared config
+    /// file, so every core states its own value rather than inheriting the last one.
+    /// `netplay_analog_joypads` carries both sticks of a joypad port; stock netplay
+    /// carries only its buttons, which no GameCube title can be played with.
+    var netplayLaunchConfigs: [String: String] {
+        let value = usesLockstepNetplay ? "true" : "false"
+        var configs = ["netplay_lockstep": value,
+                       "netplay_analog_joypads": value]
+        /// Lockstep at RetroArch's default latency of 0 stalls on every packet, so
+        /// start from 3 frames. Seeded once: afterwards the Netplay settings own it.
+        let seededKey = "ManicMPLockstepLatencySeeded"
+        if usesLockstepNetplay, !UserDefaults.standard.bool(forKey: seededKey) {
+            UserDefaults.standard.set(true, forKey: seededKey)
+            configs["netplay_input_latency_frames_min"] = "3"
+            configs["netplay_input_latency_frames_range"] = "0"
+        }
+        return configs
     }
 }

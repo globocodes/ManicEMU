@@ -2216,6 +2216,9 @@ extension PlayViewController {
                 "audio_latency": "200",
                 "input_auto_game_focus": "1"
             ])
+            if let core = manicGame.libretroCore {
+                LibretroCore.sharedInstance().updateLibretroConfigs(core.netplayLaunchConfigs)
+            }
             if manicGame.isN64ParaLLEl {
                 LibretroCore.sharedInstance().setReloadDelay(1)
             } else {

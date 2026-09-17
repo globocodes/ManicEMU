@@ -1,7 +1,7 @@
 [submodule "Dependencies/Libretro"]
 	path = Dependencies/Libretro
-	url = https://github.com/Daiuno/RetroArch.git
-	branch = manicemu
+	url = https://github.com/globocodes/RetroArch.git
+	branch = multiplayer
 
 [submodule "Dependencies/CollectionViewPagingLayout"]
 	path = Dependencies/CollectionViewPagingLayout
