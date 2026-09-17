@@ -81,14 +81,19 @@ What the fork changes, in order of landing:
    # edit it: DEVELOPMENT_TEAM = <your 10-character team id>
    ```
 
-   To find the id of a free Apple ID's Personal Team: Xcode → Settings →
-   Accounts → add the Apple ID, then run
-   `security find-identity -v -p codesigning` after the first build attempt;
-   the id is the 10 characters in parentheses on the "Apple Development" line.
-   Alternatively pick the team once in the target's Signing & Capabilities
-   pane, read the `DEVELOPMENT_TEAM = …;` line that appears in
-   `git diff ManicEmu/ManicEmu.xcodeproj/project.pbxproj`, copy it into
-   `Config-Local.xcconfig`, and `git checkout -- ManicEmu/ManicEmu.xcodeproj`.
+   To find the id of a free Apple ID's Personal Team: add the Apple ID under
+   Xcode → Settings → Accounts, pick the team once in the **ManicEmuSideload**
+   target's Signing & Capabilities pane (this creates the certificate), then:
+
+   ```sh
+   security find-certificate -a -c "Apple Development" -p | openssl x509 -noout -subject
+   ```
+
+   The team id is the **`OU=`** value (10 characters). It is *not* the value
+   in parentheses after your name, which is a personal id, and it is not
+   `UU52N52JLD`, which is upstream's team. Afterwards run
+   `git checkout -- ManicEmu/ManicEmu.xcodeproj` so Xcode's edit to the
+   project file is dropped.
 
 3. Open `ManicEmu/ManicEmu.xcodeproj`, select the **ManicEmuSideload** scheme
    and your device (Developer Mode must be on: Settings → Privacy & Security →
