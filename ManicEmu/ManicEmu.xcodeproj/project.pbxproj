@@ -6602,6 +6602,7 @@
 		B28EB6C32A6E75B700086CDB /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		B28EB6C52A6E75B700086CDB /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		B28EB6D72A6E7A1C00086CDB /* ManicEmu.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ManicEmu.entitlements; sourceTree = "<group>"; };
+		57A1B2C3D4E5F60718293A4B /* ManicEmu-Sideload.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "ManicEmu-Sideload.entitlements"; sourceTree = "<group>"; };
 		B2C97B4D2A09F3B900053A4C /* UIColorExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		B2C97B4F2A09F3DE00053A4C /* UIimageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIimageExtensions.swift; sourceTree = "<group>"; };
 		B2C97B562A0A420E00053A4C /* Config-Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = "Config-Debug.xcconfig"; sourceTree = "<group>"; };
@@ -12931,6 +12932,7 @@
 			isa = PBXGroup;
 			children = (
 				B28EB6D72A6E7A1C00086CDB /* ManicEmu.entitlements */,
+				57A1B2C3D4E5F60718293A4B /* ManicEmu-Sideload.entitlements */,
 				A5DE1F26256BCE680099425B /* Sources */,
 				A5A0020724556F1E006E0F0E /* Resources */,
 			);
@@ -15112,12 +15114,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CODE_SIGN_ENTITLEMENTS = ManicEmu/ManicEmu.entitlements;
+				CODE_SIGN_ENTITLEMENTS = "ManicEmu/ManicEmu-Sideload.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(APP_BUILD_VERSION)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = UU52N52JLD;
 				ENABLE_DEBUG_DYLIB = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";

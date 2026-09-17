@@ -1,0 +1,9 @@
+// Copy this file to Config-Local.xcconfig (same directory; it is gitignored)
+// and put your own Apple team id in it. Config-SideloadRelease.xcconfig
+// includes it after its defaults, so anything set here wins.
+//
+// Free Apple ID: the 10-character "Personal Team" id (see the fork README for
+// how to read it out of Xcode). Paid program: the team id from
+// developer.apple.com → Membership. Nothing else needs to change.
+
+DEVELOPMENT_TEAM = ABCDE12345

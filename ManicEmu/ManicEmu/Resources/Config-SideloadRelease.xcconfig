@@ -13,3 +13,17 @@
 #include "ManicEmu/Resources/Config-Base.xcconfig"
 
 APP_BUILD_CONDITIONS = SIDE_LOAD
+
+// --- globocodes/ManicEMU fork (multiplayer) ---------------------------------
+// The sideload build is dev-signed from a Mac with the builder's own team.
+// The bundle id is fixed so saves and games carry over across re-signs and
+// across the free-account → paid-program switch (only the team changes).
+APP_BUNDLE_IDENTIFIER = com.globocodes.manicemu
+APP_DISPLAY_NAME = Manic MP
+
+// The team id is personal and lives in an untracked file next to this one
+// (copy Config-Local.xcconfig.example to Config-Local.xcconfig). Left empty
+// here so a missing file fails with "requires a development team", not with
+// a silent build against upstream's team.
+DEVELOPMENT_TEAM =
+#include? "ManicEmu/Resources/Config-Local.xcconfig"

@@ -38,6 +38,82 @@ licensing in one place.
   <img src="./images_manicemu_ver5_a10.jpg" alt="Manic EMU screenshot 7" width="9.5%">
 </p>
 
+## This fork: globocodes/ManicEMU (multiplayer)
+
+This is a small patch series on top of upstream
+[Manic-EMU/ManicEMU](https://github.com/Manic-EMU/ManicEMU), kept on the
+`multiplayer` branch and rebased on each upstream release. Its home is
+[globocodes/magic-mirror](https://github.com/globocodes/magic-mirror), which
+vendors it as the `ManicEMU/` submodule and carries the plan
+(`docs/blueprint-gamecube-on-the-ipad.md`). Everything here is AGPL-3.0, like
+upstream; every change is published on this fork.
+
+What the fork changes, in order of landing:
+
+1. **Builds with your own Apple ID** (Phase A). The `ManicEmuSideload` target
+   signs with a personal team, ships under the fixed bundle id
+   `com.globocodes.manicemu`, shows as **Manic MP** on the home screen so it
+   sits next to the App Store app, and drops the entitlements a free Apple ID
+   cannot hold (iCloud/CloudKit, ubiquity, App Group, push). It keeps extended
+   virtual addressing and the increased memory limit. Files:
+   `ManicEmu/ManicEmu/ManicEmu-Sideload.entitlements`,
+   `ManicEmu/ManicEmu/Resources/Config-SideloadRelease.xcconfig`.
+2. GameCube netplay (Dolphin core whitelisted for RetroArch netplay), a lobby,
+   Google Drive save sync and a Pi save hub follow in later phases; see the
+   blueprint in magic-mirror.
+
+### Build the fork (Mac, Xcode 26)
+
+1. Install Git LFS and clone with submodules (the cores are LFS objects,
+   several GB):
+
+   ```sh
+   brew install git-lfs && git lfs install
+   git clone --recursive -b multiplayer https://github.com/globocodes/ManicEMU.git
+   cd ManicEMU
+   ```
+
+2. Put your team id in an untracked file:
+
+   ```sh
+   cp ManicEmu/ManicEmu/Resources/Config-Local.xcconfig.example \
+      ManicEmu/ManicEmu/Resources/Config-Local.xcconfig
+   # edit it: DEVELOPMENT_TEAM = <your 10-character team id>
+   ```
+
+   To find the id of a free Apple ID's Personal Team: Xcode → Settings →
+   Accounts → add the Apple ID, then run
+   `security find-identity -v -p codesigning` after the first build attempt;
+   the id is the 10 characters in parentheses on the "Apple Development" line.
+   Alternatively pick the team once in the target's Signing & Capabilities
+   pane, read the `DEVELOPMENT_TEAM = …;` line that appears in
+   `git diff ManicEmu/ManicEmu.xcodeproj/project.pbxproj`, copy it into
+   `Config-Local.xcconfig`, and `git checkout -- ManicEmu/ManicEmu.xcodeproj`.
+
+3. Open `ManicEmu/ManicEmu.xcodeproj`, select the **ManicEmuSideload** scheme
+   and your device (Developer Mode must be on: Settings → Privacy & Security →
+   Developer Mode), let Swift Package Manager resolve, and press Run. The
+   first run on a device asks you to trust the developer certificate on the
+   device (Settings → General → VPN & Device Management).
+
+   Do not change the team or bundle id in Xcode's Signing pane; that writes
+   into `project.pbxproj` and makes every rebase conflict. `Config-Local.xcconfig`
+   is the only place the team lives.
+
+### Re-signing (free Apple ID)
+
+A free Apple ID's provisioning profile expires after **7 days**; the app then
+refuses to launch until it is reinstalled. Plug the device in (or use Xcode's
+network debugging) and press Run again: the bundle id is unchanged, so games,
+saves, states, skins and settings stay in place. A free account can hold three
+sideloaded apps at once and register ten app ids per week. Moving to the paid
+Developer Program changes only the `DEVELOPMENT_TEAM` line in
+`Config-Local.xcconfig`; profiles then last a year.
+
+If Xcode reports that the profile does not support a capability, remove that
+key from `ManicEmu-Sideload.entitlements` and build again; neither of the two
+kept entitlements is required for GameCube to run.
+
 ## At a Glance
 
 - App distribution: App Store, StikStore, and SideStore.

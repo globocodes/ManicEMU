@@ -11,6 +11,7 @@
 // https://help.apple.com/xcode/#/dev745c5c974
 
 APP_BUNDLE_IDENTIFIER = com.aoshuang.manicemu
+APP_DISPLAY_NAME = Manic EMU
 APP_BUILD_VERSION = 20
 APP_VERSION = 2.0.0
 

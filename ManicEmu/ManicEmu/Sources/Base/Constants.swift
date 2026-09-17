@@ -861,7 +861,8 @@ extension _R {
             return components.url!
         }
 #if SIDE_LOAD
-        static let EnableJITUrl = URL(string: "stikjit://enable-jit?bundle-id=com.aoshuang.manicemu&script-name=universal.js")!
+        // The fork ships under its own bundle id (Config-SideloadRelease.xcconfig), so ask StikDebug for whatever this build actually is.
+        static let EnableJITUrl = URL(string: "stikjit://enable-jit?bundle-id=\(Bundle.main.bundleIdentifier ?? "com.aoshuang.manicemu")&script-name=universal.js")!
 #endif
         static let Gamehacking = URL(string: "https://gamehacking.org/")!
         static func GamehackingSearch(gameType: GameType, gameName: String) -> URL? {
