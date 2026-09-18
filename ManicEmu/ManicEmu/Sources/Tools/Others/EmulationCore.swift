@@ -293,7 +293,21 @@ enum EmulationCore: CaseIterable {
     var netplayLaunchConfigs: [String: String] {
         let value = usesLockstepNetplay ? "true" : "false"
         var configs = ["netplay_lockstep": value,
-                       "netplay_analog_joypads": value]
+                       "netplay_analog_joypads": value,
+                       "log_to_file": value]
+        /// The sideload scheme is a Release build, which switches RetroArch's log
+        /// off entirely. A netplay session that fails then leaves no trace, so a
+        /// lockstep core logs to Documents/Netplay Logs (Files app → Manic MP),
+        /// one timestamped file per launch.
+        if usesLockstepNetplay {
+            let logDir = R.Path.Document.appendingPathComponent("Netplay Logs")
+            try? FileManager.default.createDirectory(atPath: logDir, withIntermediateDirectories: true)
+            configs["log_verbosity"] = "true"
+            configs["frontend_log_level"] = "1"
+            configs["libretro_log_level"] = "1"
+            configs["log_to_file_timestamp"] = "true"
+            configs["log_dir"] = logDir.libretroPath
+        }
         /// Lockstep at RetroArch's default latency of 0 stalls on every packet, so
         /// start from 3 frames. Seeded once: afterwards the Netplay settings own it.
         let seededKey = "ManicMPLockstepLatencySeeded"
