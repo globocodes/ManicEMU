@@ -12,7 +12,12 @@
 
 #include "ManicEmu/Resources/Config-Base.xcconfig"
 
-APP_BUILD_CONDITIONS = SIDE_LOAD
+// Personal teams are refused Extended Virtual Addressing (BP-I20), and Dolphin's
+// fastmem arena needs it. NO_EXTENDED_VA makes JIT sessions start without the
+// arena. A paid-program build restores the entitlement in
+// ManicEmu-Sideload.entitlements and clears this in Config-Local.xcconfig.
+APP_EXTENDED_VA_CONDITION = NO_EXTENDED_VA
+APP_BUILD_CONDITIONS = SIDE_LOAD $(APP_EXTENDED_VA_CONDITION)
 
 // --- globocodes/ManicEMU fork (multiplayer) ---------------------------------
 // The sideload build is dev-signed from a Mac with the builder's own team.

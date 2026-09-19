@@ -73,7 +73,26 @@ What the fork changes, in order of landing:
    for hosts no list can show (a Tailscale peer). Files: `Sources/Tools/Others/EmulationCore.swift`,
    `Sources/Business/OnlinePlay/Views/LibretroNetplayView.swift`,
    `Sources/Business/Play/VIewControllers/PlayViewController.swift`.
-3. A lobby, Google Drive save sync and a Pi save hub follow in later phases; see the
+3. **Dolphin sessions say how they run, and JIT is safe on a personal team.**
+   Without JIT the app underclocks the emulated CPU (70% on the fastest
+   devices) so the interpreter holds full emulator speed. A title with a
+   variable timestep hides that: speed and audio read 100% while the game
+   itself drops frames. So every GameCube/Wii launch now shows a toast such as
+   `CPU Core: JITARM64 · clock 100% · JIT on · VI skip off · fastmem arena off`,
+   appends the same line to `Documents/Netplay Logs/Manic MP sessions.log`, and
+   the game info page keeps the last mode (`JITARM64 100%`). Titles listed in
+   `SpecialCoreOption.dolphinFullClockGameIDs` (Chibi-Robo!) run the full clock
+   without JIT; a stored per-game "CPU Clock Rate" still wins. With JIT, the
+   personal-team build starts Dolphin without its 12 GiB fastmem arena
+   (`NO_EXTENDED_VA`, set in `Config-SideloadRelease.xcconfig`), because that
+   reservation needs the extended virtual addressing entitlement. JIT itself
+   needs a debugger attached at launch (StikDebug, Settings → JIT → Enable JIT)
+   and the per-game JIT switch. Never start a JIT session from Xcode's Run: its
+   debugger does not answer the core's `brk #0xf00d` call and the game hangs.
+   Files: `Sources/Business/GameInfo/Models/SpecialCoreOption.swift`,
+   `Sources/Business/Play/VIewControllers/PlayViewController.swift`,
+   `Sources/Business/GameInfo/VIews/GameInfoDetailView.swift`.
+4. A lobby, Google Drive save sync and a Pi save hub follow in later phases; see the
    blueprint in magic-mirror.
 
 ### Build the fork (Mac, Xcode 26)
@@ -132,8 +151,8 @@ Developer Program changes only the `DEVELOPMENT_TEAM` line in
 If Xcode reports that the profile does not support a capability, remove that
 key from `ManicEmu-Sideload.entitlements` and build again. With the paid
 Developer Program, add `com.apple.developer.kernel.extended-virtual-addressing`
-back to that file: it gives the Dolphin core a larger address space, which
-matters for JIT/fastmem on heavier titles.
+back to that file and uncomment `APP_EXTENDED_VA_CONDITION =` in
+`Config-Local.xcconfig`: JIT sessions then use Dolphin's fastmem arena again.
 
 ## At a Glance
 

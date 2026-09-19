@@ -7,3 +7,9 @@
 // developer.apple.com → Membership. Nothing else needs to change.
 
 DEVELOPMENT_TEAM = ABCDE12345
+
+// Paid program only: once com.apple.developer.kernel.extended-virtual-addressing
+// is back in ManicEmu-Sideload.entitlements, uncomment the next line so JIT
+// sessions use Dolphin's fastmem arena again. Leave it commented on a free
+// Apple ID (the entitlement is refused and the arena can fail at boot).
+// APP_EXTENDED_VA_CONDITION =

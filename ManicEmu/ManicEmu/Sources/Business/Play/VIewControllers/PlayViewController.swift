@@ -2166,11 +2166,16 @@ extension PlayViewController {
                     enableManicInterpreter = manicGame.getExtraBool(key: ExtraKey.dolphinManicInterpreter.rawValue) ?? true
                 }
                 //4: JITARM64 5: Cached Interpreter 6: Manic Interpreter
-                 
-                updateLibretroCoreConfigs(core: .Dolphin, configs: [
+                
+                /// Manic MP: the no-JIT clock rate is chosen per title, so the disc id
+                /// has to be known before the options are resolved.
+                manicGame.ensureDolphinGameID()
+                let dolphinConfigs: [SpecialCoreOption: String] = [
                     .dolphin_cpu_core: enableJIT ? "4" : (enableManicInterpreter ? "6" : "5"),
                     .dolphin_cheats_enabled: isHardcoreMode ? "disabled" : "enabled"
-                ])
+                ]
+                updateLibretroCoreConfigs(core: .Dolphin, configs: dolphinConfigs)
+                noteDolphinRunMode(configs: dolphinConfigs)
             } else if manicGame.gameType == .amiga {
                 LibretroCore.sharedInstance().setLibretroLogMonitor(true)
             }
@@ -4153,6 +4158,21 @@ extension PlayViewController {
                                                        configs: coreConfigs,
                                                        reload: false)
         }
+    }
+    
+    /// Manic MP: say which CPU core, clock rate and JIT state this Dolphin session
+    /// gets: a toast at launch, one line in Documents/Netplay Logs/Manic MP
+    /// sessions.log, and the compact form kept for the game info screen. Resolved
+    /// the same way as `updateLibretroCoreConfigs`, so it reports what the core is
+    /// handed rather than what the defaults would have been.
+    private func noteDolphinRunMode(configs: [SpecialCoreOption: String]) {
+        guard let resolved = SpecialCoreOption.resolvedCoreConfigs(game: manicGame,
+                                                                   optimizationCoreConfigs: configs,
+                                                                   safeMode: false) else { return }
+        let mode = SpecialCoreOption.dolphinRunMode(resolvedCoreConfigs: resolved)
+        manicGame.updateExtra(key: ExtraKey.dolphinLastRunMode.rawValue, value: mode.compact)
+        SpecialCoreOption.appendDolphinSessionLog(game: manicGame, line: mode.full)
+        UIView.makeToast(message: mode.full, duration: 5)
     }
     
     private func updateRewind() {

@@ -134,6 +134,14 @@ class GameInfoDetailView: BaseView {
         }
         if let timeAgo = game.latestPlayDate?.timeAgo() {
             subtitleLabel.text = R.string.localizable.readyGameInfoSubTitle(timeAgo, Date.timeDuration(milliseconds: Int(game.totalPlayDuration)))
+            /// Manic MP: how the last GameCube/Wii session ran (CPU core and clock
+            /// rate). A no-JIT session looks full speed to the emulator while the
+            /// game itself drops frames, so the mode is shown where it gets seen.
+            if game.isDolphinCore,
+               let runMode = game.getExtraString(key: ExtraKey.dolphinLastRunMode.rawValue),
+               !runMode.isEmpty {
+                subtitleLabel.text = (subtitleLabel.text ?? "") + " · " + runMode
+            }
         } else {
             subtitleLabel.text = R.string.localizable.readyGameInfoNeverPlayed()
         }

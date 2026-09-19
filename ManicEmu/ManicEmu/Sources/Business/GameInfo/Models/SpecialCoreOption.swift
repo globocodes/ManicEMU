@@ -174,6 +174,7 @@ enum SpecialCoreOption: String {
     case dolphin_log_common
     case dolphin_vi_skip
     case dolphin_skip_gc_bios
+    case dolphin_fastmem_arena
     case dolphin_cheats_enabled
     case dolphin_cheats_import
     //gamecube
@@ -493,9 +494,20 @@ enum SpecialCoreOption: String {
                     .dolphin_vi_skip: "disabled",
                     .dolphin_skip_gc_bios: "disabled",
                 ]
+#if NO_EXTENDED_VA
+                /// Manic MP: a personal team is refused Extended Virtual Addressing
+                /// (BP-I20), and JitArm64's fastmem arena reserves 12 GiB of address
+                /// space. Without the entitlement that reservation can fail with a
+                /// panic alert at boot, so JIT sessions start without the arena:
+                /// slower memory access, still JIT. A paid-program build clears
+                /// APP_EXTENDED_VA_CONDITION (Config-Local.xcconfig.example) and gets
+                /// the arena back. It stays an ordinary per-game core option, so the
+                /// arena can be tried by hand on a personal-team build.
+                result[.dolphin_fastmem_arena] = "disabled"
+#endif
             } else {
                 let enableManicInterpreter = game.getExtraBool(key: ExtraKey.dolphinManicInterpreter.rawValue) ?? true
-                let clockRate: String
+                var clockRate: String
                 switch UIDevice.performanceTier {
                 case .high:
                     clockRate = enableManicInterpreter ? "0.40" : "0.30"
@@ -503,6 +515,15 @@ enum SpecialCoreOption: String {
                     clockRate = enableManicInterpreter ? "0.70" : "0.50"
                 default:
                     clockRate = "0.20"
+                }
+                /// Manic MP: the underclock keeps the interpreter at full emulator
+                /// speed by giving the game a slower CPU. A title with a variable
+                /// timestep hides that: speed and audio read 100% while the game
+                /// itself drops from 30 fps to 20 or 15 and input lag grows
+                /// (docs/chibi-robo-performance-investigation-2026-09-19.md). Those
+                /// titles run the full clock instead; a stored per-game value still wins.
+                if let gameID = game.gameIDForDolphin, dolphinFullClockGameIDs.contains(gameID) {
+                    clockRate = "1.00"
                 }
                 result = [
                     .dolphin_cpu_clock_rate: clockRate,
@@ -531,6 +552,56 @@ enum SpecialCoreOption: String {
         return result.mapKeysAndValues({ ($0.key.rawValue, $0.value) })
     }
     
+    /// Manic MP: GameCube titles that cannot absorb the no-JIT underclock, by disc
+    /// id. Chibi-Robo! (USA, Europe, Japan) caps itself at 30 fps, measures how many
+    /// video interrupts each frame took and advances its logic by that much.
+    static let dolphinFullClockGameIDs: Set<String> = ["GGTE01", "GGTP01", "GGTJ01"]
+
+    /// Manic MP: how a Dolphin session is about to run, from the options it will
+    /// actually get (best setup, then the play screen's, then the stored per-game
+    /// ones). The emulator's own speed readout cannot tell an interpreter session
+    /// on an underclocked CPU from a JIT session, so the app says it outright.
+    /// `compact` is what the game info screen keeps; `full` goes to the toast and
+    /// the session log.
+    static func dolphinRunMode(resolvedCoreConfigs configs: [String: String]) -> (compact: String, full: String) {
+        let coreName: String
+        switch configs[Self.dolphin_cpu_core.rawValue] {
+        case "4": coreName = "JITARM64"
+        case "5": coreName = "Cached Interpreter"
+        case "6": coreName = "Manic Interpreter"
+        case let other?: coreName = "core \(other)"
+        case nil: coreName = "core default"
+        }
+        let isJIT = configs[Self.dolphin_cpu_core.rawValue] == "4"
+        let rate = Double(configs[Self.dolphin_cpu_clock_rate.rawValue] ?? "1.00") ?? 1.0
+        let clock = "\(Int((rate * 100).rounded()))%"
+        var full = "CPU Core: \(coreName) · clock \(clock) · JIT \(isJIT ? "on" : "off")"
+        full += " · VI skip \(configs[Self.dolphin_vi_skip.rawValue] == "enabled" ? "on" : "off")"
+        if isJIT {
+            full += " · fastmem arena \(configs[Self.dolphin_fastmem_arena.rawValue] == "disabled" ? "off" : "on")"
+        }
+        return ("\(coreName) \(clock)", full)
+    }
+
+    /// Manic MP: one line per Dolphin session in Documents/Netplay Logs, next to the
+    /// RetroArch logs (Files app → Manic MP), so a slow session can be matched to
+    /// the mode it ran in afterwards.
+    static func appendDolphinSessionLog(game: Game, line: String) {
+        let logDir = R.Path.Document.appendingPathComponent("Netplay Logs")
+        try? FileManager.default.createDirectory(atPath: logDir, withIntermediateDirectories: true)
+        let path = logDir.appendingPathComponent("Manic MP sessions.log")
+        let stamp = ISO8601DateFormatter().string(from: Date())
+        let entry = "\(stamp) \(game.gameIDForDolphin ?? "------") \(game.name) | \(line)\n"
+        guard let data = entry.data(using: .utf8) else { return }
+        if let handle = FileHandle(forWritingAtPath: path) {
+            handle.seekToEndOfFile()
+            handle.write(data)
+            handle.closeFile()
+        } else {
+            FileManager.default.createFile(atPath: path, contents: data)
+        }
+    }
+
     static func resolvedCoreConfigs(game: Game,
                                     optimizationCoreConfigs: [Self: String],
                                     safeMode: Bool) -> [String: String]? {
