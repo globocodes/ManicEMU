@@ -1057,3 +1057,8 @@ Nếu bạn muốn nâng cấp thiết lập của mình, PlayCase là sự kế
 "FetchGamesFromARMSX2" = "Nhập trò chơi từ ARMSX2";
 "CPUEmulationMethod" = "Phương pháp giả lập CPU";
 "DolphinCPUDesc" = "Khi không có JIT, lõi chạy ở chế độ thông dịch.\nCached Interpreter: thông dịch viên chính thức. Chính xác hơn nhưng đòi hỏi hiệu năng cao hơn.\nManic Interpreter: thông dịch viên của Manic EMU. Tối ưu mạnh nên nhanh hơn, nhưng cũng có thể sinh nhiều lỗi hơn.";
+
+"AutoEnableJIT" = "Bật JIT khi khởi động";
+"AutoEnableJITDesc" = "Khi bật, ứng dụng sẽ mở StikDebug một lần mỗi khi khởi động nếu JIT không khả dụng, rồi quay lại đây.";
+"AutoEnableJITSuccess" = "Đã bật JIT";
+"AutoEnableJITFailed" = "Chưa bật được JIT. Hãy kiểm tra LocalDevVPN đã kết nối và StikDebug đã được thiết lập.";

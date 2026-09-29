@@ -1063,3 +1063,8 @@ Kurulumunuzu bir üst seviyeye taşımak istiyorsanız, PlayCase bu kaplama içi
 "FetchGamesFromARMSX2" = "ARMSX2’den Oyun İçe Aktar";
 "CPUEmulationMethod" = "CPU Öykünme Yöntemi";
 "DolphinCPUDesc" = "JIT kullanılamadığında çekirdek yorumlayıcı modunda çalışır.\nCached Interpreter: resmi yorumlayıcı. Daha doğru ama performans açısından daha ağırdır.\nManic Interpreter: Manic EMU’nun yorumlayıcısı. Agresif eniyilemeler onu daha hızlı kılar, ancak daha fazla hata da üretebilir.";
+
+"AutoEnableJIT" = "Açılışta JIT'i Etkinleştir";
+"AutoEnableJITDesc" = "Açıkken, JIT kullanılamıyorsa uygulama her açılışta bir kez StikDebug'ı açar ve ardından buraya döner.";
+"AutoEnableJITSuccess" = "JIT etkinleştirildi";
+"AutoEnableJITFailed" = "JIT etkinleştirilemedi. LocalDevVPN'in bağlı olduğunu ve StikDebug'ın kurulu olduğunu kontrol edin.";

@@ -1066,3 +1066,8 @@ PlayCase מתמקדת במעטפות iPhone איכותיות, המיוצרות �
 "FetchGamesFromARMSX2" = "ייבוא משחקים מ-ARMSX2";
 "CPUEmulationMethod" = "שיטת אמולציית CPU";
 "DolphinCPUDesc" = "כש-JIT אינו זמין, הליבה רצה במצב מפרש.\nCached Interpreter: המפרש הרשמי. מדויק יותר, אך תובעני יותר בביצועים.\nManic Interpreter: המפרש של Manic EMU. אופטימיזציות אגרסיביות הופכות אותו למהיר יותר, אך עלולות גם לייצר יותר שגיאות.";
+
+"AutoEnableJIT" = "הפעל JIT בהפעלה";
+"AutoEnableJITDesc" = "כשהאפשרות פעילה, האפליקציה פותחת את StikDebug פעם אחת בכל הפעלה אם JIT אינו זמין, ואז חוזרת לכאן.";
+"AutoEnableJITSuccess" = "JIT הופעל";
+"AutoEnableJITFailed" = "JIT לא הופעל. ודא ש-LocalDevVPN מחובר וש-StikDebug מוגדר.";

@@ -1053,3 +1053,8 @@ PlayCase มุ่งเน้นที่เคส iPhone คุณภาพส
 "FetchGamesFromARMSX2" = "นำเข้าเกมจาก ARMSX2";
 "CPUEmulationMethod" = "วิธีจำลอง CPU";
 "DolphinCPUDesc" = "เมื่อไม่มี JIT คอร์จะทำงานในโหมดอินเทอร์พรีเตอร์\nCached Interpreter: อินเทอร์พรีเตอร์ทางการ แม่นยำกว่า แต่กินประสิทธิภาพมากกว่า\nManic Interpreter: อินเทอร์พรีเตอร์ของ Manic EMU ปรับแต่งเชิงรุกให้เร็วขึ้น แต่อาจมีข้อผิดพลาดมากกว่า";
+
+"AutoEnableJIT" = "เปิดใช้ JIT เมื่อเปิดแอป";
+"AutoEnableJITDesc" = "เมื่อเปิดใช้ แอปจะเปิด StikDebug หนึ่งครั้งทุกครั้งที่เปิดแอปหาก JIT ไม่พร้อมใช้งาน แล้วกลับมาที่นี่";
+"AutoEnableJITSuccess" = "เปิดใช้ JIT แล้ว";
+"AutoEnableJITFailed" = "ไม่ได้เปิดใช้ JIT โปรดตรวจสอบว่า LocalDevVPN เชื่อมต่ออยู่และตั้งค่า StikDebug แล้ว";

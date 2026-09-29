@@ -1088,3 +1088,8 @@ Press the controller button to complete mapping...";
 
 "CPUEmulationMethod" = "CPU Emulation Method";
 "DolphinCPUDesc" = "When JIT is unavailable, the core runs in interpreter mode.\nCached Interpreter: the official interpreter. It is more accurate, but more demanding on performance.\nManic Interpreter: Manic EMU's interpreter. Aggressive optimizations make it faster, but it may also produce more errors.";
+
+"AutoEnableJIT" = "Enable JIT at Launch";
+"AutoEnableJITDesc" = "When this is on, the app opens StikDebug once at each launch if JIT is unavailable, then returns here.";
+"AutoEnableJITSuccess" = "JIT enabled";
+"AutoEnableJITFailed" = "JIT was not enabled. Check that LocalDevVPN is connected and StikDebug is set up.";

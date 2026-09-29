@@ -88,4 +88,5 @@ enum ExtraKey: String {
     case dolphinManicInterpreter
     /// Manic MP: CPU core and clock rate of the last Dolphin session, e.g. "JITARM64 100%"
     case dolphinLastRunMode
+    case autoEnableJIT
 }

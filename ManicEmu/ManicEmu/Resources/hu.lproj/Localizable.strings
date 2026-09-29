@@ -1064,3 +1064,8 @@ Ha fejleszteni szeretnéd a beállításod, a PlayCase tökéletes kiegészítő
 "FetchGamesFromARMSX2" = "Játékok importálása ARMSX2-ből";
 "CPUEmulationMethod" = "CPU-emulációs módszer";
 "DolphinCPUDesc" = "Ha a JIT nem érhető el, a mag interpreter módban fut.\nCached Interpreter: a hivatalos interpreter. Pontosabb, de nagyobb teljesítményigényű.\nManic Interpreter: a Manic EMU interpretere. Az agresszív optimalizálások gyorsabbá teszik, de több hibát is okozhat.";
+
+"AutoEnableJIT" = "JIT engedélyezése indításkor";
+"AutoEnableJITDesc" = "Ha be van kapcsolva, az alkalmazás minden indításkor egyszer megnyitja a StikDebugot, ha a JIT nem érhető el, majd visszatér ide.";
+"AutoEnableJITSuccess" = "JIT engedélyezve";
+"AutoEnableJITFailed" = "A JIT engedélyezése nem sikerült. Ellenőrizze, hogy a LocalDevVPN csatlakoztatva van-e, és a StikDebug be van-e állítva.";

@@ -223,6 +223,57 @@ class JITSettingView: BaseView {
             
             return view
         }()
+        
+        private let autoEnableJITView: UIView = {
+            let view = UIView()
+            
+            let container = UIView()
+            container.backgroundColor = R.Color.BackgroundSecondary
+            container.layerCornerRadius = R.Size.CornerRadiusMedium
+            view.addSubview(container)
+            container.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.top.equalToSuperview()
+                make.height.equalTo(R.Size.ItemHeightLarge)
+            }
+            
+            let iconView = IconView()
+            iconView.contentMode = .center
+            iconView.layerCornerRadius = 6
+            iconView.image = UIImage(symbol: .boltFill,
+                                     font: R.Font.Footnote(emphasis: true),
+                                     color: R.Color.LabelPrimary.forceStyle(.dark))
+            iconView.backgroundColor = R.Color.BackgroundPrimary.forceStyle(.dark)
+            container.addSubview(iconView)
+            iconView.snp.makeConstraints { make in
+                make.leading.equalToSuperview().offset(R.Size.ContentSpaceMedium)
+                make.size.equalTo(R.Size.IconSizeLarge)
+                make.centerY.equalToSuperview()
+            }
+            
+            let switchView = ASSwitchView(.init(state: JITAutoEnabler.isEnabled ? .on : .off))
+            switchView.didValueChange = { value in
+                JITAutoEnabler.isEnabled = value
+            }
+            container.addSubview(switchView)
+            switchView.snp.makeConstraints { make in
+                make.centerY.equalTo(iconView)
+                make.trailing.equalToSuperview().inset(R.Size.ContentSpaceMedium)
+            }
+            
+            let label = UILabel()
+            label.text = R.string.localizable.autoEnableJIT()
+            label.textColor = R.Color.LabelPrimary
+            label.font = R.Font.Body(emphasis: true)
+            container.addSubview(label)
+            label.snp.makeConstraints { make in
+                make.centerY.equalTo(iconView)
+                make.leading.equalTo(iconView.snp.trailing).offset(R.Size.ContentSpaceSmall)
+                make.trailing.lessThanOrEqualTo(switchView.snp.leading).offset(-R.Size.ContentSpaceSmall)
+            }
+            
+            return view
+        }()
 #else
         private let installSideloadView: UIView = {
             let view = UIView()
@@ -282,7 +333,11 @@ class JITSettingView: BaseView {
         private let detailLabel: UILabel = {
             let view = UILabel()
             view.numberOfLines = 0
+#if SIDE_LOAD
+            view.text = R.string.localizable.autoEnableJITDesc() + "\n\n" + R.string.localizable.jitDesc()
+#else
             view.text = R.string.localizable.jitDesc()
+#endif
             view.font = R.Font.Caption()
             view.textColor = R.Color.LabelSecondary
             return view
@@ -312,6 +367,13 @@ class JITSettingView: BaseView {
                 make.top.equalTo(deviceView.snp.bottom).offset(R.Size.ContentSpaceLarge)
                 make.height.equalTo(R.Size.ItemHeightLarge)
             }
+            
+            addSubview(autoEnableJITView)
+            autoEnableJITView.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+                make.top.equalTo(enableJITView.snp.bottom).offset(R.Size.ContentSpaceSmall)
+                make.height.equalTo(R.Size.ItemHeightLarge)
+            }
 #else
             addSubview(installSideloadView)
             installSideloadView.snp.makeConstraints { make in
@@ -324,7 +386,11 @@ class JITSettingView: BaseView {
             addSubview(detailLabel)
             detailLabel.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
+#if SIDE_LOAD
+                make.top.equalTo(autoEnableJITView.snp.bottom).offset(R.Size.ContentSpaceSmall)
+#else
                 make.top.equalTo(deviceView.snp.bottom).offset(92)
+#endif
             }
             
         }
@@ -398,7 +464,13 @@ class JITSettingView: BaseView {
                                                                                  heightDimension: .fractionalHeight(1)))
             
             //group布局
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(600)), subitems: [item])
+#if SIDE_LOAD
+            //One more row and its description than the App Store page
+            let groupHeight: CGFloat = 720
+#else
+            let groupHeight: CGFloat = 600
+#endif
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(groupHeight)), subitems: [item])
             group.contentInsets = NSDirectionalEdgeInsets(top: 0,
                                                             leading: R.Size.ContentSpaceMedium,
                                                             bottom: 0,

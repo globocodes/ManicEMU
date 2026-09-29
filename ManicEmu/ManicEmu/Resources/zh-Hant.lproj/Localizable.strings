@@ -1069,3 +1069,8 @@ PlayCase 專注於高品質 iPhone 保護殼，設計時充分考慮了配件與
 "FetchGamesFromARMSX2" = "從 ARMSX2 匯入遊戲";
 "CPUEmulationMethod" = "CPU 模擬方法";
 "DolphinCPUDesc" = "在無 JIT 的環境中，核心以直譯器模式執行。\nCached Interpreter：官方直譯器，準確度更高，但對效能要求也更高。\nManic Interpreter：Manic EMU 的直譯器，採用更積極的優化，效率更高，但出錯也可能更多。";
+
+"AutoEnableJIT" = "啟動時開啟JIT";
+"AutoEnableJITDesc" = "開啟後，若 JIT 無法使用，App 每次啟動時會開啟一次 StikDebug，然後返回此處。";
+"AutoEnableJITSuccess" = "JIT 已開啟";
+"AutoEnableJITFailed" = "JIT 未開啟。請確認 LocalDevVPN 已連線且 StikDebug 已完成設定。";

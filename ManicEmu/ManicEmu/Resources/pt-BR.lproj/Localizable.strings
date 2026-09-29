@@ -1064,3 +1064,8 @@ Se você deseja aprimorar sua configuração, a PlayCase é o complemento perfei
 "FetchGamesFromARMSX2" = "Importar jogos do ARMSX2";
 "CPUEmulationMethod" = "Método de emulação da CPU";
 "DolphinCPUDesc" = "Quando o JIT não está disponível, o núcleo roda em modo interpretador.\nCached Interpreter: o interpretador oficial. É mais preciso, mas exige mais desempenho.\nManic Interpreter: o interpretador do Manic EMU. Otimizações agressivas o tornam mais rápido, mas também podem gerar mais erros.";
+
+"AutoEnableJIT" = "Ativar JIT ao iniciar";
+"AutoEnableJITDesc" = "Quando ativado, o app abre o StikDebug uma vez a cada inicialização se o JIT não estiver disponível e depois volta para cá.";
+"AutoEnableJITSuccess" = "JIT ativado";
+"AutoEnableJITFailed" = "O JIT não foi ativado. Verifique se o LocalDevVPN está conectado e se o StikDebug está configurado.";

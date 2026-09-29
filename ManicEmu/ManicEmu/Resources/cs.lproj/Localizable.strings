@@ -1058,3 +1058,8 @@ Pokud chcete vylepšit své nastavení, PlayCase je perfektním doplňkem tohoto
 "FetchGamesFromARMSX2" = "Importovat hry z ARMSX2";
 "CPUEmulationMethod" = "Metoda emulace CPU";
 "DolphinCPUDesc" = "Když JIT není k dispozici, jádro běží v režimu interpreteru.\nCached Interpreter: oficiální interpreter. Je přesnější, ale náročnější na výkon.\nManic Interpreter: interpreter Manic EMU. Agresivní optimalizace ho zrychlují, ale může také produkovat více chyb.";
+
+"AutoEnableJIT" = "Povolit JIT při spuštění";
+"AutoEnableJITDesc" = "Je-li zapnuto, aplikace při každém spuštění jednou otevře StikDebug, pokud JIT není dostupný, a poté se vrátí sem.";
+"AutoEnableJITSuccess" = "JIT povolen";
+"AutoEnableJITFailed" = "JIT se nepodařilo povolit. Zkontrolujte, zda je připojena LocalDevVPN a zda je StikDebug nastaven.";

@@ -1036,3 +1036,8 @@
 "FetchGamesFromARMSX2" = "استيراد الألعاب من ARMSX2";
 "CPUEmulationMethod" = "طريقة محاكاة CPU";
 "DolphinCPUDesc" = "عندما لا يتوفر JIT، تعمل النواة في وضع المفسّر.\nCached Interpreter: المفسّر الرسمي. وهو أكثر دقة، لكنه يتطلب أداءً أعلى.\nManic Interpreter: مفسّر Manic EMU. التحسينات الجريئة تجعله أسرع، لكنها قد تنتج المزيد من الأخطاء.";
+
+"AutoEnableJIT" = "تمكين JIT عند التشغيل";
+"AutoEnableJITDesc" = "عند التفعيل، يفتح التطبيق StikDebug مرة واحدة عند كل تشغيل إذا كان JIT غير متاح، ثم يعود إلى هنا.";
+"AutoEnableJITSuccess" = "تم تمكين JIT";
+"AutoEnableJITFailed" = "لم يتم تمكين JIT. تأكد من اتصال LocalDevVPN ومن إعداد StikDebug.";

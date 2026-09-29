@@ -1064,3 +1064,8 @@ Als je je setup naar een hoger niveau wilt tillen, is PlayCase de perfecte match
 "FetchGamesFromARMSX2" = "Games importeren uit ARMSX2";
 "CPUEmulationMethod" = "CPU-emulatiemethode";
 "DolphinCPUDesc" = "Als JIT niet beschikbaar is, draait de kern in interpretermodus.\nCached Interpreter: de officiële interpreter. Die is nauwkeuriger, maar zwaarder voor de prestaties.\nManic Interpreter: de interpreter van Manic EMU. Agressieve optimalisaties maken hem sneller, maar kunnen ook meer fouten veroorzaken.";
+
+"AutoEnableJIT" = "JIT inschakelen bij starten";
+"AutoEnableJITDesc" = "Als dit aanstaat, opent de app bij elke start één keer StikDebug als JIT niet beschikbaar is en keert daarna hier terug.";
+"AutoEnableJITSuccess" = "JIT ingeschakeld";
+"AutoEnableJITFailed" = "JIT is niet ingeschakeld. Controleer of LocalDevVPN is verbonden en StikDebug is ingesteld.";
