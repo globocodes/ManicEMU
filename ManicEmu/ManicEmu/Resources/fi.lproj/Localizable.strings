@@ -1066,3 +1066,8 @@ Jos haluat parantaa kokoonpanoasi, PlayCase on täydellinen lisä tälle skinill
 "FetchGamesFromARMSX2" = "Tuo pelit ARMSX2:sta";
 "CPUEmulationMethod" = "CPU-emulointitapa";
 "DolphinCPUDesc" = "Kun JIT ei ole käytettävissä, ydin toimii tulkkimoodissa.\nCached Interpreter: virallinen tulkki. Se on tarkempi, mutta vaativampi suorituskyvylle.\nManic Interpreter: Manic EMU:n tulkki. Aggressiiviset optimoinnit tekevät siitä nopeamman, mutta se voi myös tuottaa enemmän virheitä.";
+
+"AutoEnableJIT" = "Ota JIT käyttöön käynnistettäessä";
+"AutoEnableJITDesc" = "Kun tämä on päällä, sovellus avaa StikDebugin kerran jokaisella käynnistyksellä, jos JIT ei ole käytettävissä, ja palaa sitten tänne.";
+"AutoEnableJITSuccess" = "JIT otettu käyttöön";
+"AutoEnableJITFailed" = "JIT:tä ei otettu käyttöön. Tarkista, että LocalDevVPN on yhdistetty ja StikDebug on määritetty.";

@@ -1063,3 +1063,8 @@ Ako želite unaprijediti svoju postavu, PlayCase je savršen dodatak ovom skinu.
 "FetchGamesFromARMSX2" = "Uvezi igre iz ARMSX2";
 "CPUEmulationMethod" = "Metoda emulacije CPU-a";
 "DolphinCPUDesc" = "Kad JIT nije dostupan, jezgra radi u načinu interpretera.\nCached Interpreter: službeni interpreter. Precizniji je, ali zahtjevniji za performanse.\nManic Interpreter: interpreter Manic EMU. Agresivne optimizacije čine ga bržim, ali može i proizvesti više pogrešaka.";
+
+"AutoEnableJIT" = "Omogući JIT pri pokretanju";
+"AutoEnableJITDesc" = "Kad je uključeno, aplikacija pri svakom pokretanju jednom otvara StikDebug ako JIT nije dostupan, a zatim se vraća ovamo.";
+"AutoEnableJITSuccess" = "JIT omogućen";
+"AutoEnableJITFailed" = "JIT nije omogućen. Provjerite je li LocalDevVPN povezan i je li StikDebug postavljen.";

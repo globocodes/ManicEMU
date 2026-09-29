@@ -1064,3 +1064,8 @@ PlayCase спеціалізується на високоякісних чохл
 "FetchGamesFromARMSX2" = "Імпорт ігор із ARMSX2";
 "CPUEmulationMethod" = "Метод емуляції CPU";
 "DolphinCPUDesc" = "Якщо JIT недоступний, ядро працює в режимі інтерпретатора.\nCached Interpreter: офіційний інтерпретатор. Він точніший, але вимогливіший до продуктивності.\nManic Interpreter: інтерпретатор Manic EMU. Завдяки агресивним оптимізаціям він швидший, але може давати більше помилок.";
+
+"AutoEnableJIT" = "Вмикати JIT під час запуску";
+"AutoEnableJITDesc" = "Якщо ввімкнено, застосунок під час кожного запуску один раз відкриває StikDebug, коли JIT недоступний, а потім повертається сюди.";
+"AutoEnableJITSuccess" = "JIT увімкнено";
+"AutoEnableJITFailed" = "JIT не ввімкнено. Перевірте, що LocalDevVPN підключено, а StikDebug налаштовано.";

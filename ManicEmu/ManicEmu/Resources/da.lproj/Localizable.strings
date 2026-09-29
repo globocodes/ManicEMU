@@ -1061,3 +1061,8 @@ Hvis du vil forbedre dit setup, er PlayCase et perfekt match til dette skin.";
 "FetchGamesFromARMSX2" = "Importer spil fra ARMSX2";
 "CPUEmulationMethod" = "CPU-emuleringsmetode";
 "DolphinCPUDesc" = "Når JIT ikke er tilgængelig, kører kernen i interpretertilstand.\nCached Interpreter: den officielle interpreter. Den er mere nøjagtig, men mere krævende for ydeevnen.\nManic Interpreter: Manic EMU's interpreter. Aggressive optimeringer gør den hurtigere, men kan også give flere fejl.";
+
+"AutoEnableJIT" = "Aktivér JIT ved start";
+"AutoEnableJITDesc" = "Når dette er slået til, åbner appen StikDebug én gang ved hver start, hvis JIT ikke er tilgængelig, og vender derefter tilbage hertil.";
+"AutoEnableJITSuccess" = "JIT aktiveret";
+"AutoEnableJITFailed" = "JIT blev ikke aktiveret. Kontrollér, at LocalDevVPN er forbundet, og at StikDebug er konfigureret.";

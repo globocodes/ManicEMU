@@ -1059,3 +1059,8 @@ PlayCaseは、アクセサリーやスキンとの互換性を考慮して作ら
 "FetchGamesFromARMSX2" = "ARMSX2からゲームをインポート";
 "CPUEmulationMethod" = "CPUエミュレーション方式";
 "DolphinCPUDesc" = "JITが利用できない場合、コアはインタープリターモードで動作します。\nCached Interpreter: 公式のインタープリターです。より正確ですが、性能への負荷も大きくなります。\nManic Interpreter: Manic EMU のインタープリターです。積極的な最適化により高速ですが、エラーも増えやすい場合があります。";
+
+"AutoEnableJIT" = "起動時にJITを有効にする";
+"AutoEnableJITDesc" = "オンにすると、JITが利用できない場合、起動のたびに一度StikDebugを開き、その後ここに戻ります。";
+"AutoEnableJITSuccess" = "JITが有効になりました";
+"AutoEnableJITFailed" = "JITを有効にできませんでした。LocalDevVPNが接続されていること、StikDebugが設定されていることを確認してください。";

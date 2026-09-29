@@ -1065,3 +1065,8 @@ PlayCase हाई-क्वालिटी iPhone केसों पर के
 "FetchGamesFromARMSX2" = "ARMSX2 से गेम आयात करें";
 "CPUEmulationMethod" = "CPU एमुलेशन विधि";
 "DolphinCPUDesc" = "जब JIT उपलब्ध नहीं होता, कोर इंटरप्रिटर मोड में चलता है।\nCached Interpreter: आधिकारिक इंटरप्रिटर। यह अधिक सटीक है, लेकिन परफ़ॉर्मेंस पर ज़्यादा भार डालता है।\nManic Interpreter: Manic EMU का इंटरप्रिटर। आक्रामक ऑप्टिमाइज़ेशन से यह तेज़ है, लेकिन त्रुटियाँ भी अधिक हो सकती हैं।";
+
+"AutoEnableJIT" = "लॉन्च पर JIT सक्षम करें";
+"AutoEnableJITDesc" = "चालू होने पर, यदि JIT उपलब्ध नहीं है तो ऐप हर लॉन्च पर एक बार StikDebug खोलता है और फिर यहाँ लौट आता है।";
+"AutoEnableJITSuccess" = "JIT सक्षम हो गया";
+"AutoEnableJITFailed" = "JIT सक्षम नहीं हुआ। जाँचें कि LocalDevVPN कनेक्ट है और StikDebug सेट अप है।";

@@ -1083,3 +1083,8 @@
 
 "CPUEmulationMethod" = "CPU 仿真方法";
 "DolphinCPUDesc" = "在无 JIT 的环境中，核心以解释器模式运行。\nCached Interpreter：官方解释器，准确度更高，但对性能要求也更高。\nManic Interpreter：Manic EMU 的解释器，采用更激进的优化，效率更高，但出错也可能更多。";
+
+"AutoEnableJIT" = "启动时开启 JIT";
+"AutoEnableJITDesc" = "开启后，若 JIT 不可用，应用每次启动时会打开一次 StikDebug，然后返回此处。";
+"AutoEnableJITSuccess" = "JIT 已开启";
+"AutoEnableJITFailed" = "JIT 未开启。请确认 LocalDevVPN 已连接且 StikDebug 已完成设置。";

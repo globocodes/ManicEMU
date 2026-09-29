@@ -40,6 +40,9 @@ class ApplicationSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     if connectionOptions.urlContexts.count > 0 {
                         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
                     }
+#if SIDE_LOAD
+                    JITAutoEnabler.appDidBecomeReady(launchedByURL: connectionOptions.urlContexts.count > 0)
+#endif
                     
                     //设置RetroAchievement
                     CheevosBridge.setup(with: R.Config.AppVersion, requireCredentials: {
@@ -65,6 +68,12 @@ class ApplicationSceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.addInteraction(dropInteraction)
         }
     }
+    
+#if SIDE_LOAD
+    func sceneDidBecomeActive(_ scene: UIScene) {
+        JITAutoEnabler.sceneDidBecomeActive()
+    }
+#endif
     
     /// Route gamepad HID through Game Controller instead of UIKit (iPad system focus hitch).
     /// iOS 18+; older versions fall back to swallowing gamepad UIPress in ManicApplication.

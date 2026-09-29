@@ -1037,3 +1037,8 @@ Jika anda ingin meningkatkan persediaan anda, PlayCase adalah padanan sempurna u
 "FetchGamesFromARMSX2" = "Import Permainan dari ARMSX2";
 "CPUEmulationMethod" = "Kaedah Emulasi CPU";
 "DolphinCPUDesc" = "Apabila JIT tidak tersedia, teras berjalan dalam mod interpreter.\nCached Interpreter: interpreter rasmi. Ia lebih tepat, tetapi lebih menuntut prestasi.\nManic Interpreter: interpreter Manic EMU. Pengoptimuman agresif menjadikannya lebih pantas, tetapi juga mungkin menghasilkan lebih banyak ralat.";
+
+"AutoEnableJIT" = "Dayakan JIT semasa Pelancaran";
+"AutoEnableJITDesc" = "Apabila dihidupkan, aplikasi membuka StikDebug sekali pada setiap pelancaran jika JIT tidak tersedia, kemudian kembali ke sini.";
+"AutoEnableJITSuccess" = "JIT didayakan";
+"AutoEnableJITFailed" = "JIT tidak didayakan. Pastikan LocalDevVPN disambungkan dan StikDebug telah disediakan.";
