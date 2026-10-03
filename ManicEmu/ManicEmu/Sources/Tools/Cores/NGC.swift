@@ -120,25 +120,25 @@ struct NGC: DeltaCoreProtocol {
 class NGCEmulatorBridge : EmulatorBridgeBase {
     static let shared = NGCEmulatorBridge()
 
-    private var leftThumbstickPosition: CGPoint = .zero
-    private var rightThumbstickPosition: CGPoint = .zero
+    private let leftThumbstickPosition = PlayerStickPositions()
+    private let rightThumbstickPosition = PlayerStickPositions()
     
     private var thumbstickPosition: CGPoint = .zero
 
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == NGCGameInput.leftThumbstickUp || input == NGCGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = input == NGCGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = input == NGCGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.leftThumbstickLeft || input == NGCGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = input == NGCGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = input == NGCGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.rightThumbstickUp || input == NGCGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = input == NGCGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = input == NGCGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.rightThumbstickLeft || input == NGCGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = input == NGCGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = input == NGCGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         }  else {
             if let gameInput = NGCGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
@@ -172,17 +172,17 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == NGCGameInput.leftThumbstickUp || input == NGCGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.leftThumbstickLeft || input == NGCGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.rightThumbstickUp || input == NGCGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == NGCGameInput.rightThumbstickLeft || input == NGCGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = NGCGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {

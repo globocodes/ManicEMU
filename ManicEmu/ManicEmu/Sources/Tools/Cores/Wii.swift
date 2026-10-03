@@ -120,8 +120,8 @@ struct Wii: DeltaCoreProtocol {
 class WiiEmulatorBridge : EmulatorBridgeBase {
     static let shared = WiiEmulatorBridge()
 
-    private var leftThumbstickPosition: CGPoint = .zero
-    private var rightThumbstickPosition: CGPoint = .zero
+    private let leftThumbstickPosition = PlayerStickPositions()
+    private let rightThumbstickPosition = PlayerStickPositions()
     
     private var thumbstickPosition: CGPoint = .zero
     
@@ -130,17 +130,17 @@ class WiiEmulatorBridge : EmulatorBridgeBase {
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == WiiGameInput.leftThumbstickUp || input == WiiGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = input == WiiGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = input == WiiGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.leftThumbstickLeft || input == WiiGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = input == WiiGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = input == WiiGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.rightThumbstickUp || input == WiiGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = input == WiiGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = input == WiiGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.rightThumbstickLeft || input == WiiGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = input == WiiGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = input == WiiGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         }  else {
             if let gameInput = WiiGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
@@ -223,17 +223,17 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == WiiGameInput.leftThumbstickUp || input == WiiGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.leftThumbstickLeft || input == WiiGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.rightThumbstickUp || input == WiiGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == WiiGameInput.rightThumbstickLeft || input == WiiGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = WiiGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {

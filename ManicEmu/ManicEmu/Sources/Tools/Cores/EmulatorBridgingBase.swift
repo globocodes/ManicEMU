@@ -79,3 +79,22 @@ class EmulatorBridgeBase: NSObject, EmulatorBridging {
     
     
 }
+
+/// Manic MP: analog stick positions kept per player.
+///
+/// Every bridge is a singleton that serves all connected controllers, and each
+/// axis callback arrives on its own (left/right or up/down) and is sent to the
+/// core together with the other axis's last value. One position for all players
+/// meant player 2's x went out with player 1's y, and a release by one player
+/// zeroed a component of the other's stick: two Bluetooth pads in Mario Party 4
+/// both "cutting out" whenever both sticks moved at once. Keyed by player index;
+/// a player who has never moved reads as centered. Only touched from the main
+/// thread, where DeltaCore delivers controller input to the cores.
+final class PlayerStickPositions {
+    private var positions: [Int: CGPoint] = [:]
+    
+    subscript(playerIndex: Int) -> CGPoint {
+        get { positions[playerIndex] ?? .zero }
+        set { positions[playerIndex] = newValue }
+    }
+}

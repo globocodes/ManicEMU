@@ -186,16 +186,16 @@ struct PSP: DeltaCoreProtocol {
 class PSPEmulatorBridge : EmulatorBridgeBase {
     static let shared = PSPEmulatorBridge()
 
-    private var thumbstickPosition: CGPoint = .zero
+    private let thumbstickPosition = PlayerStickPositions()
 
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == PSPGameInput.leftThumbstickUp || input == PSPGameInput.leftThumbstickDown {
-            thumbstickPosition.y = input == PSPGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = input == PSPGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == PSPGameInput.leftThumbstickLeft || input == PSPGameInput.leftThumbstickRight {
-            thumbstickPosition.x = input == PSPGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = input == PSPGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = PSPGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
@@ -225,11 +225,11 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == PSPGameInput.leftThumbstickUp || input == PSPGameInput.leftThumbstickDown {
-            thumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == PSPGameInput.leftThumbstickLeft || input == PSPGameInput.leftThumbstickRight {
-            thumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = PSPGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {

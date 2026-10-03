@@ -115,25 +115,25 @@ struct Amiga: DeltaCoreProtocol {
 class AmigaEmulatorBridge : EmulatorBridgeBase {
     static let shared = AmigaEmulatorBridge()
 
-    private var leftThumbstickPosition: CGPoint = .zero
-    private var rightThumbstickPosition: CGPoint = .zero
+    private let leftThumbstickPosition = PlayerStickPositions()
+    private let rightThumbstickPosition = PlayerStickPositions()
     
     private var thumbstickPosition: CGPoint = .zero
 
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == AmigaGameInput.leftThumbstickUp || input == AmigaGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = input == AmigaGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = input == AmigaGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.leftThumbstickLeft || input == AmigaGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = input == AmigaGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = input == AmigaGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.rightThumbstickUp || input == AmigaGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = input == AmigaGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = input == AmigaGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.rightThumbstickLeft || input == AmigaGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = input == AmigaGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = input == AmigaGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         }  else {
             if let gameInput = AmigaGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
@@ -167,17 +167,17 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == AmigaGameInput.leftThumbstickUp || input == AmigaGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.leftThumbstickLeft || input == AmigaGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            leftThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.rightThumbstickUp || input == AmigaGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == AmigaGameInput.rightThumbstickLeft || input == AmigaGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = AmigaGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
