@@ -1062,5 +1062,8 @@ Dacă vrei să îți îmbunătățești setup-ul, PlayCase este potrivirea perfe
 "CoverScrapingComplete" = "Extragere finalizată.";
 "CoverScrapingStat" = "%@: %d actualizate, %d omise, %d eșuate";
 "FetchGamesFromARMSX2" = "Importă jocuri din ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Metodă emulare CPU";
 "DolphinCPUDesc" = "Când JIT nu este disponibil, nucleul rulează în mod interpretor.\nCached Interpreter: interpretorul oficial. Este mai precis, dar mai pretențios la performanță.\nManic Interpreter: interpretorul Manic EMU. Optimizările agresive îl fac mai rapid, dar pot produce și mai multe erori.";

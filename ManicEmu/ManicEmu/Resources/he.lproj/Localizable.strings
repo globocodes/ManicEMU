@@ -1064,5 +1064,8 @@ PlayCase מתמקדת במעטפות iPhone איכותיות, המיוצרות �
 "CoverScrapingComplete" = "השליפה הושלמה.";
 "CoverScrapingStat" = "%@: עודכנו %d, דולגו %d, נכשלו %d";
 "FetchGamesFromARMSX2" = "ייבוא משחקים מ-ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "שיטת אמולציית CPU";
 "DolphinCPUDesc" = "כש-JIT אינו זמין, הליבה רצה במצב מפרש.\nCached Interpreter: המפרש הרשמי. מדויק יותר, אך תובעני יותר בביצועים.\nManic Interpreter: המפרש של Manic EMU. אופטימיזציות אגרסיביות הופכות אותו למהיר יותר, אך עלולות גם לייצר יותר שגיאות.";

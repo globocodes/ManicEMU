@@ -99,17 +99,17 @@ struct DC: DeltaCoreProtocol {
 class DCEmulatorBridge : EmulatorBridgeBase {
     static let shared = DCEmulatorBridge()
 
-    private var thumbstickPosition: CGPoint = .zero
+    private let thumbstickPosition = PlayerStickPositions()
 
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         
         if input == DCGameInput.leftThumbstickUp || input == DCGameInput.leftThumbstickDown {
-            thumbstickPosition.y = input == DCGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = input == DCGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == DCGameInput.leftThumbstickLeft || input == DCGameInput.leftThumbstickRight {
-            thumbstickPosition.x = input == DCGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = input == DCGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = DCGameInput(rawValue: input),
                let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
@@ -138,11 +138,11 @@ class DCEmulatorBridge : EmulatorBridgeBase {
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == DCGameInput.leftThumbstickUp || input == DCGameInput.leftThumbstickDown {
-            thumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == DCGameInput.leftThumbstickLeft || input == DCGameInput.leftThumbstickRight {
-            thumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if let gameInput = DCGameInput(rawValue: input),
                 let libretroButton = gameInputToCoreInput(gameInput: gameInput) {

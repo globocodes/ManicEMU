@@ -710,8 +710,8 @@ class AzaharEmulatorBridge : EmulatorBridgeBase {
     
     static let shared = AzaharEmulatorBridge()
     
-    private var thumbstickPosition: CGPoint = .zero
-    private var cstickPosition: CGPoint = .zero
+    private let thumbstickPosition = PlayerStickPositions()
+    private let cstickPosition = PlayerStickPositions()
     private var touchPointX: CGFloat? = nil
     private var touchPointY: CGFloat? = nil
     var touchInputFrame: CGRect = .zero
@@ -727,24 +727,24 @@ class AzaharEmulatorBridge : EmulatorBridgeBase {
          */
         if input == ThreeDSGameInput.leftThumbstickUp || input == ThreeDSGameInput.leftThumbstickDown {
             
-            thumbstickPosition.y = input == ThreeDSGameInput.leftThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = input == ThreeDSGameInput.leftThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
             
             
         } else if input == ThreeDSGameInput.leftThumbstickLeft || input == ThreeDSGameInput.leftThumbstickRight {
             
-            thumbstickPosition.x = input == ThreeDSGameInput.leftThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = input == ThreeDSGameInput.leftThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
             
         } else if input == ThreeDSGameInput.rightThumbstickUp || input == ThreeDSGameInput.rightThumbstickDown {
             
-            cstickPosition.y = input == ThreeDSGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition.x, y: cstickPosition.y, playerIndex: UInt32(playerIndex))
+            cstickPosition[playerIndex].y = input == ThreeDSGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition[playerIndex].x, y: cstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
             
         } else if input == ThreeDSGameInput.rightThumbstickLeft || input == ThreeDSGameInput.rightThumbstickRight {
             
-            cstickPosition.x = input == ThreeDSGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition.x, y: cstickPosition.y, playerIndex: UInt32(playerIndex))
+            cstickPosition[playerIndex].x = input == ThreeDSGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition[playerIndex].x, y: cstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
             
         } else if input == ThreeDSGameInput.touchScreenX || input == ThreeDSGameInput.touchScreenY {
             if input == ThreeDSGameInput.touchScreenX {
@@ -791,17 +791,17 @@ class AzaharEmulatorBridge : EmulatorBridgeBase {
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == ThreeDSGameInput.leftThumbstickUp || input == ThreeDSGameInput.leftThumbstickDown {
-            thumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ThreeDSGameInput.leftThumbstickLeft || input == ThreeDSGameInput.leftThumbstickRight {
-            thumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ThreeDSGameInput.rightThumbstickUp || input == ThreeDSGameInput.rightThumbstickDown {
-            cstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition.x, y: cstickPosition.y, playerIndex: UInt32(playerIndex))
+            cstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition[playerIndex].x, y: cstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ThreeDSGameInput.rightThumbstickLeft || input == ThreeDSGameInput.rightThumbstickRight {
-            cstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition.x, y: cstickPosition.y, playerIndex: UInt32(playerIndex))
+            cstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: cstickPosition[playerIndex].x, y: cstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ThreeDSGameInput.touchScreenX || input == ThreeDSGameInput.touchScreenY {
             if input == ThreeDSGameInput.touchScreenX {
                 touchPointX = nil

@@ -1063,5 +1063,8 @@ PlayCase हाई-क्वालिटी iPhone केसों पर के
 "CoverScrapingComplete" = "स्क्रैपिंग पूर्ण।";
 "CoverScrapingStat" = "%@: %d अपडेट, %d छोड़े गए, %d विफल";
 "FetchGamesFromARMSX2" = "ARMSX2 से गेम आयात करें";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU एमुलेशन विधि";
 "DolphinCPUDesc" = "जब JIT उपलब्ध नहीं होता, कोर इंटरप्रिटर मोड में चलता है।\nCached Interpreter: आधिकारिक इंटरप्रिटर। यह अधिक सटीक है, लेकिन परफ़ॉर्मेंस पर ज़्यादा भार डालता है।\nManic Interpreter: Manic EMU का इंटरप्रिटर। आक्रामक ऑप्टिमाइज़ेशन से यह तेज़ है, लेकिन त्रुटियाँ भी अधिक हो सकती हैं।";

@@ -1053,5 +1053,8 @@ Hvis du vil forbedre oppsettet ditt, er PlayCase et perfekt tilbehør til dette 
 "CoverScrapingComplete" = "Henting fullført.";
 "CoverScrapingStat" = "%@: %d oppdatert, %d hoppet over, %d mislyktes";
 "FetchGamesFromARMSX2" = "Importer spill fra ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU-emuleringsmetode";
 "DolphinCPUDesc" = "Når JIT ikke er tilgjengelig, kjører kjernen i interpretertmodus.\nCached Interpreter: den offisielle interpreteren. Den er mer nøyaktig, men mer krevende for ytelsen.\nManic Interpreter: Manic EMUs interpreter. Aggressive optimaliseringer gjør den raskere, men kan også gi flere feil.";

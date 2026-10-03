@@ -1061,5 +1061,8 @@ Ako želite unaprijediti svoju postavu, PlayCase je savršen dodatak ovom skinu.
 "CoverScrapingComplete" = "Preuzimanje je dovršeno.";
 "CoverScrapingStat" = "%@: ažurirano %d, preskočeno %d, neuspješno %d";
 "FetchGamesFromARMSX2" = "Uvezi igre iz ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Metoda emulacije CPU-a";
 "DolphinCPUDesc" = "Kad JIT nije dostupan, jezgra radi u načinu interpretera.\nCached Interpreter: službeni interpreter. Precizniji je, ali zahtjevniji za performanse.\nManic Interpreter: interpreter Manic EMU. Agresivne optimizacije čine ga bržim, ali može i proizvesti više pogrešaka.";

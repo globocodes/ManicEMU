@@ -119,8 +119,8 @@ class DSEmulatorBridge : EmulatorBridgeBase {
     static let shared = DSEmulatorBridge()
     var isDeSmuMECore: Bool = false
 
-    private var leftThumbstickPosition: CGPoint = .zero
-    private var rightThumbstickPosition: CGPoint = .zero
+    private let leftThumbstickPosition = PlayerStickPositions()
+    private let rightThumbstickPosition = PlayerStickPositions()
     private var touchPointX: CGFloat? = nil
     private var touchPointY: CGFloat? = nil
     var touchInputFrame: CGRect = .zero
@@ -129,11 +129,11 @@ class DSEmulatorBridge : EmulatorBridgeBase {
         guard playerIndex >= 0 else { return }
         
         if input == DSGameInput.rightThumbstickUp || input == DSGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = input == DSGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = input == DSGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == DSGameInput.rightThumbstickLeft || input == DSGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = input == DSGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = input == DSGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if input == DSGameInput.touchScreenX || input == DSGameInput.touchScreenY {
                 if input == DSGameInput.touchScreenX {
@@ -184,11 +184,11 @@ class DSEmulatorBridge : EmulatorBridgeBase {
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == DSGameInput.rightThumbstickUp || input == DSGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == DSGameInput.rightThumbstickLeft || input == DSGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else {
             if input == DSGameInput.touchScreenX || input == DSGameInput.touchScreenY {
                 if input == DSGameInput.touchScreenX {

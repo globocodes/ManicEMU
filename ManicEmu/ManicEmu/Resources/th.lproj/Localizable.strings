@@ -1051,5 +1051,8 @@ PlayCase มุ่งเน้นที่เคส iPhone คุณภาพส
 "CoverScrapingComplete" = "ดึงเสร็จสิ้น";
 "CoverScrapingStat" = "%@: อัปเดต %d, ข้าม %d, ล้มเหลว %d";
 "FetchGamesFromARMSX2" = "นำเข้าเกมจาก ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "วิธีจำลอง CPU";
 "DolphinCPUDesc" = "เมื่อไม่มี JIT คอร์จะทำงานในโหมดอินเทอร์พรีเตอร์\nCached Interpreter: อินเทอร์พรีเตอร์ทางการ แม่นยำกว่า แต่กินประสิทธิภาพมากกว่า\nManic Interpreter: อินเทอร์พรีเตอร์ของ Manic EMU ปรับแต่งเชิงรุกให้เร็วขึ้น แต่อาจมีข้อผิดพลาดมากกว่า";
