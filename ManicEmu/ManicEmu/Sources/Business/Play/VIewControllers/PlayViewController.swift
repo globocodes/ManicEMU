@@ -852,6 +852,7 @@ class PlayViewController: GameViewController {
         }
         
         removeExternalGameControllerReceivers()
+        InputDiagnostics.shared.stop()
         PlayViewController.currentPlayViewController = nil
         PlayViewController.refreshExternalInputSink()
         
@@ -1463,6 +1464,39 @@ extension PlayViewController {
                 controller.removeReceiver(emulatorCore)
             }
         }
+    }
+
+    /// Manic MP: the game option "Input Diagnostics Log" for a GameCube/Wii title.
+    private var isInputDiagnosticsEnabled: Bool {
+        manicGame.isDolphinCore && (manicGame.getExtraBool(key: ExtraKey.inputDiagnostics.rawValue) ?? false)
+    }
+
+    /// Manic MP: controller input timing into the session log, for tracking down
+    /// sticks that "cut out". DeltaCore reports each controller's HID timing and
+    /// every sample's wait for the main thread once a second ("[Input]" lines);
+    /// RetroArch's `frame_time_log` adds "[Frame] Stats" every 10 s. Both go to
+    /// RetroArch's log, written to Documents/Netplay Logs (Files app) while the
+    /// option is on. RetroArch's settings live in one shared file, so every launch
+    /// states the value rather than inheriting the last game's.
+    private func updateInputDiagnosticsConfigs() {
+        let enabled = isInputDiagnosticsEnabled
+        var configs = ["frame_time_log": enabled ? "true" : "false"]
+        if enabled {
+            let logDir = R.Path.Document.appendingPathComponent("Netplay Logs")
+            try? FileManager.default.createDirectory(atPath: logDir, withIntermediateDirectories: true)
+            configs["log_verbosity"] = "true"
+            configs["frontend_log_level"] = "1"
+            configs["libretro_log_level"] = "1"
+            configs["log_to_file"] = "true"
+            configs["log_to_file_timestamp"] = "true"
+            configs["log_dir"] = logDir.libretroPath
+            InputDiagnostics.shared.start { line in
+                LibretroCore.sharedInstance().logDiagnosticsLine(line)
+            }
+        } else {
+            InputDiagnostics.shared.stop()
+        }
+        LibretroCore.sharedInstance().updateLibretroConfigs(configs)
     }
     
     private func updateAudio() {
@@ -2221,6 +2255,7 @@ extension PlayViewController {
             } else {
                 LibretroCore.sharedInstance().setReloadDelay(0)
             }
+            updateInputDiagnosticsConfigs()
             
             if manicGame.safeMode {
                 //safe mode

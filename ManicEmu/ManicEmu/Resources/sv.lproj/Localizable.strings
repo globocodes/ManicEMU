@@ -1055,5 +1055,8 @@ Om du vill höja din upplevelse är PlayCase en perfekt match för detta skin.";
 "CoverScrapingComplete" = "Hämtning klar.";
 "CoverScrapingStat" = "%@: %d uppdaterade, %d överhoppade, %d misslyckade";
 "FetchGamesFromARMSX2" = "Importera spel från ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU-emuleringsmetod";
 "DolphinCPUDesc" = "När JIT inte är tillgängligt körs kärnan i interpretertläge.\nCached Interpreter: den officiella interpreteraren. Den är mer exakt, men mer krävande för prestandan.\nManic Interpreter: Manic EMU:s interpreterare. Aggressiva optimeringar gör den snabbare, men kan också ge fler fel.";

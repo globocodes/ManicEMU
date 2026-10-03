@@ -80,7 +80,8 @@ enum GameOption: Int, CaseIterable {
          symbianDevice,
          wiiControllerMode,
          coverScraping,
-         dolphinCpuCore
+         dolphinCpuCore,
+         inputDiagnostics
         
     //When adding a new option, make sure to add it at the end; otherwise, it might affect the existing Prefference configurations
     
@@ -217,6 +218,8 @@ enum GameOption: Int, CaseIterable {
         case .gameShortcut:
                 .symbol(.command)
         case .deadZone:
+                .symbolImage(R.image.joycon_iconSymbols())
+        case .inputDiagnostics:
                 .symbolImage(R.image.joycon_iconSymbols())
         case .rewind:
                 .symbolImage(R.image.rewind_iconSymbols())
@@ -371,6 +374,8 @@ enum GameOption: Int, CaseIterable {
             R.string.localizable.coverScraping()
         case .dolphinCpuCore:
             R.string.localizable.cpuEmulationMethod()
+        case .inputDiagnostics:
+            R.string.localizable.inputDiagnostics()
         }
     }
     
@@ -414,6 +419,8 @@ enum GameOption: Int, CaseIterable {
             return R.string.localizable.tvStandard()
         case .rewind:
             return R.string.localizable.rewindDesc()
+        case .inputDiagnostics:
+            return R.string.localizable.inputDiagnosticsDesc()
         case .airPlayLayout:
             return R.string.localizable.airPlayLayoutTips()
         case .language:
@@ -496,6 +503,7 @@ enum GameOption: Int, CaseIterable {
             .symbianDevice,
             .wiiControllerMode,
             .dolphinCpuCore,
+            .inputDiagnostics,
             .coreSettings,
         ],
         [
@@ -901,6 +909,14 @@ enum GameOption: Int, CaseIterable {
                 return .chevron(rewind ? R.string.localizable.on() : R.string.localizable.off())
             }
             
+        case .inputDiagnostics:
+            let enabled = firstGame.getExtraBool(key: ExtraKey.inputDiagnostics.rawValue) ?? false
+            if games.count == 1 {
+                return .switch(enabled ? .on : .off)
+            } else if games.allSatisfy({ ($0.getExtraBool(key: ExtraKey.inputDiagnostics.rawValue) ?? false) == enabled }) {
+                return .chevron(enabled ? R.string.localizable.on() : R.string.localizable.off())
+            }
+            
         case .netplay:
             if LibretroNetplaySession.shared.isHosting,
                let connectedHost = LibretroNetplaySession.shared.connectedHost,
@@ -1019,7 +1035,8 @@ enum GameOption: Int, CaseIterable {
                 .snesVRAM,
                 .symbianDevice,
                 .coverScraping,
-                .dolphinCpuCore
+                .dolphinCpuCore,
+                .inputDiagnostics
             ]
         }
     }
@@ -1256,6 +1273,11 @@ enum GameOption: Int, CaseIterable {
         
         if !game.isDolphinCore || (LibretroCore.jitAvailable() && game.jit) {
             allOptions.remove(.dolphinCpuCore)
+        }
+        
+        /// Manic MP: controller input timing in the Dolphin session log
+        if !game.isDolphinCore {
+            allOptions.remove(.inputDiagnostics)
         }
         
         allOptions.subtract(disableOptionsForScene(scene))

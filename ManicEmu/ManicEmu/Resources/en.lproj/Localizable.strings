@@ -1086,5 +1086,8 @@ Press the controller button to complete mapping...";
 "CoverScrapingStat" = "%@: %d updated, %d skipped, %d failed";
 "FetchGamesFromARMSX2" = "Import Games from ARMSX2";
 
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU Emulation Method";
 "DolphinCPUDesc" = "When JIT is unavailable, the core runs in interpreter mode.\nCached Interpreter: the official interpreter. It is more accurate, but more demanding on performance.\nManic Interpreter: Manic EMU's interpreter. Aggressive optimizations make it faster, but it may also produce more errors.";

@@ -84,6 +84,8 @@ enum ExtraKey: String {
     case symbianOSVer
     case ngageFiles
     case symbianPackages
+    /// Manic MP: per-game switch for controller input timing in the Dolphin session log
+    case inputDiagnostics
     case wiiController
     case dolphinManicInterpreter
 }

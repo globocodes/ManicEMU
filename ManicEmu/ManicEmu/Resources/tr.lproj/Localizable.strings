@@ -1061,5 +1061,8 @@ Kurulumunuzu bir üst seviyeye taşımak istiyorsanız, PlayCase bu kaplama içi
 "CoverScrapingComplete" = "Tarama tamamlandı.";
 "CoverScrapingStat" = "%@: %d güncellendi, %d atlandı, %d başarısız";
 "FetchGamesFromARMSX2" = "ARMSX2’den Oyun İçe Aktar";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU Öykünme Yöntemi";
 "DolphinCPUDesc" = "JIT kullanılamadığında çekirdek yorumlayıcı modunda çalışır.\nCached Interpreter: resmi yorumlayıcı. Daha doğru ama performans açısından daha ağırdır.\nManic Interpreter: Manic EMU’nun yorumlayıcısı. Agresif eniyilemeler onu daha hızlı kılar, ancak daha fazla hata da üretebilir.";

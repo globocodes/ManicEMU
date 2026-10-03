@@ -1034,5 +1034,8 @@
 "CoverScrapingComplete" = "اكتمل الجلب.";
 "CoverScrapingStat" = "%@: تم تحديث %d، تم تخطي %d، فشل %d";
 "FetchGamesFromARMSX2" = "استيراد الألعاب من ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "طريقة محاكاة CPU";
 "DolphinCPUDesc" = "عندما لا يتوفر JIT، تعمل النواة في وضع المفسّر.\nCached Interpreter: المفسّر الرسمي. وهو أكثر دقة، لكنه يتطلب أداءً أعلى.\nManic Interpreter: مفسّر Manic EMU. التحسينات الجريئة تجعله أسرع، لكنها قد تنتج المزيد من الأخطاء.";

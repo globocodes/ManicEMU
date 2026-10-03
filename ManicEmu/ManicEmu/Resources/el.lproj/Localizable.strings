@@ -1064,5 +1064,8 @@
 "CoverScrapingComplete" = "Η συλλογή ολοκληρώθηκε.";
 "CoverScrapingStat" = "%@: %d ενημερώθηκαν, %d παραλείφθηκαν, %d απέτυχαν";
 "FetchGamesFromARMSX2" = "Εισαγωγή Παιχνιδιών από ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Μέθοδος Εξομοίωσης CPU";
 "DolphinCPUDesc" = "Όταν το JIT δεν είναι διαθέσιμο, ο πυρήνας εκτελείται σε λειτουργία διερμηνέα.\nCached Interpreter: ο επίσημος διερμηνέας. Είναι πιο ακριβής, αλλά πιο απαιτητικός στην απόδοση.\nManic Interpreter: ο διερμηνέας του Manic EMU. Οι επιθετικές βελτιστοποιήσεις τον κάνουν ταχύτερο, αλλά μπορεί επίσης να παράγει περισσότερα σφάλματα.";
