@@ -1062,6 +1062,9 @@ PlayCase спеціалізується на високоякісних чохл
 "CoverScrapingComplete" = "Збирання завершено.";
 "CoverScrapingStat" = "%@: оновлено %d, пропущено %d, помилок %d";
 "FetchGamesFromARMSX2" = "Імпорт ігор із ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Метод емуляції CPU";
 "DolphinCPUDesc" = "Якщо JIT недоступний, ядро працює в режимі інтерпретатора.\nCached Interpreter: офіційний інтерпретатор. Він точніший, але вимогливіший до продуктивності.\nManic Interpreter: інтерпретатор Manic EMU. Завдяки агресивним оптимізаціям він швидший, але може давати більше помилок.";
 

@@ -1081,6 +1081,9 @@ extension GameOption {
         case .dolphinCpuCore:
             performStringAction(with: games, accessoryChange: accessoryChange)
             
+        case .inputDiagnostics:
+            performSwitchAction(with: games)
+            
         }
     }
     
@@ -1098,6 +1101,8 @@ extension GameOption {
             firstGameTimeConsumingValue = (firstGame.getExtraBool(key: ExtraKey.forceFullSkin.rawValue) ?? false)
         } else if self == .rewind {
             firstGameTimeConsumingValue = (firstGame.getExtraBool(key: ExtraKey.rewind.rawValue) ?? false)
+        } else if self == .inputDiagnostics {
+            firstGameTimeConsumingValue = (firstGame.getExtraBool(key: ExtraKey.inputDiagnostics.rawValue) ?? false)
         }
         
         if games.count == 1 {
@@ -1139,6 +1144,8 @@ extension GameOption {
             } else if self == .rewind {
                 firstGame.updateExtra(key: ExtraKey.rewind.rawValue, value: !(firstGameTimeConsumingValue ?? false))
                 PlayViewController.updateRewind()
+            } else if self == .inputDiagnostics {
+                firstGame.updateExtra(key: ExtraKey.inputDiagnostics.rawValue, value: !(firstGameTimeConsumingValue ?? false))
             }
         } else {
             var selectedIndex: Int? = nil
@@ -1152,7 +1159,8 @@ extension GameOption {
                 self == .volume && $0.volume == firstGame.volume ||
                 self == .swapScreen && $0.swapScreen == firstGame.swapScreen ||
                 self == .hideControls && ($0.getExtraBool(key: ExtraKey.forceFullSkin.rawValue) ?? false) == (firstGameTimeConsumingValue ?? false) ||
-                self == .rewind && ($0.getExtraBool(key: ExtraKey.rewind.rawValue) ?? false) == (firstGameTimeConsumingValue ?? false)
+                self == .rewind && ($0.getExtraBool(key: ExtraKey.rewind.rawValue) ?? false) == (firstGameTimeConsumingValue ?? false) ||
+                self == .inputDiagnostics && ($0.getExtraBool(key: ExtraKey.inputDiagnostics.rawValue) ?? false) == (firstGameTimeConsumingValue ?? false)
             }) {
                 if self == .jit {
                     selectedIndex = firstGame.jit ? 0 : 1
@@ -1171,6 +1179,8 @@ extension GameOption {
                 } else if self == .hideControls {
                     selectedIndex = (firstGameTimeConsumingValue ?? false) ? 0 : 1
                 } else if self == .rewind {
+                    selectedIndex = (firstGameTimeConsumingValue ?? false) ? 0 : 1
+                } else if self == .inputDiagnostics {
                     selectedIndex = (firstGameTimeConsumingValue ?? false) ? 0 : 1
                 }
             }
@@ -1193,6 +1203,8 @@ extension GameOption {
                 detail = R.string.localizable.microphoneTips()
             } else if self == .rewind {
                 detail = R.string.localizable.rewindDesc()
+            } else if self == .inputDiagnostics {
+                detail = R.string.localizable.inputDiagnosticsDesc()
             }
             
             OptionsSheetView.show(icon: icon,
@@ -1222,6 +1234,8 @@ extension GameOption {
                             game.updateExtra(key: ExtraKey.forceFullSkin.rawValue, value: index == 0)
                         } else if self == .rewind {
                             game.updateExtra(key: ExtraKey.rewind.rawValue, value: index == 0)
+                        } else if self == .inputDiagnostics {
+                            game.updateExtra(key: ExtraKey.inputDiagnostics.rawValue, value: index == 0)
                         }
                     }
                     accessoryChange?()

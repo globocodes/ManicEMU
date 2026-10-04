@@ -116,17 +116,17 @@ class N64EmulatorBridge : EmulatorBridgeBase {
         case up, down, left, right
     }
     
-    private var thumbstickPosition: CGPoint = .zero
+    private let thumbstickPosition = PlayerStickPositions()
     private var cStickPressDirection: CStickDirection? = nil
 
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == N64GameInput.analogStickUp || input == N64GameInput.analogStickDown {
-            thumbstickPosition.y = input == N64GameInput.analogStickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = input == N64GameInput.analogStickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == N64GameInput.analogStickLeft || input == N64GameInput.analogStickRight {
-            thumbstickPosition.x = input == N64GameInput.analogStickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = input == N64GameInput.analogStickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if handleCStickInput(input, value: value, playerIndex: playerIndex, press: true) {
 #if DEBUG
 Log.debug("🎮 \(objectInfo(self)) 点击了:cStick")
@@ -162,11 +162,11 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == N64GameInput.analogStickUp || input == N64GameInput.analogStickDown {
-            thumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == N64GameInput.analogStickLeft || input == N64GameInput.analogStickRight {
-            thumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition.x, y: thumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            thumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(true, x: thumbstickPosition[playerIndex].x, y: thumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if handleCStickInput(input, value: 0, playerIndex: playerIndex, press: false) {
             //释放了cstick
         } else {

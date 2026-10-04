@@ -11,8 +11,8 @@
 
 [submodule "Dependencies/DeltaCore"]
 	path = Dependencies/DeltaCore
-	url = https://github.com/Daiuno/DeltaCore.git
-	branch = manicemu
+	url = https://github.com/globocodes/DeltaCore.git
+	branch = multiplayer
 	ignore = all
 
 [submodule "Dependencies/DNSPageView"]

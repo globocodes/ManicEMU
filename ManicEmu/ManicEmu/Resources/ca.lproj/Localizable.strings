@@ -1063,6 +1063,9 @@ Si voleu millorar la vostra configuració, PlayCase és el complement perfecte p
 "CoverScrapingComplete" = "Obtenció completada.";
 "CoverScrapingStat" = "%@: %d actualitzats, %d omesos, %d han fallat";
 "FetchGamesFromARMSX2" = "Importa jocs d'ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Mètode d'emulació de la CPU";
 "DolphinCPUDesc" = "Quan el JIT no està disponible, el nucli s'executa en mode intèrpret.\nCached Interpreter: l'intèrpret oficial. És més precís, però més exigent en rendiment.\nManic Interpreter: l'intèrpret de Manic EMU. Les optimitzacions agressives el fan més ràpid, però també poden produir més errors.";
 

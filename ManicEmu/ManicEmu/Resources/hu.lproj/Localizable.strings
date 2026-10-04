@@ -1062,6 +1062,9 @@ Ha fejleszteni szeretnéd a beállításod, a PlayCase tökéletes kiegészítő
 "CoverScrapingComplete" = "A gyűjtés kész.";
 "CoverScrapingStat" = "%@: %d frissítve, %d kihagyva, %d sikertelen";
 "FetchGamesFromARMSX2" = "Játékok importálása ARMSX2-ből";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU-emulációs módszer";
 "DolphinCPUDesc" = "Ha a JIT nem érhető el, a mag interpreter módban fut.\nCached Interpreter: a hivatalos interpreter. Pontosabb, de nagyobb teljesítményigényű.\nManic Interpreter: a Manic EMU interpretere. Az agresszív optimalizálások gyorsabbá teszik, de több hibát is okozhat.";
 

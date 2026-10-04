@@ -1035,6 +1035,9 @@ Jika anda ingin meningkatkan persediaan anda, PlayCase adalah padanan sempurna u
 "CoverScrapingComplete" = "Pengikisan selesai.";
 "CoverScrapingStat" = "%@: %d dikemas kini, %d dilangkau, %d gagal";
 "FetchGamesFromARMSX2" = "Import Permainan dari ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Kaedah Emulasi CPU";
 "DolphinCPUDesc" = "Apabila JIT tidak tersedia, teras berjalan dalam mod interpreter.\nCached Interpreter: interpreter rasmi. Ia lebih tepat, tetapi lebih menuntut prestasi.\nManic Interpreter: interpreter Manic EMU. Pengoptimuman agresif menjadikannya lebih pantas, tetapi juga mungkin menghasilkan lebih banyak ralat.";
 
