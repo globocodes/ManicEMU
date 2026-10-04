@@ -1,0 +1,18 @@
+---
+name: mac-to-pi-ssh-key-needs-passphrase
+description: RESOLVED 2026-09-22 - from the operator's Mac, `ssh -o BatchMode=yes globo-pi` works unattended with the dedicated passphrase-free key ~/.ssh/globo-pi-auto (first in ssh config, installed on the Pi via ssh-copy-id -f); the old passphrase key stays for interactive use; Pi-side steps can run from any Mac Track
+metadata:
+  type: project
+  modified: 2026-09-22T22:10:00-07:00
+  scope: operator
+  provenance: diagnosed 2026-09-19 in Track 049ebd1c on Joeys-MacBook-Air with ssh -v BatchMode (Offering public key -> Server accepts key -> Permission denied); blocked the "update the Pi live checkout" follow-up after PR 18 and PR 19; runbook af6146c2
+  supersedes: none (relates to [[tailscale-migration-scoped]], [[cursor-eye-piclaude-retired-pi-term]])
+---
+
+`~/.ssh/config` on the Mac has Host globo-pi -> 192.168.1.13, user globo, IdentitiesOnly, key `~/.ssh/globo-pi-ssh-key-02-26` (ED25519). `ssh-add -l` is empty, so BatchMode logins end in "Permission denied (publickey)" even though the server accepts the key. Fix is operator-only: `ssh-add --apple-use-keychain ~/.ssh/globo-pi-ssh-key-02-26` in Terminal, then `ssh -o BatchMode=yes globo-pi hostname` to confirm. Never try other keys or passwords.
+
+The standing follow-up "update the LIVE magic-mirror checkout Samba serves" names `~/Documents/globo-pi/magic-mirror`, which exists only ON THE PI; the Mac has neither that path nor `smbclient` (and the Tailscale CLI is not on PATH, only the app). From a Mac Track either run it over SSH once the key is loaded, or have the operator tap it from a Track on the Pi node.
+
+Also blocked on this (2026-09-19 evening): adding six CRC-verified NKit images from `~/Documents/sandbox/games` on the Mac (Bomberman Generation, Cabela's Outdoor Adventures, Harvest Moon AWL, Simpsons Road Rage, Melee Rev 2, World Series of Poker Rev 1) to the Pi library. The `roms` Samba share is read-only for guests BY DESIGN (smbutil view shows it) - never a route for adding games. Planned route once SSH works: scp to `~/incoming` on the Pi, run `scripts/gc-convert.sh` (writes library/roms/gc/*.rvz + appends to checksums.sha1 in the LIVE checkout, which dirties it - move those lines into a PR and restore the file before the next ff-only pull). For NKit sources the script's 'disc sha1 (Redump)' will NOT match Redump; the evidence is the NKit CRC self-check ([[nkit-self-check-and-sadx-zero-hole]]). Results table: docs/sonic-adventure-dx-investigation-2026-09-19.md section 5.2.
+
+**Update 2026-09-22 (Track c7580437):** the operator chose a dedicated key over ssh-add/keychain or stripping the passphrase: `~/.ssh/globo-pi-auto` (ED25519, no passphrase, fingerprint SHA256:f1snoNYspZvhnrLEUfcVq+ZUhwsmDh+jyaDZAXHxR1M) was generated on the Mac and `~/.ssh/config` now lists it FIRST under `Host globo-pi`, the old key second (backup at `~/.ssh/config.bak-2026-09-22`). INSTALLED 2026-09-22 ~22:00 PDT: the plain `ssh-copy-id` run reported 'All keys were skipped because they already exist' (its pre-check logged in with the config's OLD key after the passphrase prompt and mistook that for the new key being present); `ssh-copy-id -f -i ~/.ssh/globo-pi-auto.pub globo-pi` installed it, and `ssh -o BatchMode=yes globo-pi hostname` prints `globo-pi` with no agent. The passphrase was never stored anywhere (no ssh-add, no keychain). Do not generate another key or edit the config again. Same evening both Pi checkouts (`~/Documents/globo-pi/magic-mirror`, `~/Documents/globo-pi/better-games`) were fast-forwarded to main; the magic-mirror checkout carries one uncommitted `checksums.sha1` line (Bustin' Out RVZ, 2129017…) awaiting a magic-mirror PR.

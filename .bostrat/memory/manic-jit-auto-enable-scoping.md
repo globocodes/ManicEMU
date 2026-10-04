@@ -1,0 +1,20 @@
+---
+name: manic-jit-auto-enable-scoping
+description: Scoping of "enable JIT automatically when Manic starts" — Manic enables JIT only by opening StikDebug's URL (Settings → JIT, and after DOS/Symbian sessions on iOS 26); an auto-open at launch is a small change; origin/main hardcodes upstream's bundle id in that URL and sends no pid; StikJIT XCFramework (helper extension) is the no-app-switch route; LocalDevVPN + pairing file stay manual either way
+metadata:
+  type: project
+  modified: 2026-09-29T15:45:00-07:00
+  scope: repo:manicemu
+  provenance: read from the ManicEMU worktree (origin/main 16471900, origin/multiplayer, origin/jit-spike) and StikDebug/StikJIT INTEGRATION.md in Track 6d533315, 2026-09-29; nothing built or run on a device
+  supersedes: none (relates to [[operator-ipad-and-mac-hardware]], [[manic-emu-fork-sideload-accepted]], [[free-apple-id-signing-gotchas]])
+---
+
+**Facts:** Manic has no JIT enabler of its own. `R.URLs.EnableJITUrl` (`Sources/Base/Constants.swift`, `SIDE_LOAD` only) is `stikjit://enable-jit?bundle-id=…&script-name=universal.js`; it is opened from Settings → JIT (`JITSettingView.swift`) and automatically after a DOS (TXM) or Symbian session on iOS 26 (`PlayViewController.swift`, in the teardown after `StopPlayGame`). Readiness is `LibretroCore.jitAvailable()`, implemented in the `Dependencies/Libretro` submodule (not checked out in Pi Track worktrees). `stikjit` is already in `LSApplicationQueriesSchemes`. On origin/main the URL hardcodes `com.aoshuang.manicemu`; the fork's fix (`Bundle.main.bundleIdentifier`) exists only on origin/multiplayer, origin/phase-b-netplay and origin/jit-spike. No branch sends `pid`, which StikDebug's integration guide asks for (`stikdebug://enable-jit?bundle-id=&pid=&script-name=`), and says StikDebug uses the bundle id to return to the app. Opening the URL never guarantees JIT: the app must poll readiness.
+
+**Why:** the operator asked how hard auto-enabling JIT at app start would be; a Track branch cut from origin/main lacks the fork's bundle-id fix, so an auto-open there would ask StikDebug for the wrong app.
+
+**How to apply:** build the auto-open on a base that has the bundle-id fix (or re-apply it), fire it once per process launch from scene-did-become-active (not didFinishLaunching), guard on `!jitAvailable()` + `canOpenURL`, and put it behind a setting. StikJIT (MPL-2.0 XCFramework, needs a helper extension, `get-task-allow`, a pairing file handed to the app, LocalDevVPN, iOS 17.4+) removes the app switch but is days of work and unproven on a personal team. A Shortcuts "when app is opened" automation is a poor fit: it fires again when StikDebug returns to Manic.
+
+**Built 09-29 (unbuilt, untested on a device):** `JITAutoEnabler` at the bottom of `Sources/Tools/Others/UniversalScript.swift` (kept out of a new file so `project.pbxproj` is untouched), hooked from `ApplicationSceneDelegate` (`appDidBecomeReady` inside the `Database.setup` completion, `sceneDidBecomeActive`); setting `ExtraKey.autoEnableJIT` (default on) as a switch row on the JIT page; four strings `AutoEnableJIT*` in all 37 `Localizable.strings` (translations written by the agent, unreviewed). Skipped when the app is launched by a URL. Written on Track branch `track/auto-jit-enable-6d533315`, cut from origin/main: the iPad build comes from `jit-spike`, where the patch conflicts only on the `EnableJITUrl` line and the tail of `ExtraKey` (both trivial, keep both sides' intent). On-device checks: runbook 0a7e4ec8. Every ManicEMU Track branch is cut from origin/main (the upstream mirror), so fork work that must run on the iPad has to be rebased onto `jit-spike` before it is built.
+
+**Shipped 09-29:** rebased onto `jit-spike` (commit 7c2ba2cf, both conflicts resolved keeping both sides) and opened as globocodes/ManicEMU PR #1, base `jit-spike`. Still uncompiled. Gotcha: the repo is a fork, so `gh pr create` must carry `--repo globocodes/ManicEMU --base <branch>` or it targets upstream Manic-EMU/ManicEMU.
