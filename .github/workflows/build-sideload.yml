@@ -1,0 +1,153 @@
+# Manic MP: build the sideload app on a GitHub-hosted Mac, with no Apple account.
+#
+# The Pi signer (better-games signer/) signs and installs the fork on the iPad,
+# but nothing on Linux can compile it. This job is the compile step: it builds
+# the ManicEmuSideload scheme for a device with signing switched off and
+# publishes the result as the `manic-ipa` artifact, which the Pi pulls
+# (signer/fetch-build.sh) and re-signs with the real team.
+#
+# No secret is used or needed here, and none may be added: the Apple ID lives
+# on the Pi only. The repository is public, so hosted macOS minutes are free.
+#
+#   push to jit-spike     builds the iPad branch
+#   push to build/<name>  builds any branch pushed under that prefix
+#   Run workflow (ref)    builds any branch, tag or commit, from main's copy of
+#                         this file
+name: Build Manic MP (unsigned)
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or commit to build
+        required: true
+        default: jit-spike
+  push:
+    branches:
+      - jit-spike
+      - 'build/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-sideload-${{ github.event.inputs.ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ManicEmuSideload, unsigned
+    runs-on: macos-26
+    timeout-minutes: 150
+    env:
+      BUNDLE_ID: com.globocodes.manicemu
+    steps:
+      - name: Set the build paths
+        run: |
+          echo "DERIVED_DATA=$RUNNER_TEMP/DerivedData" >> "$GITHUB_ENV"
+          echo "OUT=$RUNNER_TEMP/out" >> "$GITHUB_ENV"
+
+      - name: Check out the app, its submodules and the LFS cores
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.sha }}
+          submodules: recursive
+          lfs: true
+
+      - name: Select the newest Xcode 26
+        run: |
+          xcode="$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)"
+          if [ -z "$xcode" ]; then
+            echo "::error::No Xcode 26 on this runner image (the project is kept on Xcode 26)."
+            ls -d /Applications/Xcode*.app
+            exit 1
+          fi
+          sudo xcode-select -s "$xcode"
+          xcodebuild -version
+          xcodebuild -showsdks | grep -i iphoneos
+
+      - name: Verify the LFS files are real content
+        run: |
+          git lfs ls-files | wc -l
+          bash Scripts/VerifyLFS.sh
+          du -sh Cores System.core
+
+      - name: Build for a device, signing off
+        run: |
+          mkdir -p "$OUT"
+          start=$(date +%s)
+          set +e
+          xcodebuild build \
+            -project ManicEmu/ManicEmu.xcodeproj \
+            -scheme ManicEmuSideload \
+            -configuration SideloadRelease \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath "$DERIVED_DATA" \
+            -skipPackagePluginValidation -skipMacroValidation \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
+            > "$OUT/xcodebuild.log" 2>&1
+          status=$?
+          set -e
+          echo "xcodebuild exited $status after $(( ($(date +%s) - start) / 60 )) min"
+          if [ "$status" -ne 0 ]; then
+            grep -nE "error:|fatal error|Undefined symbols|ld: |Command .* failed|BUILD FAILED" -A4 "$OUT/xcodebuild.log" | tail -150
+            exit "$status"
+          fi
+          tail -3 "$OUT/xcodebuild.log"
+
+      - name: Package Payload/ as manic.ipa
+        run: |
+          app="$(find "$DERIVED_DATA/Build/Products" -maxdepth 2 -name '*.app' -path '*-iphoneos/*' | head -1)"
+          test -d "$app"
+          id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$app/Info.plist")"
+          version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Info.plist")"
+          if [ "$id" != "$BUNDLE_ID" ]; then
+            echo "::error::built $id, expected $BUNDLE_ID"
+            exit 1
+          fi
+
+          # The Pi's signer asks Apple for the capabilities it finds in the main
+          # binary's entitlements. A build with signing off carries none, so the
+          # increased memory limit would only survive while the app id happens to
+          # keep it. An ad-hoc signature (no account, no identity) puts the fork's
+          # sideload entitlements into the binary; the Pi replaces the signature.
+          codesign --force --deep --sign - "$app"
+          codesign --force --sign - --entitlements ManicEmu/ManicEmu/ManicEmu-Sideload.entitlements "$app"
+          codesign -d --entitlements - "$app" 2>/dev/null | grep -c increased-memory-limit
+
+          work="$RUNNER_TEMP/ipa"
+          mkdir -p "$work/Payload"
+          cp -R "$app" "$work/Payload/"
+          (cd "$work" && zip -qry "$OUT/manic.ipa" Payload)
+          {
+            echo "ref: ${{ github.event.inputs.ref || github.ref_name }}"
+            echo "commit: $(git rev-parse HEAD)"
+            echo "subject: $(git log -1 --format=%s)"
+            echo "libretro: $(git -C Dependencies/Libretro rev-parse HEAD)"
+            echo "deltacore: $(git -C Dependencies/DeltaCore rev-parse HEAD)"
+            echo "version: $version"
+            echo "xcode: $(xcodebuild -version | tr '\n' ' ')"
+            echo "built: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            echo "sha256: $(shasum -a 256 "$OUT/manic.ipa" | cut -d' ' -f1)"
+          } | tee "$OUT/build-info.txt"
+          ls -lh "$OUT/manic.ipa"
+
+      - name: Upload manic.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: manic-ipa
+          path: |
+            ${{ runner.temp }}/out/manic.ipa
+            ${{ runner.temp }}/out/build-info.txt
+          if-no-files-found: error
+          retention-days: 14
+          compression-level: 0
+
+      - name: Upload the build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-log
+          path: ${{ runner.temp }}/out/xcodebuild.log
+          if-no-files-found: ignore
+          retention-days: 7
