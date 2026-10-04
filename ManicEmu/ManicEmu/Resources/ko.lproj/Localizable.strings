@@ -1065,6 +1065,9 @@ PlayCase는 액세서리 및 스킨 호환성을 고려하여 제작된 고품�
 "CoverScrapingComplete" = "수집이 완료되었어요.";
 "CoverScrapingStat" = "%@: %d개 업데이트, %d개 건너뜀, %d개 실패";
 "FetchGamesFromARMSX2" = "ARMSX2에서 게임 가져오기";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU 에뮬레이션 방식";
 "DolphinCPUDesc" = "JIT를 사용할 수 없을 때 코어는 인터프리터 모드로 동작해요.\nCached Interpreter: 공식 인터프리터예요. 더 정확하지만 성능 부담도 더 커요.\nManic Interpreter: Manic EMU의 인터프리터예요. 공격적인 최적화로 더 빠르지만 오류도 더 생길 수 있어요.";
 

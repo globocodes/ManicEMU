@@ -1055,6 +1055,9 @@ Nếu bạn muốn nâng cấp thiết lập của mình, PlayCase là sự kế
 "CoverScrapingComplete" = "Đã lấy xong.";
 "CoverScrapingStat" = "%@: đã cập nhật %d, đã bỏ qua %d, thất bại %d";
 "FetchGamesFromARMSX2" = "Nhập trò chơi từ ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Phương pháp giả lập CPU";
 "DolphinCPUDesc" = "Khi không có JIT, lõi chạy ở chế độ thông dịch.\nCached Interpreter: thông dịch viên chính thức. Chính xác hơn nhưng đòi hỏi hiệu năng cao hơn.\nManic Interpreter: thông dịch viên của Manic EMU. Tối ưu mạnh nên nhanh hơn, nhưng cũng có thể sinh nhiều lỗi hơn.";
 

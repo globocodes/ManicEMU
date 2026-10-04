@@ -1062,6 +1062,9 @@ Als je je setup naar een hoger niveau wilt tillen, is PlayCase de perfecte match
 "CoverScrapingComplete" = "Ophalen voltooid.";
 "CoverScrapingStat" = "%@: %d bijgewerkt, %d overgeslagen, %d mislukt";
 "FetchGamesFromARMSX2" = "Games importeren uit ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU-emulatiemethode";
 "DolphinCPUDesc" = "Als JIT niet beschikbaar is, draait de kern in interpretermodus.\nCached Interpreter: de officiële interpreter. Die is nauwkeuriger, maar zwaarder voor de prestaties.\nManic Interpreter: de interpreter van Manic EMU. Agressieve optimalisaties maken hem sneller, maar kunnen ook meer fouten veroorzaken.";
 

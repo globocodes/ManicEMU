@@ -1056,6 +1056,9 @@ PlayCase специализируется на высококачественн�
 "CoverScrapingComplete" = "Загрузка завершена.";
 "CoverScrapingStat" = "%@: обновлено %d, пропущено %d, ошибок %d";
 "FetchGamesFromARMSX2" = "Импорт игр из ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Метод эмуляции CPU";
 "DolphinCPUDesc" = "Если JIT недоступен, ядро работает в режиме интерпретатора.\nCached Interpreter: официальный интерпретатор. Он точнее, но требовательнее к производительности.\nManic Interpreter: интерпретатор Manic EMU. За счёт агрессивных оптимизаций он быстрее, но может давать больше ошибок.";
 

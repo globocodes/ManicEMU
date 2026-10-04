@@ -1057,6 +1057,9 @@ PlayCaseは、アクセサリーやスキンとの互換性を考慮して作ら
 "CoverScrapingComplete" = "取得が完了しました。";
 "CoverScrapingStat" = "%@: %d件更新、%d件スキップ、%d件失敗";
 "FetchGamesFromARMSX2" = "ARMSX2からゲームをインポート";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPUエミュレーション方式";
 "DolphinCPUDesc" = "JITが利用できない場合、コアはインタープリターモードで動作します。\nCached Interpreter: 公式のインタープリターです。より正確ですが、性能への負荷も大きくなります。\nManic Interpreter: Manic EMU のインタープリターです。積極的な最適化により高速ですが、エラーも増えやすい場合があります。";
 

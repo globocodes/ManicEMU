@@ -1056,6 +1056,9 @@ Pokud chcete vylepšit své nastavení, PlayCase je perfektním doplňkem tohoto
 "CoverScrapingComplete" = "Stahování dokončeno.";
 "CoverScrapingStat" = "%@: aktualizováno %d, přeskočeno %d, selhalo %d";
 "FetchGamesFromARMSX2" = "Importovat hry z ARMSX2";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "Metoda emulace CPU";
 "DolphinCPUDesc" = "Když JIT není k dispozici, jádro běží v režimu interpreteru.\nCached Interpreter: oficiální interpreter. Je přesnější, ale náročnější na výkon.\nManic Interpreter: interpreter Manic EMU. Agresivní optimalizace ho zrychlují, ale může také produkovat více chyb.";
 

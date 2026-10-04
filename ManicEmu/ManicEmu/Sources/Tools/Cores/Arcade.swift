@@ -111,8 +111,8 @@ struct Arcade: DeltaCoreProtocol {
 class ArcadeEmulatorBridge : EmulatorBridgeBase {
     static let shared = ArcadeEmulatorBridge()
 
-    private var leftThumbstickPosition: CGPoint = .zero
-    private var rightThumbstickPosition: CGPoint = .zero
+    private let leftThumbstickPosition = PlayerStickPositions()
+    private let rightThumbstickPosition = PlayerStickPositions()
     
     private var thumbstickPosition: CGPoint = .zero
 
@@ -121,17 +121,17 @@ class ArcadeEmulatorBridge : EmulatorBridgeBase {
     override func activateInput(_ input: Int, value: Double, playerIndex: Int) {
         guard playerIndex >= 0 else { return }
         if input == ArcadeGameInput.leftThumbstickUp || input == ArcadeGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = input == ArcadeGameInput.leftThumbstickUp ? value : -value
-            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: playerIndex)
+            leftThumbstickPosition[playerIndex].y = input == ArcadeGameInput.leftThumbstickUp ? value : -value
+            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: playerIndex)
         } else if input == ArcadeGameInput.leftThumbstickLeft || input == ArcadeGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = input == ArcadeGameInput.leftThumbstickRight ? value : -value
-            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: playerIndex)
+            leftThumbstickPosition[playerIndex].x = input == ArcadeGameInput.leftThumbstickRight ? value : -value
+            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: playerIndex)
         } else if input == ArcadeGameInput.rightThumbstickUp || input == ArcadeGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = input == ArcadeGameInput.rightThumbstickUp ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = input == ArcadeGameInput.rightThumbstickUp ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ArcadeGameInput.rightThumbstickLeft || input == ArcadeGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = input == ArcadeGameInput.rightThumbstickRight ? value : -value
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = input == ArcadeGameInput.rightThumbstickRight ? value : -value
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if let gameInput = ArcadeGameInput(rawValue: input),
                   let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
             if analogDpad.handleDpad(libretroButton, pressed: true, playerIndex: playerIndex) {
@@ -166,17 +166,17 @@ Log.debug("🎮 \(objectInfo(self)) 点击了:\(gameInput)")
     
     override func deactivateInput(_ input: Int, playerIndex: Int) {
         if input == ArcadeGameInput.leftThumbstickUp || input == ArcadeGameInput.leftThumbstickDown {
-            leftThumbstickPosition.y = 0
-            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: playerIndex)
+            leftThumbstickPosition[playerIndex].y = 0
+            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: playerIndex)
         } else if input == ArcadeGameInput.leftThumbstickLeft || input == ArcadeGameInput.leftThumbstickRight {
-            leftThumbstickPosition.x = 0
-            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition.x, y: leftThumbstickPosition.y, playerIndex: playerIndex)
+            leftThumbstickPosition[playerIndex].x = 0
+            analogDpad.moveStick(isLeft: true, x: leftThumbstickPosition[playerIndex].x, y: leftThumbstickPosition[playerIndex].y, playerIndex: playerIndex)
         } else if input == ArcadeGameInput.rightThumbstickUp || input == ArcadeGameInput.rightThumbstickDown {
-            rightThumbstickPosition.y = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].y = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if input == ArcadeGameInput.rightThumbstickLeft || input == ArcadeGameInput.rightThumbstickRight {
-            rightThumbstickPosition.x = 0
-            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition.x, y: rightThumbstickPosition.y, playerIndex: UInt32(playerIndex))
+            rightThumbstickPosition[playerIndex].x = 0
+            LibretroCore.sharedInstance().moveStick(false, x: rightThumbstickPosition[playerIndex].x, y: rightThumbstickPosition[playerIndex].y, playerIndex: UInt32(playerIndex))
         } else if let gameInput = ArcadeGameInput(rawValue: input),
                   let libretroButton = gameInputToCoreInput(gameInput: gameInput) {
             if analogDpad.handleDpad(libretroButton, pressed: false, playerIndex: playerIndex) {

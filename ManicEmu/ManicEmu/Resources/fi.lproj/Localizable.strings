@@ -1064,6 +1064,9 @@ Jos haluat parantaa kokoonpanoasi, PlayCase on täydellinen lisä tälle skinill
 "CoverScrapingComplete" = "Haku valmis.";
 "CoverScrapingStat" = "%@: %d päivitetty, %d ohitettu, %d epäonnistunut";
 "FetchGamesFromARMSX2" = "Tuo pelit ARMSX2:sta";
+"InputDiagnostics" = "Input Diagnostics Log";
+"InputDiagnosticsDesc" = "While this game runs, writes controller timing to the session log in Documents/Netplay Logs: how often each controller reports and how late, how long each stick sample waits for the emulator frame, and the emulator's frame times. For tracking down sticks that cut out; leave off otherwise. Takes effect when the game is next launched.";
+
 "CPUEmulationMethod" = "CPU-emulointitapa";
 "DolphinCPUDesc" = "Kun JIT ei ole käytettävissä, ydin toimii tulkkimoodissa.\nCached Interpreter: virallinen tulkki. Se on tarkempi, mutta vaativampi suorituskyvylle.\nManic Interpreter: Manic EMU:n tulkki. Aggressiiviset optimoinnit tekevät siitä nopeamman, mutta se voi myös tuottaa enemmän virheitä.";
 
