@@ -1084,6 +1084,13 @@ extension GameOption {
         case .inputDiagnostics:
             performSwitchAction(with: games)
             
+        case .acEventNotifications:
+            pauseEmulationIfNeed()
+            ACEventSettingsView.show(game: firstGame, hideCompletion: {
+                resumeEmulationIfNeed()
+                accessoryChange?()
+            })
+            
         }
     }
     

@@ -825,6 +825,8 @@ class PlayViewController: GameViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         repeatTimer.suspend()
+        //Manic MP: Animal Crossing event notifications follow the play session
+        ACNotificationScheduler.shared.playSessionEnded(game: manicGame)
         //清理AirPlay画面
         if let airPlayViewController = ExternalSceneDelegate.airPlayViewController, let airPlayGameView = airPlayViewController.libretroView {
             if manicGame.isLibretroType || manicGame.isJGenesisCore || manicGame.isJ2MECore {

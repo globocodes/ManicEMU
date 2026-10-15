@@ -40,6 +40,8 @@ class ApplicationSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     if connectionOptions.urlContexts.count > 0 {
                         self.scene(scene, openURLContexts: connectionOptions.urlContexts)
                     }
+                    //Manic MP: Animal Crossing event notifications need the library
+                    ACNotificationScheduler.shared.databaseDidBecomeReady()
 #if SIDE_LOAD
                     JITAutoEnabler.appDidBecomeReady(launchedByURL: connectionOptions.urlContexts.count > 0)
 #endif
@@ -74,6 +76,11 @@ class ApplicationSceneDelegate: UIResponder, UIWindowSceneDelegate {
         JITAutoEnabler.sceneDidBecomeActive()
     }
 #endif
+    
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        //Manic MP: keep the 30-day Animal Crossing event window rolling
+        ACNotificationScheduler.shared.rebuildIfEnabled(reason: "foreground")
+    }
     
     /// Route gamepad HID through Game Controller instead of UIKit (iPad system focus hitch).
     /// iOS 18+; older versions fall back to swallowing gamepad UIPress in ManicApplication.

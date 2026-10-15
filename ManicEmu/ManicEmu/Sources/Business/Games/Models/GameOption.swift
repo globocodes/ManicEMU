@@ -81,7 +81,8 @@ enum GameOption: Int, CaseIterable {
          wiiControllerMode,
          coverScraping,
          dolphinCpuCore,
-         inputDiagnostics
+         inputDiagnostics,
+         acEventNotifications
         
     //When adding a new option, make sure to add it at the end; otherwise, it might affect the existing Prefference configurations
     
@@ -221,6 +222,8 @@ enum GameOption: Int, CaseIterable {
                 .symbolImage(R.image.joycon_iconSymbols())
         case .inputDiagnostics:
                 .symbolImage(R.image.joycon_iconSymbols())
+        case .acEventNotifications:
+                .symbol(.bell)
         case .rewind:
                 .symbolImage(R.image.rewind_iconSymbols())
         case .netplay:
@@ -376,6 +379,8 @@ enum GameOption: Int, CaseIterable {
             R.string.localizable.cpuEmulationMethod()
         case .inputDiagnostics:
             R.string.localizable.inputDiagnostics()
+        case .acEventNotifications:
+            "Event notifications"
         }
     }
     
@@ -504,6 +509,7 @@ enum GameOption: Int, CaseIterable {
             .wiiControllerMode,
             .dolphinCpuCore,
             .inputDiagnostics,
+            .acEventNotifications,
             .coreSettings,
         ],
         [
@@ -917,6 +923,9 @@ enum GameOption: Int, CaseIterable {
                 return .chevron(enabled ? R.string.localizable.on() : R.string.localizable.off())
             }
             
+        case .acEventNotifications:
+            return .chevron(ACEventSettings.shared.isEnabled ? R.string.localizable.on() : R.string.localizable.off())
+
         case .netplay:
             if LibretroNetplaySession.shared.isHosting,
                let connectedHost = LibretroNetplaySession.shared.connectedHost,
@@ -1278,6 +1287,11 @@ enum GameOption: Int, CaseIterable {
         /// Manic MP: controller input timing in the Dolphin session log
         if !game.isDolphinCore {
             allOptions.remove(.inputDiagnostics)
+        }
+
+        /// Manic MP: Animal Crossing event notifications, only for GAFE01 (BP-AC-R28)
+        if !game.isDolphinCore || game.gameIDForDolphin != ACNotificationScheduler.gameID {
+            allOptions.remove(.acEventNotifications)
         }
         
         allOptions.subtract(disableOptionsForScene(scene))

@@ -85,6 +85,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //注册静默通知 用于CloudKit的同步
         application.registerForRemoteNotifications()
         
+        //Manic MP: Animal Crossing event notifications (local only) and their background refresh
+        ACNotificationScheduler.shared.applicationDidLaunch()
+        
         //Enable the imitation keyboard blocking issue
         IQKeyboardManager.shared.isEnabled = true
         return true

@@ -1584,6 +1584,18 @@
 		F9A3C32228B84AD391F34585 /* NVActivityIndicatorView in Frameworks */ = {isa = PBXBuildFile; productRef = 578E26D32FD41D9300A2749A /* NVActivityIndicatorView */; };
 		FDD0064DAC7645118F826ED7 /* Closures in Frameworks */ = {isa = PBXBuildFile; productRef = 578E231F2FD288C600A2749A /* Closures */; };
 		FFD8F5F4CE02425E8BA80296 /* mednafen.pce.libretro.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9408D7BF872544CFABE4D652 /* mednafen.pce.libretro.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		AC32281A7FF3BDF2D3667568 /* ACEventCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32F5B9667E947C2EB9F654 /* ACEventCalendar.swift */; };
+		AC32DB5AE13965DF4339A461 /* ACEventCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32F5B9667E947C2EB9F654 /* ACEventCalendar.swift */; };
+		AC323558BF7889B778290B29 /* ACEventCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32F5B9667E947C2EB9F654 /* ACEventCalendar.swift */; };
+		AC32B71F3E85958A4CDBB07A /* ACEventSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32E227276037AFA7A3A3BF /* ACEventSettings.swift */; };
+		AC32138812FF2588C0E8244F /* ACEventSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32E227276037AFA7A3A3BF /* ACEventSettings.swift */; };
+		AC3243D62F5C1D31DA09D7E9 /* ACEventSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32E227276037AFA7A3A3BF /* ACEventSettings.swift */; };
+		AC32E2F26D8F508B65502C4E /* ACNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */; };
+		AC32D1DEE0110417BAF23E48 /* ACNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */; };
+		AC32F61EAF4BD6EF47F95E26 /* ACNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */; };
+		AC3225179F5F1ACBE4F576FB /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
+		AC32768F9D3295B5B15AED2C /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
+		AC3256F7DCA46C43D535A768 /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -6617,6 +6629,10 @@
 		F0C500000000000000000106 /* FocusCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusCollectionView.swift; sourceTree = "<group>"; };
 		F0C500000000000000000107 /* FocusSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSystem.swift; sourceTree = "<group>"; };
 		F0C500000000000000000108 /* FocusSystem+UIViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FocusSystem+UIViewController.swift"; sourceTree = "<group>"; };
+		AC32F5B9667E947C2EB9F654 /* ACEventCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACEventCalendar.swift; sourceTree = "<group>"; };
+		AC32E227276037AFA7A3A3BF /* ACEventSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACEventSettings.swift; sourceTree = "<group>"; };
+		AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACNotificationScheduler.swift; sourceTree = "<group>"; };
+		AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACEventSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -12870,6 +12886,7 @@
 				57D7CF292EA5DB7B00F41540 /* TriggerPro */,
 				570CF87D2EEB092B00696C1B /* Shaders */,
 				578F28712F377FBB00D2D998 /* OnlinePlay */,
+				AC32E5E45CF62B34DC3FDD6B /* ACEvents */,
 			);
 			path = Business;
 			sourceTree = "<group>";
@@ -13109,6 +13126,17 @@
 				57BA7463303486E20039E284 /* FocusShortcutsTipsView.swift */,
 			);
 			path = FocusKit;
+			sourceTree = "<group>";
+		};
+		AC32E5E45CF62B34DC3FDD6B /* ACEvents */ = {
+			isa = PBXGroup;
+			children = (
+				AC32F5B9667E947C2EB9F654 /* ACEventCalendar.swift */,
+				AC32E227276037AFA7A3A3BF /* ACEventSettings.swift */,
+				AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */,
+				AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */,
+			);
+			path = ACEvents;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -13481,6 +13509,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC32281A7FF3BDF2D3667568 /* ACEventCalendar.swift in Sources */,
+				AC32B71F3E85958A4CDBB07A /* ACEventSettings.swift in Sources */,
+				AC32E2F26D8F508B65502C4E /* ACNotificationScheduler.swift in Sources */,
+				AC3225179F5F1ACBE4F576FB /* ACEventSettingsView.swift in Sources */,
 				57909385303C7D9100A53656 /* Amiga.swift in Sources */,
 				57909386303C7D9100A53656 /* C64.swift in Sources */,
 				57909387303C7D9100A53656 /* NGP.swift in Sources */,
@@ -13931,6 +13963,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC32DB5AE13965DF4339A461 /* ACEventCalendar.swift in Sources */,
+				AC32138812FF2588C0E8244F /* ACEventSettings.swift in Sources */,
+				AC32D1DEE0110417BAF23E48 /* ACNotificationScheduler.swift in Sources */,
+				AC32768F9D3295B5B15AED2C /* ACEventSettingsView.swift in Sources */,
 				0965D1CD6E9344C18E3454A6 /* Amiga.swift in Sources */,
 				C77604CEA6544406AAC031FA /* C64.swift in Sources */,
 				A672B510CD9141B18392D564 /* NGP.swift in Sources */,
@@ -14344,6 +14380,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AC323558BF7889B778290B29 /* ACEventCalendar.swift in Sources */,
+				AC3243D62F5C1D31DA09D7E9 /* ACEventSettings.swift in Sources */,
+				AC32F61EAF4BD6EF47F95E26 /* ACNotificationScheduler.swift in Sources */,
+				AC3256F7DCA46C43D535A768 /* ACEventSettingsView.swift in Sources */,
 				8CFD19E8FFCB46D79A392284 /* Amiga.swift in Sources */,
 				3CC0A81B407547FBA1CF0693 /* C64.swift in Sources */,
 				1186ADAD578A4FAC9E5337EA /* NGP.swift in Sources */,
