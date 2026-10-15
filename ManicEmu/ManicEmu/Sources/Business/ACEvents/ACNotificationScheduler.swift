@@ -82,7 +82,7 @@ final class ACNotificationScheduler: NSObject {
     /// The GAFE01 entry in the library, if there is one. Reads Realm on the
     /// calling thread.
     static func libraryGame() -> Game? {
-        let games = Database.realm.objects(Game.self).where({ !$0.isDeleted && $0.gameType == .ngc })
+        let games = Database.realm.objects(Game.self).where({ !$0.isDeleted && $0.gameType == GameType.ngc })
         return games.first(where: { $0.ensureDolphinGameID() == gameID })
     }
 
