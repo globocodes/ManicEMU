@@ -676,8 +676,10 @@ enum ACEventCalendar {
         guard var date = gregorian.date(from: DateComponents(year: year, month: 9, day: 1)),
               let end = gregorian.date(from: DateComponents(year: year, month: 10, day: 31)) else { return nil }
         while date <= end {
-            let c = chinese.dateComponents([.month, .day, .isLeapMonth], from: date)
-            if c.month == 8, c.day == 15, c.isLeapMonth != true {
+            // The first 8/15 after September 1 is the regular eighth month; a
+            // leap eighth month follows it (isLeapMonth itself needs iOS 17).
+            let c = chinese.dateComponents([.month, .day], from: date)
+            if c.month == 8, c.day == 15 {
                 let g = gregorian.dateComponents([.month, .day], from: date)
                 if let m = g.month, let d = g.day { return (m, d) }
             }
