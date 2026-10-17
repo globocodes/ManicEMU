@@ -1091,3 +1091,5 @@ Press the controller button to complete mapping...";
 
 "CPUEmulationMethod" = "CPU Emulation Method";
 "DolphinCPUDesc" = "When JIT is unavailable, the core runs in interpreter mode.\nCached Interpreter: the official interpreter. It is more accurate, but more demanding on performance.\nManic Interpreter: Manic EMU's interpreter. Aggressive optimizations make it faster, but it may also produce more errors.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

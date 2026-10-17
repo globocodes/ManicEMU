@@ -1069,3 +1069,5 @@ Jos haluat parantaa kokoonpanoasi, PlayCase on täydellinen lisä tälle skinill
 
 "CPUEmulationMethod" = "CPU-emulointitapa";
 "DolphinCPUDesc" = "Kun JIT ei ole käytettävissä, ydin toimii tulkkimoodissa.\nCached Interpreter: virallinen tulkki. Se on tarkempi, mutta vaativampi suorituskyvylle.\nManic Interpreter: Manic EMU:n tulkki. Aggressiiviset optimoinnit tekevät siitä nopeamman, mutta se voi myös tuottaa enemmän virheitä.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

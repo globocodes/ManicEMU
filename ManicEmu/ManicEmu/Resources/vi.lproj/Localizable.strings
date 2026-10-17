@@ -1060,3 +1060,5 @@ Nếu bạn muốn nâng cấp thiết lập của mình, PlayCase là sự kế
 
 "CPUEmulationMethod" = "Phương pháp giả lập CPU";
 "DolphinCPUDesc" = "Khi không có JIT, lõi chạy ở chế độ thông dịch.\nCached Interpreter: thông dịch viên chính thức. Chính xác hơn nhưng đòi hỏi hiệu năng cao hơn.\nManic Interpreter: thông dịch viên của Manic EMU. Tối ưu mạnh nên nhanh hơn, nhưng cũng có thể sinh nhiều lỗi hơn.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

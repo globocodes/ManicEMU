@@ -1062,3 +1062,5 @@ PlayCaseは、アクセサリーやスキンとの互換性を考慮して作ら
 
 "CPUEmulationMethod" = "CPUエミュレーション方式";
 "DolphinCPUDesc" = "JITが利用できない場合、コアはインタープリターモードで動作します。\nCached Interpreter: 公式のインタープリターです。より正確ですが、性能への負荷も大きくなります。\nManic Interpreter: Manic EMU のインタープリターです。積極的な最適化により高速ですが、エラーも増えやすい場合があります。";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

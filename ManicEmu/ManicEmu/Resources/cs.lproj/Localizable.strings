@@ -1061,3 +1061,5 @@ Pokud chcete vylepšit své nastavení, PlayCase je perfektním doplňkem tohoto
 
 "CPUEmulationMethod" = "Metoda emulace CPU";
 "DolphinCPUDesc" = "Když JIT není k dispozici, jádro běží v režimu interpreteru.\nCached Interpreter: oficiální interpreter. Je přesnější, ale náročnější na výkon.\nManic Interpreter: interpreter Manic EMU. Agresivní optimalizace ho zrychlují, ale může také produkovat více chyb.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

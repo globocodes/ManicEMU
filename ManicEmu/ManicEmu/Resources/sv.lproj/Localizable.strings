@@ -1060,3 +1060,5 @@ Om du vill höja din upplevelse är PlayCase en perfekt match för detta skin.";
 
 "CPUEmulationMethod" = "CPU-emuleringsmetod";
 "DolphinCPUDesc" = "När JIT inte är tillgängligt körs kärnan i interpretertläge.\nCached Interpreter: den officiella interpreteraren. Den är mer exakt, men mer krävande för prestandan.\nManic Interpreter: Manic EMU:s interpreterare. Aggressiva optimeringar gör den snabbare, men kan också ge fler fel.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
