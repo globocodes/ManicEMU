@@ -1066,3 +1066,5 @@ Ako želite unaprijediti svoju postavu, PlayCase je savršen dodatak ovom skinu.
 
 "CPUEmulationMethod" = "Metoda emulacije CPU-a";
 "DolphinCPUDesc" = "Kad JIT nije dostupan, jezgra radi u načinu interpretera.\nCached Interpreter: službeni interpreter. Precizniji je, ali zahtjevniji za performanse.\nManic Interpreter: interpreter Manic EMU. Agresivne optimizacije čine ga bržim, ali može i proizvesti više pogrešaka.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

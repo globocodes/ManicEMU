@@ -1069,3 +1069,5 @@ PlayCase מתמקדת במעטפות iPhone איכותיות, המיוצרות �
 
 "CPUEmulationMethod" = "שיטת אמולציית CPU";
 "DolphinCPUDesc" = "כש-JIT אינו זמין, הליבה רצה במצב מפרש.\nCached Interpreter: המפרש הרשמי. מדויק יותר, אך תובעני יותר בביצועים.\nManic Interpreter: המפרש של Manic EMU. אופטימיזציות אגרסיביות הופכות אותו למהיר יותר, אך עלולות גם לייצר יותר שגיאות.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

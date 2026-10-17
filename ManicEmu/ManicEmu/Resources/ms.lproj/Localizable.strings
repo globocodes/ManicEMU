@@ -1040,3 +1040,5 @@ Jika anda ingin meningkatkan persediaan anda, PlayCase adalah padanan sempurna u
 
 "CPUEmulationMethod" = "Kaedah Emulasi CPU";
 "DolphinCPUDesc" = "Apabila JIT tidak tersedia, teras berjalan dalam mod interpreter.\nCached Interpreter: interpreter rasmi. Ia lebih tepat, tetapi lebih menuntut prestasi.\nManic Interpreter: interpreter Manic EMU. Pengoptimuman agresif menjadikannya lebih pantas, tetapi juga mungkin menghasilkan lebih banyak ralat.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

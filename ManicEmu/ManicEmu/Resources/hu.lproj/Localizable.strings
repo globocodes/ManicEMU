@@ -1067,3 +1067,5 @@ Ha fejleszteni szeretnéd a beállításod, a PlayCase tökéletes kiegészítő
 
 "CPUEmulationMethod" = "CPU-emulációs módszer";
 "DolphinCPUDesc" = "Ha a JIT nem érhető el, a mag interpreter módban fut.\nCached Interpreter: a hivatalos interpreter. Pontosabb, de nagyobb teljesítményigényű.\nManic Interpreter: a Manic EMU interpretere. Az agresszív optimalizálások gyorsabbá teszik, de több hibát is okozhat.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

@@ -1068,3 +1068,5 @@ PlayCase हाई-क्वालिटी iPhone केसों पर के
 
 "CPUEmulationMethod" = "CPU एमुलेशन विधि";
 "DolphinCPUDesc" = "जब JIT उपलब्ध नहीं होता, कोर इंटरप्रिटर मोड में चलता है।\nCached Interpreter: आधिकारिक इंटरप्रिटर। यह अधिक सटीक है, लेकिन परफ़ॉर्मेंस पर ज़्यादा भार डालता है।\nManic Interpreter: Manic EMU का इंटरप्रिटर। आक्रामक ऑप्टिमाइज़ेशन से यह तेज़ है, लेकिन त्रुटियाँ भी अधिक हो सकती हैं।";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

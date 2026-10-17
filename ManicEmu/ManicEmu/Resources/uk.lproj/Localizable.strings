@@ -1067,3 +1067,5 @@ PlayCase спеціалізується на високоякісних чохл
 
 "CPUEmulationMethod" = "Метод емуляції CPU";
 "DolphinCPUDesc" = "Якщо JIT недоступний, ядро працює в режимі інтерпретатора.\nCached Interpreter: офіційний інтерпретатор. Він точніший, але вимогливіший до продуктивності.\nManic Interpreter: інтерпретатор Manic EMU. Завдяки агресивним оптимізаціям він швидший, але може давати більше помилок.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

@@ -2213,6 +2213,9 @@ extension PlayViewController {
         //配置静音模式
         if manicGame.isLibretroType {
             LibretroCore.sharedInstance().setRespectSilentMode(Settings.defalut.respectSilentMode)
+#if SIDE_LOAD
+            noteJITLostIfNeeded()
+#endif
         }
         if Settings.defalut.respectSilentMode {
             //监听静音键
@@ -4173,6 +4176,20 @@ extension PlayViewController {
             }
         })
     }
+    
+#if SIDE_LOAD
+    /// Manic MP: on iOS 26 with A15/M2 or newer (TXM) JIT works only while StikDebug is
+    /// attached, and the process keeps its "was debugged" flag after StikDebug is gone.
+    /// Until the Libretro fork checked for a live debugger, a game started minutes after
+    /// launch booted Dolphin's JIT without one and the app died on the first JIT block
+    /// (SIGBUS, KERN_CODESIGN_ERROR). `LibretroCore.jitAvailable()` is false in that
+    /// state now and the session runs the interpreter; this says why, since the game's
+    /// own setting still asks for JIT.
+    private func noteJITLostIfNeeded() {
+        guard manicGame.jit, !LibretroCore.jitAvailable(), LibretroCore.jitDebuggerDetached() else { return }
+        UIView.makeToast(message: R.string.localizable.jitDebuggerDetached(), duration: 6)
+    }
+#endif
     
     private func updateLibretroCoreConfigs(core: EmulationCore,
                                            configs: [SpecialCoreOption: String],

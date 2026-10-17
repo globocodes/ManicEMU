@@ -1039,3 +1039,5 @@
 
 "CPUEmulationMethod" = "طريقة محاكاة CPU";
 "DolphinCPUDesc" = "عندما لا يتوفر JIT، تعمل النواة في وضع المفسّر.\nCached Interpreter: المفسّر الرسمي. وهو أكثر دقة، لكنه يتطلب أداءً أعلى.\nManic Interpreter: مفسّر Manic EMU. التحسينات الجريئة تجعله أسرع، لكنها قد تنتج المزيد من الأخطاء.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

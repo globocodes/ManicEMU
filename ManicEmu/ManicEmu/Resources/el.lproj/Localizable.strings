@@ -1069,3 +1069,5 @@
 
 "CPUEmulationMethod" = "Μέθοδος Εξομοίωσης CPU";
 "DolphinCPUDesc" = "Όταν το JIT δεν είναι διαθέσιμο, ο πυρήνας εκτελείται σε λειτουργία διερμηνέα.\nCached Interpreter: ο επίσημος διερμηνέας. Είναι πιο ακριβής, αλλά πιο απαιτητικός στην απόδοση.\nManic Interpreter: ο διερμηνέας του Manic EMU. Οι επιθετικές βελτιστοποιήσεις τον κάνουν ταχύτερο, αλλά μπορεί επίσης να παράγει περισσότερα σφάλματα.";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
