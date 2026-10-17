@@ -1072,3 +1072,5 @@ PlayCase 專注於高品質 iPhone 保護殼，設計時充分考慮了配件與
 
 "CPUEmulationMethod" = "CPU 模擬方法";
 "DolphinCPUDesc" = "在無 JIT 的環境中，核心以直譯器模式執行。\nCached Interpreter：官方直譯器，準確度更高，但對效能要求也更高。\nManic Interpreter：Manic EMU 的直譯器，採用更積極的優化，效率更高，但出錯也可能更多。";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

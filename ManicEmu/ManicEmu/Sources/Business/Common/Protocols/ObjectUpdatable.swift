@@ -23,8 +23,15 @@ extension ObjectUpdatable {
     static func change(action: ((_ realm: Realm) throws ->Void)) {
         do {
             let realm = Database.realm
-            try realm.write {
+            if realm.isInWriteTransaction {
+                // Manic MP: already inside a write on this thread, e.g. ensureDolphinGameID()
+                // called from PlatformSelectionView's own Game.change. A second write throws
+                // an RLMException that Swift cannot catch and the app dies; join the open one.
                 try action(realm)
+            } else {
+                try realm.write {
+                    try action(realm)
+                }
             }
         } catch {
             Log.error("更新\(type(of: self))失败")

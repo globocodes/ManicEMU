@@ -1056,3 +1056,5 @@ PlayCase มุ่งเน้นที่เคส iPhone คุณภาพส
 
 "CPUEmulationMethod" = "วิธีจำลอง CPU";
 "DolphinCPUDesc" = "เมื่อไม่มี JIT คอร์จะทำงานในโหมดอินเทอร์พรีเตอร์\nCached Interpreter: อินเทอร์พรีเตอร์ทางการ แม่นยำกว่า แต่กินประสิทธิภาพมากกว่า\nManic Interpreter: อินเทอร์พรีเตอร์ของ Manic EMU ปรับแต่งเชิงรุกให้เร็วขึ้น แต่อาจมีข้อผิดพลาดมากกว่า";
+
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
