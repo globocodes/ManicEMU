@@ -64,6 +64,15 @@ enum ACEventKind: String, CaseIterable, Codable {
     case newYearsEve
     case snowmanSeason
     case playerBirthday
+    // Rolled into the save by the game (ACSaveReader): the special
+    // visitors and Gulliver's weekday.
+    case redd
+    case wendell
+    case gracie
+    case saharah
+    case katrina
+    case nookSale
+    case gulliver
 
     /// The name the notification carries.
     var displayName: String {
@@ -108,6 +117,13 @@ enum ACEventKind: String, CaseIterable, Codable {
         case .newYearsEve: return "New Year's Eve countdown"
         case .snowmanSeason: return "Snowman season"
         case .playerBirthday: return "Your birthday"
+        case .redd: return "Crazy Redd"
+        case .wendell: return "Wendell"
+        case .gracie: return "Gracie"
+        case .saharah: return "Saharah"
+        case .katrina: return "Katrina"
+        case .nookSale: return "Nook's sale"
+        case .gulliver: return "Gulliver"
         }
     }
 
@@ -124,29 +140,40 @@ enum ACEventKind: String, CaseIterable, Codable {
         }
     }
 
-    /// The kinds the fixed calendar resolves on its own. Town Day and the
-    /// player's birthday need the save (ACSaveReader) and stay out of the
-    /// settings list until it supplies them.
+    /// The kinds the fixed calendar resolves on its own.
     static var fixedKinds: [ACEventKind] {
-        allCases.filter { $0 != .townDay && $0 != .playerBirthday }
+        allCases.filter { !$0.isSaveDriven }
     }
+
+    /// The kinds only the town save can date: Town Day, the player's
+    /// birthday and the visitors the game rolls (ACSaveReader).
+    static let saveKinds: [ACEventKind] = [.townDay, .playerBirthday, .redd, .gracie, .saharah, .katrina, .wendell, .nookSale, .gulliver]
+
+    /// The rolled visitors alone.
+    static let visitorKinds: [ACEventKind] = [.redd, .gracie, .saharah, .katrina, .wendell, .nookSale, .gulliver]
+
+    var isSaveDriven: Bool { Self.saveKinds.contains(self) }
 }
 
 // MARK: - Save-derived dates
 
-/// The two dates the fixed calendar cannot know without the save. Nil means
-/// "not known": the rows that need them resolve to nothing.
+/// What the fixed calendar cannot know without the save. Nil means "not
+/// known": the rows that need them resolve to nothing. The visits are the
+/// visitors the game last rolled (ACTownSave.visits).
 struct ACSaveCalendarInfo: Equatable {
     /// Town Day's day of July (`Save_t.town_day`).
     var townDay: Int?
     /// The player's birthday (`Private_c.birthday`).
     var birthdayMonth: Int?
     var birthdayDay: Int?
+    /// The rolled visitors, dated.
+    var visits: [ACVisit]
 
-    init(townDay: Int? = nil, birthdayMonth: Int? = nil, birthdayDay: Int? = nil) {
+    init(townDay: Int? = nil, birthdayMonth: Int? = nil, birthdayDay: Int? = nil, visits: [ACVisit] = []) {
         self.townDay = townDay
         self.birthdayMonth = birthdayMonth
         self.birthdayDay = birthdayDay
+        self.visits = visits
     }
 }
 
@@ -160,7 +187,8 @@ struct ACEventOccurrence: Equatable {
     /// Inclusive hour the event begins (the game's `start_hour`).
     let startHour: Int
     /// Inclusive last hour the event is on (the game's `end_hour`): an event
-    /// with `endHour` 11 runs until 12:00.
+    /// with `endHour` 11 runs until 12:00. A visitor who stays past
+    /// midnight counts on (Redd's 17 on the next day is 41).
     let endHour: Int
     /// True for a season or a span that this day opens; the resolver reports
     /// only the opening day of those.
@@ -181,10 +209,15 @@ struct ACEventOccurrence: Equatable {
         calendar.date(byAdding: .hour, value: endHour + 1, to: day)
     }
 
-    /// "6:00–12:00", "20:00–0:00", or nil for an all-day event.
+    /// "6:00–12:00", "20:00–0:00", "18:00 until 18:00 the next day", or nil
+    /// for an all-day event.
     var hoursText: String? {
         guard !isAllDay else { return nil }
         let end = (endHour + 1) % 24
+        if endHour >= 24 {
+            let days = (endHour + 1) / 24
+            return "\(startHour):00 until \(end):00 \(days == 1 ? "the next day" : "\(days) days later")"
+        }
         return "\(startHour):00–\(end):00"
     }
 }
@@ -402,22 +435,29 @@ enum ACEventCalendar {
 
     // MARK: Resolver
 
-    /// Every day in `interval` on which a fixed event is on. A season (a
-    /// range longer than `seasonThresholdDays`, or a continuous span) is
-    /// reported once, on its first day. Rows that need the save resolve to
-    /// nothing when `save` does not carry their date.
+    /// Every day in `interval` on which a fixed event is on, plus the
+    /// save's rolled visitors on their first day. A season (a range longer
+    /// than `seasonThresholdDays`, or a continuous span) is reported once,
+    /// on its first day. Rows that need the save resolve to nothing when
+    /// `save` does not carry their date.
     static func events(in interval: DateInterval,
                        save: ACSaveCalendarInfo? = nil,
                        calendar: Calendar = .current) -> [ACEventOccurrence] {
         var result: [ACEventOccurrence] = []
         var day = calendar.startOfDay(for: interval.start)
         let lastDay = calendar.startOfDay(for: interval.end)
+        let visits = save?.visits ?? []
         while day <= lastDay {
             let today = Today(date: day, calendar: calendar)
             for row in rows {
                 if let occurrence = resolve(row, on: today, save: save) {
                     result.append(occurrence)
                 }
+            }
+            for visit in visits where visit.day == day {
+                result.append(ACEventOccurrence(kind: visit.kind, day: day,
+                                                startHour: visit.startHour, endHour: visit.endHour,
+                                                isSeasonStart: false, seasonEnd: nil))
             }
             guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
             day = next

@@ -9,8 +9,12 @@
 //  play session and from a background app refresh.
 //
 //  The fixed calendar comes from ACEventCalendar. The save-driven dates
-//  (Town Day, the birthday, the rolled visitors) arrive through
-//  `saveInfo`, which ACSaveReader fills once it exists.
+//  (Town Day, the birthday, the rolled visitors) come from the town save
+//  on the memory card, read by ACSaveReader at every rebuild: the card is
+//  re-read after a play session (three times, the core flushes the GCI
+//  within seconds of an in-game save) and on each background refresh, so
+//  a visitor rolled in the last session is announced from the next
+//  rebuild on.
 //
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
@@ -40,9 +44,25 @@ final class ACNotificationScheduler: NSObject {
     /// True once the database can be read on the main thread.
     private var databaseReady = false
 
-    /// Dates only the save knows. Nil until ACSaveReader (BP-AC-I33)
-    /// supplies them; the fixed calendar works without them.
-    var saveInfo: ACSaveCalendarInfo? = nil
+    /// The town save as last read from the card; nil until a read succeeds.
+    private(set) var lastTownSave: ACTownSave?
+    /// Why the last read gave nothing, for the settings sheet.
+    private(set) var lastSaveReadFailure: String?
+    /// Dates only the save knows, in the calendar's form; nil until the
+    /// card has been read. The fixed calendar works without them.
+    var saveInfo: ACSaveCalendarInfo? { lastTownSave?.calendarInfo(calendar: .current) }
+
+    /// Posted on the main thread after the card was read (or failed to be).
+    static let townSaveDidChange = Notification.Name("ACNotificationSchedulerTownSaveDidChange")
+
+    /// Dolphin's `User/GC`: the region folders with their GCI folders, or
+    /// a raw card image.
+    static var gamecubeUserDirectory: URL { URL(fileURLWithPath: R.Path.GamecubeUser) }
+
+    /// Seconds after the play view goes away at which the card is re-read.
+    /// The core writes the GCI folder within seconds of an in-game save
+    /// and again as it unloads; the later reads catch a slow flush.
+    static let sessionEndReadDelays: [TimeInterval] = [2, 15, 45]
 
     // MARK: - App hooks
 
@@ -68,12 +88,49 @@ final class ACNotificationScheduler: NSObject {
     }
 
     /// From the play view as it goes away. The core has flushed the memory
-    /// card by then (or is about to), which is what the save-driven read
-    /// will depend on; the fixed calendar only needs the clock.
+    /// card by then or is about to, so the card is read more than once: a
+    /// visitor rolled during the session is on disk for the last read at
+    /// the latest.
     func playSessionEnded(game: Game) {
         guard game.gameIDForDolphin == Self.gameID, ACEventSettings.shared.isEnabled else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            self?.rebuild(reason: "session end")
+        for delay in Self.sessionEndReadDelays {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+                self?.rebuild(reason: "session end +\(Int(delay))s")
+            }
+        }
+    }
+
+    // MARK: - The town save
+
+    /// Reads the card off the main thread and publishes the result; the
+    /// completion runs on the main thread with the save, or nil when no
+    /// valid town was found. Runs whether or not the feature is on, so the
+    /// settings sheet can show what the card says.
+    func refreshTownSave(completion: ((ACTownSave?) -> Void)? = nil) {
+        let root = Self.gamecubeUserDirectory
+        DispatchQueue.global(qos: .utility).async {
+            let result = Self.readTownSave(gcUser: root)
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let save):
+                    self.lastTownSave = save
+                    self.lastSaveReadFailure = nil
+                    Log.debug("[ACEvents] town save read: \(ACSaveReader.summary(of: save))")
+                case .failure(let error):
+                    self.lastSaveReadFailure = "\(error)"
+                    Log.debug("[ACEvents] town save not read: \(error)")
+                }
+                NotificationCenter.default.post(name: Self.townSaveDidChange, object: nil)
+                completion?(self.lastTownSave)
+            }
+        }
+    }
+
+    static func readTownSave(gcUser: URL) -> Result<ACTownSave, Error> {
+        do {
+            return .success(try ACSaveReader.readTownSave(gcUser: gcUser))
+        } catch {
+            return .failure(error)
         }
     }
 
@@ -145,7 +202,8 @@ final class ACNotificationScheduler: NSObject {
 
     // MARK: - Rebuild
 
-    /// Replaces every pending request of ours with the next 30 days.
+    /// Re-reads the town save, then replaces every pending request of ours
+    /// with the next 30 days.
     func rebuild(reason: String, completion: (() -> Void)? = nil) {
         guard Thread.isMainThread else {
             DispatchQueue.main.async { self.rebuild(reason: reason, completion: completion) }
@@ -158,6 +216,16 @@ final class ACNotificationScheduler: NSObject {
             completion?()
             return
         }
+        refreshTownSave { [weak self] _ in
+            self?.schedule(reason: reason, completion: completion)
+        }
+        scheduleBackgroundRefresh()
+    }
+
+    /// The scheduling half of `rebuild`, on the main thread, with whatever
+    /// the card said last.
+    private func schedule(reason: String, completion: (() -> Void)?) {
+        let settings = ACEventSettings.shared
         let planned = Self.plan(now: Date(),
                                 leadMinutes: settings.leadMinutes,
                                 beforeMinutes: settings.beforeMinutes,
@@ -174,7 +242,6 @@ final class ACNotificationScheduler: NSObject {
             Log.debug("[ACEvents] rebuilt (\(reason)): \(planned.count) scheduled, \(ours.count) replaced")
             DispatchQueue.main.async { completion?() }
         }
-        scheduleBackgroundRefresh()
     }
 
     /// Removes our pending requests (the feature went off, or GAFE01 left the library).

@@ -74,6 +74,9 @@ class ACEventSettingsView: BaseView {
     private enum Section: Int, CaseIterable {
         case notifications
         case events
+        /// Town Day, the birthday and the rolled visitors, dated from the
+        /// memory card (ACSaveReader).
+        case town
     }
 
     private enum NotificationRow: Int, CaseIterable {
@@ -112,6 +115,7 @@ class ACEventSettingsView: BaseView {
     private let settings = ACEventSettings.shared
     private let scheduler = ACNotificationScheduler.shared
     private let eventKinds = ACEventKind.fixedKinds
+    private let townKinds = ACEventKind.saveKinds
 
     private var hideCompletion: (() -> Void)? = nil
 
@@ -133,6 +137,29 @@ class ACEventSettingsView: BaseView {
             make.top.equalTo(navigationView.snp.bottom)
             make.bottom.equalToSuperview()
         }
+
+        // The town footer shows what the card says; read it now so the
+        // sheet does not wait for the next rebuild.
+        NotificationCenter.default.addObserver(self, selector: #selector(townSaveDidChange), name: ACNotificationScheduler.townSaveDidChange, object: nil)
+        scheduler.refreshTownSave()
+    }
+
+    @objc private func townSaveDidChange() {
+        collectionView.reloadSections(IndexSet(integer: Section.town.rawValue))
+    }
+
+    /// The footer under the town section.
+    private var townFooterText: String {
+        var text: String
+        if let save = scheduler.lastTownSave {
+            text = ACSaveReader.summary(of: save)
+        } else if let failure = scheduler.lastSaveReadFailure {
+            text = "The town save was not read: \(failure)"
+        } else {
+            text = "Reading the town save…"
+        }
+        text += " The game rolls its next visitor when you play, so only the visitor it has already picked can be announced; the card is re-read after each play session and in the background."
+        return text
     }
 
     required init?(coder: NSCoder) {
@@ -248,6 +275,7 @@ extension ACEventSettingsView: UICollectionViewDataSource {
         switch Section(rawValue: section) {
         case .notifications: return NotificationRow.allCases.count
         case .events: return eventKinds.count
+        case .town: return townKinds.count
         case .none: return 0
         }
     }
@@ -272,8 +300,8 @@ extension ACEventSettingsView: UICollectionViewDataSource {
             case .none:
                 break
             }
-        case .events:
-            let kind = eventKinds[indexPath.row]
+        case .events, .town:
+            let kind = Section(rawValue: indexPath.section) == .town ? townKinds[indexPath.row] : eventKinds[indexPath.row]
             cell.setSwitch(icon: .symbol(.calendar), title: kind.settingsName, isOn: !settings.isMuted(kind))
             cell.didSwitchValueChange = { [weak self] on in
                 guard let self else { return }
@@ -289,12 +317,18 @@ extension ACEventSettingsView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withClass: BackgroundColorHaderReusableView.self, for: indexPath)
-            header.titleLabel.text = Section(rawValue: indexPath.section) == .events ? "Events" : "Notifications"
+            switch Section(rawValue: indexPath.section) {
+            case .events: header.titleLabel.text = "Events"
+            case .town: header.titleLabel.text = "From your town's save"
+            default: header.titleLabel.text = "Notifications"
+            }
             return header
         } else {
             let footer = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withClass: BackgroundColorDetailFooterReusableView.self, for: indexPath)
             if Section(rawValue: indexPath.section) == .events {
-                footer.titleLabel.text = "Switch an event off to stop its notifications. Visitors the game rolls into your save (Redd, Gracie, Saharah, Katrina, Wendell, the sales, Gulliver) come in a later build."
+                footer.titleLabel.text = "Switch an event off to stop its notifications."
+            } else if Section(rawValue: indexPath.section) == .town {
+                footer.titleLabel.text = townFooterText
             } else {
                 footer.titleLabel.text = "Manic posts a notification on the day of each fixed Animal Crossing event (Joan on Sundays, K.K. on Saturdays, the festivals and the seasons) and another shortly before a timed one starts. Dates follow this device's clock, which is the game's clock. Nothing leaves the device."
             }
