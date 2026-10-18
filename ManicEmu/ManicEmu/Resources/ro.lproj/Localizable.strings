@@ -1072,3 +1072,4 @@ Dacă vrei să îți îmbunătățești setup-ul, PlayCase este potrivirea perfe
 "AutoEnableJITDesc" = "Când este activat, aplicația deschide StikDebug o dată la fiecare pornire dacă JIT nu este disponibil, apoi revine aici.";
 "AutoEnableJITSuccess" = "JIT activat";
 "AutoEnableJITFailed" = "JIT nu a fost activat. Verificați că LocalDevVPN este conectat și că StikDebug este configurat.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

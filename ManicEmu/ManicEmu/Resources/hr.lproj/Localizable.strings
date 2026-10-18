@@ -1071,3 +1071,4 @@ Ako želite unaprijediti svoju postavu, PlayCase je savršen dodatak ovom skinu.
 "AutoEnableJITDesc" = "Kad je uključeno, aplikacija pri svakom pokretanju jednom otvara StikDebug ako JIT nije dostupan, a zatim se vraća ovamo.";
 "AutoEnableJITSuccess" = "JIT omogućen";
 "AutoEnableJITFailed" = "JIT nije omogućen. Provjerite je li LocalDevVPN povezan i je li StikDebug postavljen.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

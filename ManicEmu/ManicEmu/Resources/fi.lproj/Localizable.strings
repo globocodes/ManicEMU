@@ -1074,3 +1074,4 @@ Jos haluat parantaa kokoonpanoasi, PlayCase on täydellinen lisä tälle skinill
 "AutoEnableJITDesc" = "Kun tämä on päällä, sovellus avaa StikDebugin kerran jokaisella käynnistyksellä, jos JIT ei ole käytettävissä, ja palaa sitten tänne.";
 "AutoEnableJITSuccess" = "JIT otettu käyttöön";
 "AutoEnableJITFailed" = "JIT:tä ei otettu käyttöön. Tarkista, että LocalDevVPN on yhdistetty ja StikDebug on määritetty.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

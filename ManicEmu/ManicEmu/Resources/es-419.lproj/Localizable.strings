@@ -1071,3 +1071,4 @@ Si quieres mejorar tu experiencia, PlayCase combina perfecto con esta funda.";
 "AutoEnableJITDesc" = "Si está activado, la app abre StikDebug una vez en cada inicio si JIT no está disponible y luego vuelve aquí.";
 "AutoEnableJITSuccess" = "JIT activado";
 "AutoEnableJITFailed" = "No se activó JIT. Verifica que LocalDevVPN esté conectado y que StikDebug esté configurado.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

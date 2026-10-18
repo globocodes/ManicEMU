@@ -1069,3 +1069,4 @@ Hvis du vil forbedre dit setup, er PlayCase et perfekt match til dette skin.";
 "AutoEnableJITDesc" = "Når dette er slået til, åbner appen StikDebug én gang ved hver start, hvis JIT ikke er tilgængelig, og vender derefter tilbage hertil.";
 "AutoEnableJITSuccess" = "JIT aktiveret";
 "AutoEnableJITFailed" = "JIT blev ikke aktiveret. Kontrollér, at LocalDevVPN er forbundet, og at StikDebug er konfigureret.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

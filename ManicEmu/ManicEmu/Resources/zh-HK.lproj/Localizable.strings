@@ -1077,3 +1077,4 @@ PlayCase 專注於製造高品質 iPhone 手機殼，設計時已充分考慮配
 "AutoEnableJITDesc" = "開啟後，若 JIT 無法使用，App 每次啟動時會開啟一次 StikDebug，然後返回此處。";
 "AutoEnableJITSuccess" = "JIT 已開啟";
 "AutoEnableJITFailed" = "JIT 未開啟。請確認 LocalDevVPN 已連線且 StikDebug 已完成設定。";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

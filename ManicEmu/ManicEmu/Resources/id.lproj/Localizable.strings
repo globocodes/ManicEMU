@@ -1064,3 +1064,4 @@ Jika Anda ingin meningkatkan setup Anda, PlayCase adalah pasangan sempurna untuk
 "AutoEnableJITDesc" = "Jika aktif, aplikasi membuka StikDebug sekali setiap kali diluncurkan bila JIT tidak tersedia, lalu kembali ke sini.";
 "AutoEnableJITSuccess" = "JIT diaktifkan";
 "AutoEnableJITFailed" = "JIT tidak diaktifkan. Pastikan LocalDevVPN terhubung dan StikDebug sudah disiapkan.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

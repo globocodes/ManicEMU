@@ -1074,3 +1074,4 @@ PlayCase מתמקדת במעטפות iPhone איכותיות, המיוצרות �
 "AutoEnableJITDesc" = "כשהאפשרות פעילה, האפליקציה פותחת את StikDebug פעם אחת בכל הפעלה אם JIT אינו זמין, ואז חוזרת לכאן.";
 "AutoEnableJITSuccess" = "JIT הופעל";
 "AutoEnableJITFailed" = "JIT לא הופעל. ודא ש-LocalDevVPN מחובר וש-StikDebug מוגדר.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

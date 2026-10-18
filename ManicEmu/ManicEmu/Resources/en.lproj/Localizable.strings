@@ -1096,3 +1096,4 @@ Press the controller button to complete mapping...";
 "AutoEnableJITDesc" = "When this is on, the app opens StikDebug once at each launch if JIT is unavailable, then returns here.";
 "AutoEnableJITSuccess" = "JIT enabled";
 "AutoEnableJITFailed" = "JIT was not enabled. Check that LocalDevVPN is connected and StikDebug is set up.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

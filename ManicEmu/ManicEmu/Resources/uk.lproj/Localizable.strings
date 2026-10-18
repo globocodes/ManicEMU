@@ -1072,3 +1072,4 @@ PlayCase спеціалізується на високоякісних чохл
 "AutoEnableJITDesc" = "Якщо ввімкнено, застосунок під час кожного запуску один раз відкриває StikDebug, коли JIT недоступний, а потім повертається сюди.";
 "AutoEnableJITSuccess" = "JIT увімкнено";
 "AutoEnableJITFailed" = "JIT не ввімкнено. Перевірте, що LocalDevVPN підключено, а StikDebug налаштовано.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

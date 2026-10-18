@@ -1073,3 +1073,4 @@ PlayCase हाई-क्वालिटी iPhone केसों पर के
 "AutoEnableJITDesc" = "चालू होने पर, यदि JIT उपलब्ध नहीं है तो ऐप हर लॉन्च पर एक बार StikDebug खोलता है और फिर यहाँ लौट आता है।";
 "AutoEnableJITSuccess" = "JIT सक्षम हो गया";
 "AutoEnableJITFailed" = "JIT सक्षम नहीं हुआ। जाँचें कि LocalDevVPN कनेक्ट है और StikDebug सेट अप है।";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

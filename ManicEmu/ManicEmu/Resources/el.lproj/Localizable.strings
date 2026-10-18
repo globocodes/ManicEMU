@@ -1074,3 +1074,4 @@
 "AutoEnableJITDesc" = "Όταν είναι ενεργό, η εφαρμογή ανοίγει το StikDebug μία φορά σε κάθε εκκίνηση αν το JIT δεν είναι διαθέσιμο και μετά επιστρέφει εδώ.";
 "AutoEnableJITSuccess" = "Το JIT ενεργοποιήθηκε";
 "AutoEnableJITFailed" = "Το JIT δεν ενεργοποιήθηκε. Βεβαιωθείτε ότι το LocalDevVPN είναι συνδεδεμένο και ότι το StikDebug έχει ρυθμιστεί.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

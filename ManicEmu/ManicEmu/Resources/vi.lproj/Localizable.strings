@@ -1065,3 +1065,4 @@ Nếu bạn muốn nâng cấp thiết lập của mình, PlayCase là sự kế
 "AutoEnableJITDesc" = "Khi bật, ứng dụng sẽ mở StikDebug một lần mỗi khi khởi động nếu JIT không khả dụng, rồi quay lại đây.";
 "AutoEnableJITSuccess" = "Đã bật JIT";
 "AutoEnableJITFailed" = "Chưa bật được JIT. Hãy kiểm tra LocalDevVPN đã kết nối và StikDebug đã được thiết lập.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

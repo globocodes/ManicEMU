@@ -1067,3 +1067,4 @@ PlayCaseは、アクセサリーやスキンとの互換性を考慮して作ら
 "AutoEnableJITDesc" = "オンにすると、JITが利用できない場合、起動のたびに一度StikDebugを開き、その後ここに戻ります。";
 "AutoEnableJITSuccess" = "JITが有効になりました";
 "AutoEnableJITFailed" = "JITを有効にできませんでした。LocalDevVPNが接続されていること、StikDebugが設定されていることを確認してください。";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

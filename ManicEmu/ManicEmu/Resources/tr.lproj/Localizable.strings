@@ -1071,3 +1071,4 @@ Kurulumunuzu bir üst seviyeye taşımak istiyorsanız, PlayCase bu kaplama içi
 "AutoEnableJITDesc" = "Açıkken, JIT kullanılamıyorsa uygulama her açılışta bir kez StikDebug'ı açar ve ardından buraya döner.";
 "AutoEnableJITSuccess" = "JIT etkinleştirildi";
 "AutoEnableJITFailed" = "JIT etkinleştirilemedi. LocalDevVPN'in bağlı olduğunu ve StikDebug'ın kurulu olduğunu kontrol edin.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";

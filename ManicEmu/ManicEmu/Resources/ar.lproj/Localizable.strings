@@ -1044,3 +1044,4 @@
 "AutoEnableJITDesc" = "عند التفعيل، يفتح التطبيق StikDebug مرة واحدة عند كل تشغيل إذا كان JIT غير متاح، ثم يعود إلى هنا.";
 "AutoEnableJITSuccess" = "تم تمكين JIT";
 "AutoEnableJITFailed" = "لم يتم تمكين JIT. تأكد من اتصال LocalDevVPN ومن إعداد StikDebug.";
+"JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
