@@ -853,6 +853,7 @@ class PlayViewController: GameViewController {
         
         removeExternalGameControllerReceivers()
         InputDiagnostics.shared.stop()
+        PlayDiagnosticsLogger.shared.stop()
         PlayViewController.currentPlayViewController = nil
         PlayViewController.refreshExternalInputSink()
         
@@ -1078,6 +1079,9 @@ extension PlayViewController {
             }
             
         } else if manicGame.isLibretroType {
+            // Manic MP: an auto save state serializes the whole core on the emulator
+            // thread (tens of MB for Dolphin); the diagnostics log times each one.
+            let autoSaveStopwatch = (type == .autoSaveState && isInputDiagnosticsEnabled) ? PlayDiagnosticsLogger.Stopwatch() : nil
             LibretroCore.sharedInstance().snapshot { snapshot in
                 var image = snapshot
                 if (self.manicGame.gameType == .ds || self.manicGame.isAzahar3DS), let i = image {
@@ -1085,6 +1089,7 @@ extension PlayViewController {
                 }
                 LibretroCore.sharedInstance().saveState { [weak self] statePath in
                     guard let self else { return }
+                    autoSaveStopwatch?.finish(statePath: statePath)
                     if let statePath {
                         persistentSaveState(stateName: self.manicGame.fileName,
                                             image: image,
@@ -1493,8 +1498,10 @@ extension PlayViewController {
             InputDiagnostics.shared.start { line in
                 LibretroCore.sharedInstance().logDiagnosticsLine(line)
             }
+            PlayDiagnosticsLogger.shared.start(game: manicGame)
         } else {
             InputDiagnostics.shared.stop()
+            PlayDiagnosticsLogger.shared.stop()
         }
         LibretroCore.sharedInstance().updateLibretroConfigs(configs)
     }
@@ -4498,5 +4505,206 @@ extension PlayViewController {
             return currentPlayViewController.manicGame
         }
         return nil
+    }
+}
+
+/// Manic MP: the app's side of the "Diagnostics Log" game option.
+///
+/// DeltaCore reports controller timing ("[Input]") and RetroArch's frame logger
+/// reports frame stalls and audio underruns ("[Frame]"); this adds what only the
+/// app can see, as tagged lines in the same per-session log under
+/// Documents/Netplay Logs:
+/// - "[Device]": model, OS, display refresh rate, thermal state and Low Power
+///   Mode at start, then every thermal or power-state change while the game runs
+///   (a throttled device explains a run of slow frames).
+/// - "[App]": the app going inactive, to the background and back, memory
+///   warnings, and each auto save state with the time it took.
+/// - "[Shaders]": Dolphin's shader caches for this game (pixel, vertex, the
+///   pipeline UID list, the driver pipeline cache) at start, then every growth
+///   while playing. With ShaderCompilationMode 0 (Manic's default for JIT runs)
+///   each new pixel shader is compiled on the emulator thread the frame it is
+///   first drawn; a growth logged at the same second as a "[Frame] Stall" names
+///   that stall's cause. The mode and CPU core in effect are logged at start.
+///
+/// Lines carry the wall clock and "+T" seconds since the logger started, which
+/// is within a second of the frame logger's own "+T" (both start with the game).
+final class PlayDiagnosticsLogger {
+    static let shared = PlayDiagnosticsLogger()
+
+    /// How often the shader caches are measured. A stat() of a handful of files.
+    private static let shaderPollInterval: TimeInterval = 2
+    /// RetroArch opens the session log while the core boots; lines before that
+    /// would miss the file.
+    private static let startDelay: TimeInterval = 4
+
+    private let queue = DispatchQueue(label: "com.globocodes.manicemu.play-diagnostics", qos: .utility)
+    private var timer: DispatchSourceTimer?
+    private var observers: [NSObjectProtocol] = []
+    private var startedAt: Date?
+    private var shaderSizes: [String: UInt64] = [:]
+    private var shaderPaths: [String] = []
+    private var dolphinCacheDir: String?
+    private var dolphinGameID: String?
+    private var dolphinModeLine: String?
+
+    private init() {}
+
+    /// One auto save state, timed from the request to the state file being written.
+    final class Stopwatch {
+        private let started = Date()
+        init() {
+            PlayDiagnosticsLogger.shared.log("App", "auto save state requested")
+        }
+        func finish(statePath: String?) {
+            let ms = Int(Date().timeIntervalSince(started) * 1000)
+            var size = ""
+            if let statePath,
+               let bytes = (try? FileManager.default.attributesOfItem(atPath: statePath))?[.size] as? UInt64 {
+                size = ", \(bytes / 1_048_576) MB"
+            }
+            PlayDiagnosticsLogger.shared.log("App", "auto save state \(statePath == nil ? "failed" : "written") after \(ms) ms\(size)")
+        }
+    }
+
+    /// Call on the main thread when the game is about to start with the option on.
+    func start(game: Game) {
+        stop()
+        startedAt = Date()
+        let maxFPS = UIScreen.main.maximumFramesPerSecond
+        let model = UIDevice.current.model
+        let os = UIDevice.current.systemVersion
+        let dolphin = game.isDolphinCore
+        dolphinGameID = dolphin ? game.gameIDForDolphin : nil
+        dolphinCacheDir = dolphin ? R.Path.Dolphin.appendingPathComponent("User/Cache") : nil
+        if dolphin {
+            let configs = SpecialCoreOption.resolvedCoreConfigs(game: game,
+                                                                optimizationCoreConfigs: [:],
+                                                                safeMode: game.safeMode) ?? [:]
+            let mode = configs[SpecialCoreOption.dolphin_shader_compilation_mode.rawValue] ?? "core default"
+            let core = configs[SpecialCoreOption.dolphin_cpu_core.rawValue] ?? "core default"
+            dolphinModeLine = "Dolphin shader compilation mode \(mode) (0 = synchronous: a new shader stalls the frame it is first drawn in, 1 = synchronous ubershaders, 2 = asynchronous ubershaders, 3 = asynchronous skip drawing), CPU core \(core) (4 = JIT ARM64, 5 = cached interpreter, 6 = Manic interpreter). Per-game core options override these."
+        } else {
+            dolphinModeLine = nil
+        }
+        shaderSizes = [:]
+        shaderPaths = []
+
+        let center = NotificationCenter.default
+        observers.append(center.addObserver(forName: ProcessInfo.thermalStateDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
+            self?.log("Device", "thermal state now \(PlayDiagnosticsLogger.thermalName(ProcessInfo.processInfo.thermalState))")
+        })
+        observers.append(center.addObserver(forName: .NSProcessInfoPowerStateDidChange, object: nil, queue: nil) { [weak self] _ in
+            self?.log("Device", "Low Power Mode \(ProcessInfo.processInfo.isLowPowerModeEnabled ? "on" : "off")")
+        })
+        let lifecycle: [(Notification.Name, String)] = [
+            (UIApplication.willResignActiveNotification, "app resigning active"),
+            (UIApplication.didEnterBackgroundNotification, "app entered background"),
+            (UIApplication.willEnterForegroundNotification, "app entering foreground"),
+            (UIApplication.didBecomeActiveNotification, "app active again"),
+            (UIApplication.didReceiveMemoryWarningNotification, "memory warning"),
+        ]
+        for (name, text) in lifecycle {
+            observers.append(center.addObserver(forName: name, object: nil, queue: nil) { [weak self] _ in
+                self?.log("App", text)
+            })
+        }
+
+        let timer = DispatchSource.makeTimerSource(queue: queue)
+        timer.schedule(deadline: .now() + Self.startDelay, repeating: Self.shaderPollInterval, leeway: .milliseconds(200))
+        var announced = false
+        timer.setEventHandler { [weak self] in
+            guard let self else { return }
+            if !announced {
+                announced = true
+                let p = ProcessInfo.processInfo
+                self.log("Device", "\(model) iOS \(os), display up to \(maxFPS) Hz, thermal state \(Self.thermalName(p.thermalState)), Low Power Mode \(p.isLowPowerModeEnabled ? "on" : "off"), \(p.activeProcessorCount) cores, \(p.physicalMemory / 1_073_741_824) GB")
+                if let line = self.dolphinModeLine {
+                    self.log("Shaders", line)
+                }
+                self.measureShaderCaches(announce: true)
+            } else {
+                self.measureShaderCaches(announce: false)
+            }
+        }
+        self.timer = timer
+        timer.resume()
+    }
+
+    func stop() {
+        timer?.cancel()
+        timer = nil
+        observers.forEach { NotificationCenter.default.removeObserver($0) }
+        observers.removeAll()
+        startedAt = nil
+    }
+
+    /// One line into the session log as "[tag] HH:mm:ss +T.Ts line". Any thread.
+    func log(_ tag: String, _ line: String) {
+        guard let startedAt else { return }
+        let elapsed = Date().timeIntervalSince(startedAt)
+        let clock = Date().string(withFormat: "HH:mm:ss")
+        LibretroCore.sharedInstance().logDiagnosticsEvent(tag, line: "\(clock) +\(String(format: "%.1f", elapsed)) s: \(line)")
+    }
+
+    private static func thermalName(_ state: ProcessInfo.ThermalState) -> String {
+        switch state {
+        case .nominal: return "nominal"
+        case .fair: return "fair"
+        case .serious: return "serious (throttled)"
+        case .critical: return "critical (heavily throttled)"
+        @unknown default: return "unknown"
+        }
+    }
+
+    /// Dolphin keeps, under <user>/Cache: <GameID>.uidcache (every pipeline the
+    /// game has used, read at boot to precompile), and under Cache/Shaders the
+    /// specialized pixel and vertex shader caches per game plus one driver
+    /// pipeline cache shared by all games. The pixel shader cache is appended
+    /// the moment a new shader is compiled, so its growth time-stamps compiles.
+    private func measureShaderCaches(announce: Bool) {
+        guard let dir = dolphinCacheDir, let gameID = dolphinGameID else { return }
+        let fm = FileManager.default
+        if shaderPaths.isEmpty || announce {
+            var paths = [dir.appendingPathComponent("\(gameID).uidcache")]
+            let shadersDir = dir.appendingPathComponent("Shaders")
+            if let names = try? fm.contentsOfDirectory(atPath: shadersDir) {
+                for name in names.sorted() where name.contains("-\(gameID)-") || name.hasPrefix("Vulkan-Pipeline-") {
+                    paths.append(shadersDir.appendingPathComponent(name))
+                }
+            }
+            shaderPaths = paths
+        }
+        var changes: [String] = []
+        var summary: [String] = []
+        for path in shaderPaths {
+            let size = ((try? fm.attributesOfItem(atPath: path))?[.size] as? UInt64) ?? 0
+            let name = Self.shaderCacheLabel(path)
+            if announce {
+                summary.append("\(name) \(Self.kb(size))")
+            } else if let previous = shaderSizes[path], previous != size {
+                let delta = Int64(size) - Int64(previous)
+                changes.append("\(name) \(delta >= 0 ? "+" : "")\(delta) bytes (now \(Self.kb(size)))")
+            }
+            shaderSizes[path] = size
+        }
+        if announce {
+            log("Shaders", "caches at start: \(summary.joined(separator: ", "))")
+        } else if !changes.isEmpty {
+            log("Shaders", "cache grew: \(changes.joined(separator: ", ")) - a new shader was compiled")
+        }
+    }
+
+    private static func shaderCacheLabel(_ path: String) -> String {
+        let name = (path as NSString).lastPathComponent
+        if name.hasSuffix(".uidcache") { return "pipeline UIDs" }
+        if name.contains("-specialized-ps-") { return "pixel shaders" }
+        if name.contains("-specialized-vs-") { return "vertex shaders" }
+        if name.contains("-specialized-gs-") { return "geometry shaders" }
+        if name.hasPrefix("Vulkan-Pipeline-") { return "driver pipeline cache" }
+        return name
+    }
+
+    private static func kb(_ bytes: UInt64) -> String {
+        bytes >= 1_048_576 ? String(format: "%.1f MB", Double(bytes) / 1_048_576) : "\(bytes / 1024) KB"
     }
 }
