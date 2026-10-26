@@ -23,7 +23,8 @@ audio wait; the number of stalls; the window's audio underruns and the silence
 they produced; the lowest audio buffer fill seen.
 
 `[Frame] Stall at +T s:` the moment an iteration or main-thread gap reaches
-60 ms (at most 12 lines per 10 s window, the rest counted in Stats). Says how
+30 ms, two or more missed 60 Hz slots (at most 12 lines per 10 s window, the
+rest counted in Stats). Says how
 much of the iteration was spent waiting for audio room, the audio buffer fill
 before and after, and the running underrun count. RetroArch's rate control
 keeps the output buffer about half full - roughly 100 ms of the 200 ms the app
@@ -61,6 +62,17 @@ names that stall's cause.
    buffer fill. Look at the stall before it.
 2. If the audio buffer went from ~50% to under ~10% or the underrun count
    rose, the stall was audible.
+   A steady trickle of underruns with NO stall is the other audible pattern:
+   Stats windows that read "buffer never below 5-11% full" with 1-4 underruns
+   of 21 ms each (one CoreAudio callback) and "waited 0 ms" mean the core
+   produced audio slightly slower than real time, the buffer drained, and
+   rate control ran out of range. The 2026-10-26 Animal Crossing session
+   showed exactly this at 59.5 frames/s (4-6 frames of 35-53 ms per 10 s,
+   so about 0.7% slow) with RetroArch's default `audio_rate_control_delta`
+   0.005, which can stretch the audio by at most 0.5%. The app now sets 0.02
+   for Dolphin games (`PlayViewController`), enough for a 1-2% deficit;
+   windows that still show underruns at a buffer under 10% mean the deficit
+   is larger than that, and the slow frames themselves are the thing to fix.
 3. A `[Shaders] cache grew` line within a second of it: a shader compiled
    synchronously. Manic's launch defaults set Dolphin's
    `ShaderCompilationMode` to 0 (synchronous) for JIT runs and 3
