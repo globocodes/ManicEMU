@@ -82,7 +82,7 @@ names that stall's cause.
 - RetroArch fork (`Dependencies/Libretro`, globocodes/RetroArch): the frame
   logger and `manic_frame_stats_reset` in `ui/drivers/ui_cocoatouch.m`; the
   underrun, silence and blocked-time counters in
-  `audio/drivers/coreaudio3.m` exposed by `audio/drivers/coreaudio3_diag.h`;
+  `audio/drivers/coreaudio.c` (the iOS driver) and `coreaudio3.m` (macOS), shared through `audio/drivers/coreaudio_diag.h`;
   `-[LibretroCore logDiagnosticsEvent:line:]` for the app's tagged lines.
 - DeltaCore fork (`Dependencies/DeltaCore`): `InputDiagnostics`.
 - App: `PlayDiagnosticsLogger` and the option plumbing
