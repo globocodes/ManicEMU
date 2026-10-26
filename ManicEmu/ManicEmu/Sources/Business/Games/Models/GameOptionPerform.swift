@@ -1039,7 +1039,7 @@ extension GameOption {
 
         case .quit:
             PlayViewController.quit()
-            if !game.isAzaharArticBase {
+            if !firstGame.isAzaharArticBase {
                 hideSheetInGaming()
             }
             
