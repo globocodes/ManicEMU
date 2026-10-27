@@ -17,16 +17,23 @@ crash reports.
 
 `[Frame] Stats:` every 10 s (RetroArch fork, `ui/drivers/ui_cocoatouch.m`):
 iterations and rate; iteration time avg/max and the count over 20 ms (gross:
-core, display and the wait for room in the audio buffer); the longest gap in
-which the main thread was busy elsewhere; the same iteration time net of the
-audio wait; the number of stalls; the window's audio underruns and the silence
-they produced; the lowest audio buffer fill seen.
+core, display and the wait for room in the audio buffer); "Core alone"
+avg/max (the core's `retro_run` net of the present and the audio wait);
+"Display" avg/max (the time inside the video driver's present, which on iOS
+is the wait for the Vulkan swapchain, i.e. vsync); the longest gap in which
+the main thread was busy elsewhere; the iteration time net of the audio wait;
+the number of stalls; the window's audio underruns and the silence they
+produced; the lowest audio buffer fill seen.
 
 `[Frame] Stall at +T s:` the moment an iteration or main-thread gap reaches
 30 ms, two or more missed 60 Hz slots (at most 12 lines per 10 s window, the
-rest counted in Stats). Says how
-much of the iteration was spent waiting for audio room, the audio buffer fill
-before and after, and the running underrun count. RetroArch's rate control
+rest counted in Stats). Splits the iteration into core, display and the wait
+for audio room, then gives the audio buffer fill before and after and the
+running underrun count. The display is paced by vsync, so a slow core frame
+quantizes to whole 60 Hz slots: a 35 ms iteration is two slots and a 52 ms
+one is three, and only the core figure says whether the core overran by 17
+or by 35 ms. The two 2026-10 Animal Crossing sessions showed 3-6 such
+iterations per 10 s with the display absorbing the rest. RetroArch's rate control
 keeps the output buffer about half full - roughly 100 ms of the 200 ms the app
 asks for - so a stall longer than that is an audible gap, and the underrun
 counter confirms it.
@@ -42,7 +49,11 @@ thermal or power-state change afterwards. A `serious` or `critical` thermal
 state explains a run of slow frames that no code change will fix.
 
 `[App]`: the app resigning active, backgrounding, foregrounding, memory
-warnings, and each auto save state ("requested" then "written after N ms,
+warnings, "emulation paused" / "emulation resumed" (the in-game menu and
+anything else that pauses the core: while paused the audio output starves, so
+a pause reads as a long main-thread gap with hundreds of underruns - the
+2026-10-27 session had two, 7.4 s and 9.1 s, that looked like freezes until
+the controller re-assignment across them gave it away), and each auto save state ("requested" then "written after N ms,
 M MB"). Auto Save State serializes the whole core on the emulator thread every
 120 s while the setting is on.
 
@@ -59,7 +70,11 @@ names that stall's cause.
 1. Find the `[Frame] Stall` lines. If "waiting for audio room" accounts for
    most of the iteration, the frame was not slow - the main thread was blocked
    on audio pacing because something else (a long previous frame) had let the
-   buffer fill. Look at the stall before it.
+   buffer fill. Look at the stall before it. If "display" accounts for most of
+   it, the core finished a little late and the present waited for the next
+   vsync slot: the core figure is the real overrun. A stall whose "idle
+   before it" is seconds long with an `[App] emulation paused` line before
+   it is a pause, not a stall.
 2. If the audio buffer went from ~50% to under ~10% or the underrun count
    rose, the stall was audible.
    A steady trickle of underruns with NO stall is the other audible pattern:
@@ -95,6 +110,8 @@ names that stall's cause.
   logger and `manic_frame_stats_reset` in `ui/drivers/ui_cocoatouch.m`; the
   underrun, silence and blocked-time counters in
   `audio/drivers/coreaudio.c` (the iOS driver) and `coreaudio3.m` (macOS), shared through `audio/drivers/coreaudio_diag.h`;
+  the core and present time totals in `manic_frame_timing.c/.h`, fed from
+  `core_run` (`runloop.c`) and `video_driver_frame` (`gfx/video_driver.c`);
   `-[LibretroCore logDiagnosticsEvent:line:]` for the app's tagged lines.
 - DeltaCore fork (`Dependencies/DeltaCore`): `InputDiagnostics`.
 - App: `PlayDiagnosticsLogger` and the option plumbing
