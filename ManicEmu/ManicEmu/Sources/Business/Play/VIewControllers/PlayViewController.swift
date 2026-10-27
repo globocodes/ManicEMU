@@ -1407,6 +1407,7 @@ extension PlayViewController {
             didPause = true
         }
         if didPause {
+            PlayDiagnosticsLogger.shared.log("App", "emulation paused")
             releaseHeldExternalCoreInputs()
             PlayViewController.refreshExternalInputSink()
         }
@@ -1427,6 +1428,7 @@ extension PlayViewController {
             j2meCore?.resume()
             updateAudio()
         }
+        PlayDiagnosticsLogger.shared.log("App", "emulation resumed")
         PlayViewController.refreshExternalInputSink()
         replayHeldExternalCoreInputs()
     }
