@@ -1409,6 +1409,7 @@ extension PlayViewController {
             didPause = true
         }
         if didPause {
+            PlayDiagnosticsLogger.shared.log("App", "emulation paused")
             releaseHeldExternalCoreInputs()
             PlayViewController.refreshExternalInputSink()
         }
@@ -1429,6 +1430,7 @@ extension PlayViewController {
             j2meCore?.resume()
             updateAudio()
         }
+        PlayDiagnosticsLogger.shared.log("App", "emulation resumed")
         PlayViewController.refreshExternalInputSink()
         replayHeldExternalCoreInputs()
     }
@@ -2265,6 +2267,14 @@ extension PlayViewController {
                 "microphone_enable": enableMircophone ? "true" : "false",
                 "microphone_driver": "coreaudio",
                 "audio_latency": "200",
+                // Dynamic rate control may stretch the audio by at most this fraction
+                // to keep the output buffer half full. RetroArch's default 0.005 cannot
+                // absorb Dolphin's deficit: the 2026-10-26 Diagnostics Log of Animal
+                // Crossing shows 59.5 frames/s (a few 35-53 ms frames per 10 s), the
+                // buffer sitting at 5-11 % and a 21 ms underrun every 3-4 s - the
+                // "split-second audio gaps". 0.02 absorbs a 1-2 % deficit; the pitch
+                // change is below what is audible. Other cores keep the default.
+                "audio_rate_control_delta": manicGame.isDolphinCore ? "0.02" : "0.005",
                 "input_auto_game_focus": "1"
             ])
             if let core = manicGame.libretroCore {
