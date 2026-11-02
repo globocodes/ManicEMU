@@ -90,13 +90,18 @@ names that stall's cause.
    is larger than that, and the slow frames themselves are the thing to fix.
 3. A `[Shaders] cache grew` line within a second of it: a shader compiled
    synchronously. Manic's launch defaults set Dolphin's
-   `ShaderCompilationMode` to 0 (synchronous) for JIT runs and 3
-   (asynchronous, skip drawing) for interpreter runs. The per-game core
-   options (the game's info screen, "core configs") can override it: 2 =
-   asynchronous ubershaders (the object is drawn with a generic shader while
-   its own compiles; more GPU work, longer first boot while the ubershaders
-   compile), 3 = asynchronous skip drawing (the object is skipped for a few
-   frames instead). Stored per-game values win over the launch defaults.
+   `ShaderCompilationMode` to 2 (asynchronous ubershaders) for JIT runs and
+   3 (asynchronous, skip drawing) for interpreter runs. JIT runs used 0
+   (synchronous) until 2026-11-01, when a Diagnostics Log showed a 234 ms
+   core stall on entering an unvisited acre with the vertex-shader cache
+   growing at the next poll. The per-game core options (the game's info
+   screen, "core configs") can override it: 0 = synchronous (a new shader
+   stalls the frame it is first drawn in), 2 = asynchronous ubershaders (the
+   object is drawn with a generic shader while its own compiles; more GPU
+   work, longer first boot while the ubershaders compile), 3 = asynchronous
+   skip drawing (the object is skipped for a few frames instead). Stored
+   per-game values win over the launch defaults, so a game whose core
+   configs were edited by hand keeps its stored mode.
 4. An `[App] auto save state requested` line within a second of it: the
    serialize. Turn off Auto Save State to confirm.
 5. A `[Device] thermal state now serious` line before a run of windows with
