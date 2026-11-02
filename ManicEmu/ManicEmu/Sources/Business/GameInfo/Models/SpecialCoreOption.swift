@@ -484,7 +484,13 @@ enum SpecialCoreOption: String {
                     .dolphin_osd_enabled: "disabled",
                     .dolphin_fast_disc_speed: "disabled",
                     .dolphin_gpu_texture_decoding: "disabled",
-                    .dolphin_shader_compilation_mode: "0",
+                    /// Manic MP: 2 = asynchronous ubershaders. Mode 0 (synchronous)
+                    /// froze the frame for ~230 ms each time Animal Crossing first
+                    /// drew a new shader (an unvisited acre, 2026-11-01 Diagnostics
+                    /// Log). With 2 the object is drawn with a generic shader while
+                    /// its own compiles off the emulation thread. Still a per-game
+                    /// core option, so the stored value wins over this default.
+                    .dolphin_shader_compilation_mode: "2",
                     .dolphin_log_level: "1",
                     .dolphin_log_boot: "disabled",
                     .dolphin_log_core: "disabled",
