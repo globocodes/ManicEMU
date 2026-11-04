@@ -30,6 +30,8 @@ class ExternalSceneDelegate: UIResponder, UIWindowSceneDelegate {
             ExternalSceneDelegate.airPlayViewController = airPlayViewController
             window?.makeKeyAndVisible()
             updateScene()
+            // Manic MP: the Diagnostics Log (while a logged game runs) says when the external screen came and went.
+            PlayDiagnosticsLogger.shared.log("AirPlay", "external screen connected: \(PlayDiagnosticsLogger.screenFacts(windowScene.screen)); game window \(window?.isHidden == false ? "shown" : "hidden") (member \(PurchaseManager.isMember), AirPlay setting \(Settings.defalut.airPlay ? "on" : "off"))")
             //监听设置airPlay开关
             settingsUpdateToken = Settings.defalut.observe(keyPaths: [\Settings.airPlay]) { [weak self] change in
                 guard let self = self else { return }
@@ -58,6 +60,11 @@ class ExternalSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func sceneDidDisconnect(_ scene: UIScene) {
+        if let screen = (scene as? UIWindowScene)?.screen {
+            PlayDiagnosticsLogger.shared.log("AirPlay", "external screen disconnected: \(PlayDiagnosticsLogger.screenFacts(screen))")
+        } else {
+            PlayDiagnosticsLogger.shared.log("AirPlay", "external screen disconnected")
+        }
         window?.isHidden = true
         window?.removeFromSuperview()
         window = nil

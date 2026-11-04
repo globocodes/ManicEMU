@@ -20,7 +20,10 @@ iterations and rate; iteration time avg/max and the count over 20 ms (gross:
 core, display and the wait for room in the audio buffer); "Core alone"
 avg/max (the core's `retro_run` net of the present and the audio wait);
 "Display" avg/max (the time inside the video driver's present, which on iOS
-is the wait for the Vulkan swapchain, i.e. vsync); the longest gap in which
+is the wait for the Vulkan swapchain, i.e. vsync) and "presenting on" the
+screen that wait belongs to ("device", or "AirPlay 1920x1080 @ 60 Hz" while
+the game view sits on the AirPlay window; the app names it through
+`-[LibretroCore setDiagnosticsScreen:]` each time it moves the view); the longest gap in which
 the main thread was busy elsewhere; the iteration time net of the audio wait;
 the number of stalls; the window's audio underruns and the silence they
 produced; the lowest audio buffer fill seen.
@@ -65,6 +68,19 @@ of them grows while playing. Dolphin appends the pixel shader cache the moment
 a new shader is compiled, so a growth in the same second as a `[Frame] Stall`
 names that stall's cause.
 
+`[AirPlay]`: the external screen connecting and disconnecting
+(`ExternalSceneDelegate`), with its size in points and pixels, scale and
+maximum refresh rate, and whether the game window on it is shown (it is hidden
+unless the member's AirPlay setting is on and a game is running); and each
+move of the game Metal view onto that window or back to the device
+(`PlayViewController.updateAirPlay`), with the scaling option in effect and
+the view's size before the window scale. The `[Device]` start line repeats
+the external screen's facts, or says "no AirPlay screen". AirPlay itself
+(capture, H.264 encode, the network and the receiver's decode) runs outside
+the app and is not measurable from here: these lines only tell an AirPlay
+window of `[Frame] Stats` from an on-device one, so the two can be compared
+on the core, display and audio figures.
+
 ## Reading a stall
 
 1. Find the `[Frame] Stall` lines. If "waiting for audio room" accounts for
@@ -108,6 +124,14 @@ names that stall's cause.
    many iterations over 20 ms: the device is throttling.
 6. `[Input]` lines with long gaps while deflected but no stall: the
    controller, not the emulator.
+7. An AirPlay session: split the `[Frame] Stats` windows by their "presenting
+   on" value. If the AirPlay windows show the same core time, display wait,
+   iteration rate and underruns as the device windows, the emulator is not the
+   source of the lag and what remains is the AirPlay path (typically 100-200 ms,
+   out of the app's hands; a lower-latency receiver or wired HDMI is the fix).
+   A display wait that grows on AirPlay (for example to a 30 Hz cadence) means
+   the external screen's refresh rate or the swapchain on it is pacing the
+   core: check the `[AirPlay]` line's "up to N Hz".
 
 ## Where the code is
 
@@ -117,8 +141,12 @@ names that stall's cause.
   `audio/drivers/coreaudio.c` (the iOS driver) and `coreaudio3.m` (macOS), shared through `audio/drivers/coreaudio_diag.h`;
   the core and present time totals in `manic_frame_timing.c/.h`, fed from
   `core_run` (`runloop.c`) and `video_driver_frame` (`gfx/video_driver.c`);
-  `-[LibretroCore logDiagnosticsEvent:line:]` for the app's tagged lines.
+  `-[LibretroCore logDiagnosticsEvent:line:]` for the app's tagged lines and
+  `-[LibretroCore setDiagnosticsScreen:]` for the Stats line's "presenting on"
+  (`manic_frame_set_present_screen`, `manic_frame_timing.h`).
 - DeltaCore fork (`Dependencies/DeltaCore`): `InputDiagnostics`.
-- App: `PlayDiagnosticsLogger` and the option plumbing
+- App: `PlayDiagnosticsLogger` (its `screenFacts` / `presentScreenName`
+  helpers feed the `[AirPlay]` lines in `PlayViewController.updateAirPlay` and
+  `ExternalSceneDelegate`) and the option plumbing
   (`ExtraKey.inputDiagnostics`, `GameOption.inputDiagnostics`,
   `PlayViewController.updateInputDiagnosticsConfigs`).
