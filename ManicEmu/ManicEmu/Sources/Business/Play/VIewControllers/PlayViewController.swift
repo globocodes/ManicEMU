@@ -2604,16 +2604,34 @@ extension PlayViewController {
                 aiplayScaledDimensions = airPlayViewController.addLibretroView(gameMetalView, dimensions: dimensions, scalingType: Settings.defalut.airPlayScaling)
                 updateDualScreenViews()
                 updateNDSCursor()
+                if let screen = PlayDiagnosticsLogger.externalScreen {
+                    PlayDiagnosticsLogger.shared.log("AirPlay", "game view moved to the external screen: \(PlayDiagnosticsLogger.screenFacts(screen)); scaling \(Settings.defalut.airPlayScaling), view \(Int(aiplayScaledDimensions.width))x\(Int(aiplayScaledDimensions.height)) pt scaled to the window height")
+                }
+                setDiagnosticsPresentScreen(airPlay: true)
             }
         } else {
             if let _ = ExternalSceneDelegate.airPlayViewController, let gameMetalView {
+                let wasElsewhere = gameMetalView.superview != view
                 gameMetalView.removeFromSuperview()
                 view.insertSubview(gameMetalView, belowSubview: controllerView)
                 updateLibretroViews()
                 updateCitra3DSViews()
                 updateNDSCursor()
+                if wasElsewhere {
+                    PlayDiagnosticsLogger.shared.log("AirPlay", "game view moved back to the device screen (\(PlayDiagnosticsLogger.screenFacts(UIScreen.main)))")
+                }
+                setDiagnosticsPresentScreen(airPlay: false)
             }
         }
+    }
+
+    /// Manic MP: tell the RetroArch fork's frame logger which screen the game
+    /// view presents on, so each "[Frame] Stats" window names it ("presenting
+    /// on device" / "presenting on AirPlay 1920x1080 @ 60 Hz"). The present
+    /// time it reports is the swapchain wait on that screen.
+    private func setDiagnosticsPresentScreen(airPlay: Bool) {
+        guard manicGame.isLibretroType else { return }
+        LibretroCore.sharedInstance().setDiagnosticsScreen(PlayDiagnosticsLogger.presentScreenName(airPlay: airPlay))
     }
     
     private func updateShortcutsButton() {
@@ -4606,6 +4624,11 @@ final class PlayDiagnosticsLogger {
         stop()
         startedAt = Date()
         let maxFPS = UIScreen.main.maximumFramesPerSecond
+        let airPlayAtStart: String = {
+            guard let screen = Self.externalScreen else { return "no AirPlay screen" }
+            let shown = ExternalSceneDelegate.externalWindow.map { !$0.isHidden } ?? false
+            return "AirPlay screen \(Self.screenFacts(screen)) (game window \(shown ? "shown" : "hidden"))"
+        }()
         let model = UIDevice.current.model
         let os = UIDevice.current.systemVersion
         let dolphin = game.isDolphinCore
@@ -4652,7 +4675,7 @@ final class PlayDiagnosticsLogger {
             if !announced {
                 announced = true
                 let p = ProcessInfo.processInfo
-                self.log("Device", "\(model) iOS \(os), display up to \(maxFPS) Hz, thermal state \(Self.thermalName(p.thermalState)), Low Power Mode \(p.isLowPowerModeEnabled ? "on" : "off"), \(p.activeProcessorCount) cores, \(p.physicalMemory / 1_073_741_824) GB")
+                self.log("Device", "\(model) iOS \(os), display up to \(maxFPS) Hz, thermal state \(Self.thermalName(p.thermalState)), Low Power Mode \(p.isLowPowerModeEnabled ? "on" : "off"), \(p.activeProcessorCount) cores, \(p.physicalMemory / 1_073_741_824) GB; \(airPlayAtStart)")
                 if let line = self.dolphinModeLine {
                     self.log("Shaders", line)
                 }
@@ -4679,6 +4702,28 @@ final class PlayDiagnosticsLogger {
         let elapsed = Date().timeIntervalSince(startedAt)
         let clock = Date().string(withFormat: "HH:mm:ss")
         LibretroCore.sharedInstance().logDiagnosticsEvent(tag, line: "\(clock) +\(String(format: "%.1f", elapsed)) s: \(line)")
+    }
+
+    /// The AirPlay (external) screen while one is connected. Main thread.
+    static var externalScreen: UIScreen? {
+        ExternalSceneDelegate.externalWindow?.windowScene?.screen
+    }
+
+    /// "1920x1080 pt @1x (1920x1080 px), up to 60 Hz" for the [AirPlay] and
+    /// [Device] lines. Main thread (UIScreen).
+    static func screenFacts(_ screen: UIScreen) -> String {
+        let size = screen.bounds.size
+        let scale = screen.scale
+        let pt = "\(Int(size.width))x\(Int(size.height))"
+        let px = "\(Int(size.width * scale))x\(Int(size.height * scale))"
+        return "\(pt) pt @\(String(format: "%g", scale))x (\(px) px), up to \(screen.maximumFramesPerSecond) Hz"
+    }
+
+    /// The short name the RetroArch fork prints in "[Frame] Stats ... presenting on <name>".
+    static func presentScreenName(airPlay: Bool) -> String {
+        guard airPlay, let screen = externalScreen else { return "device" }
+        let size = screen.bounds.size
+        return "AirPlay \(Int(size.width * screen.scale))x\(Int(size.height * screen.scale)) @ \(screen.maximumFramesPerSecond) Hz"
     }
 
     private static func thermalName(_ state: ProcessInfo.ThermalState) -> String {
