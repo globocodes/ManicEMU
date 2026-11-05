@@ -37,7 +37,21 @@ hitch every half second reads as a spacing of about 500 ms; and the audio
 buffer fill at the start of the over-20 ms iterations, averaged: a full
 buffer (90-100%) at every long iteration means the core was waiting for
 audio room, i.e. audio pacing rather than vsync was holding it, while a
-half-full buffer means the time went into the core or the present.
+half-full buffer means the time went into the core or the present. Then
+"Screen:" (fork d077cc34), the only fields that see past the present call:
+the swapchain size in pixels; the frames the screen reported showing (each
+drawable of the game's Metal layer reports its presented time) with the
+average and longest interval between them; "shown for 2+ refreshes", the
+frames that stayed up for two or more refreshes of that screen because the
+next one arrived 1.5 refreshes or more later, with the mean spacing between
+consecutive ones; "replaced within half a refresh", frames the next one
+overtook; and "never shown", drawables that came back without a presented
+time. "0 frames shown" in a window that ran means the screen reports no
+presented times at all (an AirPlay screen may not), not that nothing was
+shown.
+
+`[Frame] Swapchain at +T s:` the Vulkan swapchain was recreated at another
+size on the device screen (a rotation, a layout change).
 
 `[Frame] Stall at +T s:` the moment an iteration or main-thread gap reaches
 30 ms, two or more missed 60 Hz slots, or 20 ms (one missed slot) while the
@@ -87,7 +101,15 @@ maximum refresh rate, and whether the game window on it is shown (it is hidden
 unless the member's AirPlay setting is on and a game is running); and each
 move of the game Metal view onto that window or back to the device
 (`PlayViewController.updateAirPlay`), with the scaling option in effect and
-the view's size before the window scale. The `[Device]` start line repeats
+the view's size before the window scale; and, from the fork, "swapchain
+recreated for <screen>: WxH -> WxH px" when the swapchain follows the view
+(on the clock of the `[Frame] Stall` lines, which starts a second or two
+after the app's). The swapchain is sized to the pixels the view covers on
+the screen it is on: 1440x1080 for a 640x480 pt core view scaled to the
+height of a 1920x1080 @1x AirPlay window, the iPad's own 2360x1640 on the
+device. Before fork d077cc34 it was view size x the iPad's scale on every
+screen, 1280x960 on that AirPlay window, stretched by 1.125 to fit, and
+the change was not logged. The `[Device]` start line repeats
 the external screen's facts, or says "no AirPlay screen". AirPlay itself
 (capture, H.264 encode, the network and the receiver's decode) runs outside
 the app and is not measurable from here: these lines only tell an AirPlay
@@ -138,16 +160,28 @@ on the core, display and audio figures.
 6. `[Input]` lines with long gaps while deflected but no stall: the
    controller, not the emulator.
 7. A walk-stop hitch (smooth play broken by a brief hold every half second
-   or so, no audible gap): read the Pacing fields. A window at 61
-   iterations/s with 70-90 iterations in the 20-25 ms bucket, a present
-   wait under 10 ms and the audio buffer at 90-100% at the start of those
-   iterations is audio pacing: vsync let go, the core ran up to the
-   rate-control limit (`audio_rate_control_delta` 0.02 = 2%) and frames left
-   in bursts, so the screen held some and skipped others. A window at 60/s
-   with "held 2+ slots" at a steady spacing and a half-full buffer is a
-   periodic cost inside the core or the present. "No new frame" counts
-   mean the core itself skipped drawing (Dolphin dual-core or a dupe), which
-   no frontend setting changes.
+   or so, no audible gap): first pick the windows in which the player was
+   actually walking, by the `[Input] pad` lines (10-45 callbacks a second
+   with a deflected stick). In the 2026-11-04 walk test those windows were
+   clean on the device and on AirPlay alike: 60.0 iterations/s, 0-1
+   iterations over 20 ms, no "no new frame", no audio wait. So the hitch is
+   not in the frame loop, and the place to read it is the "Screen:" section:
+   "shown for 2+ refreshes" at a steady mean spacing (about 500 ms for a
+   hitch every half second) while the Pacing fields stay clean means the
+   frames left on time and the screen held some, which is the swapchain on
+   that screen or the screen's own clock. "Shown for 2+ refreshes" near
+   zero while the hitch is visible on the TV puts it after the screen's
+   compositor, in the AirPlay stream. A window at 60/s with "held 2+ slots"
+   at a steady spacing and a half-full buffer is a periodic cost inside the
+   core or the present.
+   Not the hitch: a window at 61 iterations/s with 30-90 iterations in the
+   20-25 ms bucket, about as many "no new frame", a present wait under
+   10 ms and the audio buffer at 90-100% at the start of those iterations.
+   That is a screen on which the core dupes frames (title, loading, just
+   after a resume; no stick input in the `[Input]` lines): a duped frame
+   skips the present, so the audio buffer paces that iteration instead of
+   vsync. It appears on the device as much as on AirPlay and no frontend
+   setting changes it.
 8. An AirPlay session: split the `[Frame] Stats` windows by their "presenting
    on" value. If the AirPlay windows show the same core time, display wait,
    iteration rate and underruns as the device windows, the emulator is not the
@@ -167,7 +201,10 @@ on the core, display and audio figures.
   `core_run` (`runloop.c`) and `video_driver_frame` (`gfx/video_driver.c`);
   `-[LibretroCore logDiagnosticsEvent:line:]` for the app's tagged lines and
   `-[LibretroCore setDiagnosticsScreen:]` for the Stats line's "presenting on"
-  (`manic_frame_set_present_screen`, `manic_frame_timing.h`).
+  (`manic_frame_set_present_screen`, `manic_frame_timing.h`); the swapchain
+  sizing per screen in `gfx/drivers_context/cocoa_vk_ctx.m`
+  (`cocoa_vk_view_scale`); the presented-time counters in
+  `manic_frame_timing.c/.h`, fed by `ManicMetalLayer` (`ui_cocoatouch.m`).
 - DeltaCore fork (`Dependencies/DeltaCore`): `InputDiagnostics`.
 - App: `PlayDiagnosticsLogger` (its `screenFacts` / `presentScreenName`
   helpers feed the `[AirPlay]` lines in `PlayViewController.updateAirPlay` and
