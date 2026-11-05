@@ -26,11 +26,24 @@ the game view sits on the AirPlay window; the app names it through
 `-[LibretroCore setDiagnosticsScreen:]` each time it moves the view); the longest gap in which
 the main thread was busy elsewhere; the iteration time net of the audio wait;
 the number of stalls; the window's audio underruns and the silence they
-produced; the lowest audio buffer fill seen.
+produced; the lowest audio buffer fill seen. Then "Pacing:" (fork
+1b469784, for a hitch too short to be a stall): a histogram of the window's
+iteration times (under 17 ms, 17-20, 20-25, 25-33, over 33); "no new frame",
+the iterations in which the core presented no new picture (`frame()` calls
+net of duped frames), each of which repeats the last frame on screen;
+"held 2+ slots", the iterations longer than 1.5 display slots at the
+current refresh rate, with the mean spacing between consecutive ones, so a
+hitch every half second reads as a spacing of about 500 ms; and the audio
+buffer fill at the start of the over-20 ms iterations, averaged: a full
+buffer (90-100%) at every long iteration means the core was waiting for
+audio room, i.e. audio pacing rather than vsync was holding it, while a
+half-full buffer means the time went into the core or the present.
 
 `[Frame] Stall at +T s:` the moment an iteration or main-thread gap reaches
-30 ms, two or more missed 60 Hz slots (at most 12 lines per 10 s window, the
-rest counted in Stats). Splits the iteration into core, display and the wait
+30 ms, two or more missed 60 Hz slots, or 20 ms (one missed slot) while the
+game view presents on an external screen (at most 12 lines per 10 s window,
+the rest counted in Stats; the "Stalls >= N ms" field names the threshold
+in effect). Splits the iteration into core, display and the wait
 for audio room, then gives the audio buffer fill before and after and the
 running underrun count. The display is paced by vsync, so a slow core frame
 quantizes to whole 60 Hz slots: a 35 ms iteration is two slots and a 52 ms
@@ -124,7 +137,18 @@ on the core, display and audio figures.
    many iterations over 20 ms: the device is throttling.
 6. `[Input]` lines with long gaps while deflected but no stall: the
    controller, not the emulator.
-7. An AirPlay session: split the `[Frame] Stats` windows by their "presenting
+7. A walk-stop hitch (smooth play broken by a brief hold every half second
+   or so, no audible gap): read the Pacing fields. A window at 61
+   iterations/s with 70-90 iterations in the 20-25 ms bucket, a present
+   wait under 10 ms and the audio buffer at 90-100% at the start of those
+   iterations is audio pacing: vsync let go, the core ran up to the
+   rate-control limit (`audio_rate_control_delta` 0.02 = 2%) and frames left
+   in bursts, so the screen held some and skipped others. A window at 60/s
+   with "held 2+ slots" at a steady spacing and a half-full buffer is a
+   periodic cost inside the core or the present. "No new frame" counts
+   mean the core itself skipped drawing (Dolphin dual-core or a dupe), which
+   no frontend setting changes.
+8. An AirPlay session: split the `[Frame] Stats` windows by their "presenting
    on" value. If the AirPlay windows show the same core time, display wait,
    iteration rate and underruns as the device windows, the emulator is not the
    source of the lag and what remains is the AirPlay path (typically 100-200 ms,
