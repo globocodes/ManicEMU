@@ -1088,3 +1088,6 @@
 "DolphinCPUDesc" = "在无 JIT 的环境中，核心以解释器模式运行。\nCached Interpreter：官方解释器，准确度更高，但对性能要求也更高。\nManic Interpreter：Manic EMU 的解释器，采用更激进的优化，效率更高，但出错也可能更多。";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

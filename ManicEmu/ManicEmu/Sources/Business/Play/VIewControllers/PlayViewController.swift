@@ -4602,7 +4602,8 @@ final class PlayDiagnosticsLogger {
         let airPlayAtStart: String = {
             guard let screen = Self.externalScreen else { return "no AirPlay screen" }
             let shown = ExternalSceneDelegate.externalWindow.map { !$0.isHidden } ?? false
-            return "AirPlay screen \(Self.screenFacts(screen)) (game window \(shown ? "shown" : "hidden"))"
+            let streamMode = ExternalSceneDelegate.streamModeNote.map { "; \($0)" } ?? ""
+            return "AirPlay screen \(Self.screenFacts(screen)) (game window \(shown ? "shown" : "hidden")); \(Self.screenModes(screen))\(streamMode)"
         }()
         let model = UIDevice.current.model
         let os = UIDevice.current.systemVersion
@@ -4692,6 +4693,36 @@ final class PlayDiagnosticsLogger {
         let pt = "\(Int(size.width))x\(Int(size.height))"
         let px = "\(Int(size.width * scale))x\(Int(size.height * scale))"
         return "\(pt) pt @\(String(format: "%g", scale))x (\(px) px), up to \(screen.maximumFramesPerSecond) Hz"
+    }
+
+    /// "1920x1080" for one screen mode.
+    static func modeName(_ mode: UIScreenMode?) -> String {
+        guard let mode else { return "unknown" }
+        return "\(Int(mode.size.width))x\(Int(mode.size.height))"
+    }
+
+    /// Whether two screen modes are the same picture (UIKit may hand out distinct objects).
+    static func sameMode(_ a: UIScreenMode, _ b: UIScreenMode?) -> Bool {
+        guard let b else { return false }
+        return a === b || (a.size == b.size && a.pixelAspectRatio == b.pixelAspectRatio)
+    }
+
+    /// "2 modes: 1920x1080 (current, preferred, pixel aspect 1); 1280x720 (pixel aspect 1)"
+    /// for the [AirPlay] and [Device] lines: what the external screen offers and
+    /// which one is in use. Main thread (UIScreen).
+    static func screenModes(_ screen: UIScreen) -> String {
+        let modes = screen.availableModes
+        guard !modes.isEmpty else { return "no modes listed (current \(modeName(screen.currentMode)))" }
+        let current = screen.currentMode
+        let preferred = screen.preferredMode
+        let parts = modes.map { mode -> String in
+            var tags = [String]()
+            if sameMode(mode, current) { tags.append("current") }
+            if sameMode(mode, preferred) { tags.append("preferred") }
+            tags.append("pixel aspect \(String(format: "%g", Double(mode.pixelAspectRatio)))")
+            return "\(modeName(mode)) (\(tags.joined(separator: ", ")))"
+        }
+        return "\(modes.count) mode\(modes.count == 1 ? "" : "s"): \(parts.joined(separator: "; "))"
     }
 
     /// The short name the RetroArch fork prints in "[Frame] Stats ... presenting on <name>".

@@ -1058,3 +1058,6 @@ PlayCase มุ่งเน้นที่เคส iPhone คุณภาพส
 "DolphinCPUDesc" = "เมื่อไม่มี JIT คอร์จะทำงานในโหมดอินเทอร์พรีเตอร์\nCached Interpreter: อินเทอร์พรีเตอร์ทางการ แม่นยำกว่า แต่กินประสิทธิภาพมากกว่า\nManic Interpreter: อินเทอร์พรีเตอร์ของ Manic EMU ปรับแต่งเชิงรุกให้เร็วขึ้น แต่อาจมีข้อผิดพลาดมากกว่า";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

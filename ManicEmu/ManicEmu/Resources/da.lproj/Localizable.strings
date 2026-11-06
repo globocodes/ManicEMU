@@ -1066,3 +1066,6 @@ Hvis du vil forbedre dit setup, er PlayCase et perfekt match til dette skin.";
 "DolphinCPUDesc" = "Når JIT ikke er tilgængelig, kører kernen i interpretertilstand.\nCached Interpreter: den officielle interpreter. Den er mere nøjagtig, men mere krævende for ydeevnen.\nManic Interpreter: Manic EMU's interpreter. Aggressive optimeringer gør den hurtigere, men kan også give flere fejl.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

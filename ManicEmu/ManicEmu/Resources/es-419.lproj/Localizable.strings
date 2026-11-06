@@ -1068,3 +1068,6 @@ Si quieres mejorar tu experiencia, PlayCase combina perfecto con esta funda.";
 "DolphinCPUDesc" = "Cuando JIT no está disponible, el núcleo funciona en modo intérprete.\nCached Interpreter: el intérprete oficial. Es más preciso, pero exige más rendimiento.\nManic Interpreter: el intérprete de Manic EMU. Optimizaciones agresivas lo hacen más rápido, pero también puede producir más errores.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

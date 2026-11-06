@@ -1074,3 +1074,6 @@ PlayCase 專注於製造高品質 iPhone 手機殼，設計時已充分考慮配
 "DolphinCPUDesc" = "在無 JIT 的環境中，核心以解釋器模式運行。\nCached Interpreter：官方解釋器，精確度更高，但對效能要求也更高。\nManic Interpreter：Manic EMU 的解釋器，採用更激進的優化，效率更高，但出錯也可能更多。";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

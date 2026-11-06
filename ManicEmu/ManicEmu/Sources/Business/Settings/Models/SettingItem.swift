@@ -10,7 +10,7 @@
 struct SettingItem {
     
     enum ItemType: String {
-        case appearance, theme, quickGame, autoSaveState, skin, airPlay, iCloud, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
+        case appearance, theme, quickGame, autoSaveState, skin, airPlay, airPlayLowRes, iCloud, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
     }
     
     var type: ItemType
@@ -67,6 +67,8 @@ struct SettingItem {
             return .switch(.init(state: (Settings.defalut.getExtraBool(key: ExtraKey.rumble.rawValue) ?? false) ? .on : .off))
         case .skinSound:
             return .switch(.init(state: (Settings.defalut.getExtraBool(key: ExtraKey.skinSoundEffects.rawValue) ?? true) ? .on : .off))
+        case .airPlayLowRes:
+            return .switch(.init(state: (Settings.defalut.getExtraBool(key: ExtraKey.airPlayLowRes.rawValue) ?? false) ? .on : .off))
         default:
             return nil
         }
@@ -77,6 +79,7 @@ struct SettingItem {
         case .quickGame,
                 .autoSaveState,
                 .airPlay,
+                .airPlayLowRes,
                 .fullScreenWhenConnectController,
                 .respectSilentMode,
                 .rumble,
@@ -105,7 +108,7 @@ struct SettingItem {
             [R.Color.Green]
         case .skin, .skinSound, .about:
             [R.Color.Pink]
-        case .airPlay, .qq, .telegram, .shareApp, .coverScraping:
+        case .airPlay, .airPlayLowRes, .qq, .telegram, .shareApp, .coverScraping:
             [R.Color.Indigo]
         case .quickGame, .iCloud, .triggerPro, .clearCache:
             [R.Color.Yellow]
@@ -124,7 +127,7 @@ struct SettingItem {
             ASIcon.symbolImage(R.image.themeRegular_iconSymbols(), colors: iconColors)
         case .quickGame:
             ASIcon.symbolImage(R.image.games_iconSymbols(), colors: iconColors)
-        case .airPlay:
+        case .airPlay, .airPlayLowRes:
             ASIcon.symbolImage(R.image.airplay_iconSymbols(), colors: iconColors)
         case .iCloud:
             ASIcon.symbolImage(R.image.icloudsync_iconSymbols(), colors: iconColors)
@@ -193,6 +196,8 @@ struct SettingItem {
             R.string.localizable.quickGameTitle()
         case .airPlay:
             R.string.localizable.airPlayTitle()
+        case .airPlayLowRes:
+            R.string.localizable.airPlayLowRes()
         case .iCloud:
             R.string.localizable.iCloudTitle()
         case .FAQ:
@@ -257,6 +262,8 @@ struct SettingItem {
             return R.string.localizable.quickGameDetail()
         } else if type == .airPlay {
             return R.string.localizable.airPlayDetail()
+        } else if type == .airPlayLowRes {
+            return R.string.localizable.airPlayLowResDetail()
         } else if type == .fullScreenWhenConnectController {
             return R.string.localizable.fullScreenWhenConnectControllerDetail()
         } else if type == .theme {

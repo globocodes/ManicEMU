@@ -1069,3 +1069,6 @@ Wenn Sie Ihr Setup verbessern möchten, ist PlayCase die perfekte Ergänzung zu 
 "DolphinCPUDesc" = "Wenn JIT nicht verfügbar ist, läuft der Kern im Interpreter-Modus.\nCached Interpreter: der offizielle Interpreter. Er ist genauer, stellt aber höhere Leistungsanforderungen.\nManic Interpreter: der Interpreter von Manic EMU. Aggressive Optimierungen machen ihn schneller, können aber auch mehr Fehler verursachen.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";
