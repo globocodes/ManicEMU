@@ -1069,3 +1069,6 @@ PlayCase спеціалізується на високоякісних чохл
 "DolphinCPUDesc" = "Якщо JIT недоступний, ядро працює в режимі інтерпретатора.\nCached Interpreter: офіційний інтерпретатор. Він точніший, але вимогливіший до продуктивності.\nManic Interpreter: інтерпретатор Manic EMU. Завдяки агресивним оптимізаціям він швидший, але може давати більше помилок.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

@@ -28,6 +28,8 @@ enum ExtraKey: String {
     case snesVRAM
     case airPlayScaling
     case airPlayLayout
+    /// Manic MP: app setting "AirPlay 720p Stream" (ask the external screen for its smallest mode at or above 1280x720)
+    case airPlayLowRes
     case pspRenderer
     case globalAchievements
     case globalHardcore

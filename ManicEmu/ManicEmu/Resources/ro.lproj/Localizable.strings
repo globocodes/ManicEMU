@@ -1069,3 +1069,6 @@ Dacă vrei să îți îmbunătățești setup-ul, PlayCase este potrivirea perfe
 "DolphinCPUDesc" = "Când JIT nu este disponibil, nucleul rulează în mod interpretor.\nCached Interpreter: interpretorul oficial. Este mai precis, dar mai pretențios la performanță.\nManic Interpreter: interpretorul Manic EMU. Optimizările agresive îl fac mai rapid, dar pot produce și mai multe erori.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

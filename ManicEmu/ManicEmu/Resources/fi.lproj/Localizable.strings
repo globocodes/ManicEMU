@@ -1071,3 +1071,6 @@ Jos haluat parantaa kokoonpanoasi, PlayCase on täydellinen lisä tälle skinill
 "DolphinCPUDesc" = "Kun JIT ei ole käytettävissä, ydin toimii tulkkimoodissa.\nCached Interpreter: virallinen tulkki. Se on tarkempi, mutta vaativampi suorituskyvylle.\nManic Interpreter: Manic EMU:n tulkki. Aggressiiviset optimoinnit tekevät siitä nopeamman, mutta se voi myös tuottaa enemmän virheitä.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

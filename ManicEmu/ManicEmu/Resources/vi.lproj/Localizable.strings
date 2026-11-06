@@ -1062,3 +1062,6 @@ Nếu bạn muốn nâng cấp thiết lập của mình, PlayCase là sự kế
 "DolphinCPUDesc" = "Khi không có JIT, lõi chạy ở chế độ thông dịch.\nCached Interpreter: thông dịch viên chính thức. Chính xác hơn nhưng đòi hỏi hiệu năng cao hơn.\nManic Interpreter: thông dịch viên của Manic EMU. Tối ưu mạnh nên nhanh hơn, nhưng cũng có thể sinh nhiều lỗi hơn.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

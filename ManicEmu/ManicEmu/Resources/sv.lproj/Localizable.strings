@@ -1062,3 +1062,6 @@ Om du vill höja din upplevelse är PlayCase en perfekt match för detta skin.";
 "DolphinCPUDesc" = "När JIT inte är tillgängligt körs kärnan i interpretertläge.\nCached Interpreter: den officiella interpreteraren. Den är mer exakt, men mer krävande för prestandan.\nManic Interpreter: Manic EMU:s interpreterare. Aggressiva optimeringar gör den snabbare, men kan också ge fler fel.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

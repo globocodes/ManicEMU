@@ -15,6 +15,9 @@ class AirPlayViewController: UIViewController {
     var gameView: GameView?
     
     weak var libretroView: UIView?
+
+    /// Manic MP: the height the game view was scaled from, so the scale can follow the window.
+    private var scaledGameViewHeight: CGFloat = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,6 +66,7 @@ class AirPlayViewController: UIViewController {
         gameContainerView.transform = .identity
         gameContainerView.subviews.forEach { $0.removeFromSuperview() }
         let gameViewHeight = dimensions.height
+        scaledGameViewHeight = gameViewHeight
         
         gameContainerView.snp.remakeConstraints { make in
             make.center.equalToSuperview()
@@ -86,5 +90,20 @@ class AirPlayViewController: UIViewController {
         }
         
         return dimensions
+    }
+
+    /// Manic MP: the external screen can change mode after the game view was
+    /// placed (the "AirPlay 720p Stream" setting, or the TV renegotiating). The
+    /// scale to the window height is recomputed when the window's size changes,
+    /// and the fork's Vulkan context resizes its swapchain to match.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        guard scaledGameViewHeight > 0,
+              let libretroView, libretroView.superview === gameContainerView,
+              view.bounds.height > 0 else { return }
+        let scale = view.bounds.height / scaledGameViewHeight
+        if abs(gameContainerView.transform.a - scale) > 0.001 {
+            gameContainerView.transform = CGAffineTransform(scaleX: scale, y: scale)
+        }
     }
 }

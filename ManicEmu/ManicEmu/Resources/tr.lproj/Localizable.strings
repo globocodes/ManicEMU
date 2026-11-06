@@ -1068,3 +1068,6 @@ Kurulumunuzu bir üst seviyeye taşımak istiyorsanız, PlayCase bu kaplama içi
 "DolphinCPUDesc" = "JIT kullanılamadığında çekirdek yorumlayıcı modunda çalışır.\nCached Interpreter: resmi yorumlayıcı. Daha doğru ama performans açısından daha ağırdır.\nManic Interpreter: Manic EMU’nun yorumlayıcısı. Agresif eniyilemeler onu daha hızlı kılar, ancak daha fazla hata da üretebilir.";
 
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";
