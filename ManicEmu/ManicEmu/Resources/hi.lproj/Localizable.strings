@@ -1074,3 +1074,6 @@ PlayCase हाई-क्वालिटी iPhone केसों पर के
 "AutoEnableJITSuccess" = "JIT सक्षम हो गया";
 "AutoEnableJITFailed" = "JIT सक्षम नहीं हुआ। जाँचें कि LocalDevVPN कनेक्ट है और StikDebug सेट अप है।";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

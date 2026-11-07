@@ -1097,3 +1097,6 @@ Press the controller button to complete mapping...";
 "AutoEnableJITSuccess" = "JIT enabled";
 "AutoEnableJITFailed" = "JIT was not enabled. Check that LocalDevVPN is connected and StikDebug is set up.";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

@@ -47,11 +47,17 @@ next one arrived 1.5 refreshes or more later, with the mean spacing between
 consecutive ones; "replaced within half a refresh", frames the next one
 overtook; and "never shown", drawables that came back without a presented
 time. "0 frames shown" in a window that ran means the screen reports no
-presented times at all (an AirPlay screen may not), not that nothing was
-shown.
+presented times at all, not that nothing was shown. An AirPlay screen is
+that case: every drawable comes back with a presented time of 0, so on
+AirPlay the section reads "0 frames shown ... never shown 601" and only the
+swapchain size is evidence (walk test 2026-11-05). The section measures the
+device screen, and should measure a wired display.
 
 `[Frame] Swapchain at +T s:` the Vulkan swapchain was recreated at another
-size on the device screen (a rotation, a layout change).
+size on the device screen (a rotation, a layout change). Every session has
+one a few seconds in: the swapchain starts at the full screen ("Using
+resolution 2360x1640") and is recreated at the game view's own size once
+the skin has laid it out, 2185x1640 for a 4:3 core on this iPad.
 
 `[Frame] Stall at +T s:` the moment an iteration or main-thread gap reaches
 30 ms, two or more missed 60 Hz slots, or 20 ms (one missed slot) while the
@@ -97,8 +103,18 @@ names that stall's cause.
 
 `[AirPlay]`: the external screen connecting and disconnecting
 (`ExternalSceneDelegate`), with its size in points and pixels, scale and
-maximum refresh rate, and whether the game window on it is shown (it is hidden
-unless the member's AirPlay setting is on and a game is running); and each
+maximum refresh rate, the modes it offers ("2 modes: 1920x1080 (current,
+preferred, pixel aspect 1); 1280x720 (pixel aspect 1)") and whether the game
+window on it is shown (it is hidden unless the member's AirPlay setting is on
+and a game is running); then what the app setting "AirPlay 720p Stream" did
+at that connect: "720p stream setting on: asked the screen for 1280x720 (was
+1920x1080); the screen now reports ..." when a smaller mode at or above
+1280x720 exists, "the screen offers only 1920x1080, nothing to change" when
+the screen lists a single mode (the setting then does nothing, and this line
+is the proof), or "720p stream setting off: screen mode left at ...". The
+setting is read when the screen connects, so a change takes effect at the
+next AirPlay connection. "external screen mode changed: ..." follows whenever
+the screen's mode actually changes. Then each
 move of the game Metal view onto that window or back to the device
 (`PlayViewController.updateAirPlay`), with the scaling option in effect and
 the view's size before the window scale; and, from the fork, "swapchain
@@ -106,11 +122,17 @@ recreated for <screen>: WxH -> WxH px" when the swapchain follows the view
 (on the clock of the `[Frame] Stall` lines, which starts a second or two
 after the app's). The swapchain is sized to the pixels the view covers on
 the screen it is on: 1440x1080 for a 640x480 pt core view scaled to the
-height of a 1920x1080 @1x AirPlay window, the iPad's own 2360x1640 on the
-device. Before fork d077cc34 it was view size x the iPad's scale on every
-screen, 1280x960 on that AirPlay window, stretched by 1.125 to fit, and
-the change was not logged. The `[Device]` start line repeats
-the external screen's facts, or says "no AirPlay screen". AirPlay itself
+height of a 1920x1080 @1x AirPlay window (960x720 when that window is in a
+1280x720 mode), and the game view's own pixels on the device, 2185x1640 for
+a 4:3 core on this iPad, not the full 2360x1640 screen. The moves therefore
+log "2185x1640 -> 1440x1080" and back. Before fork d077cc34 it was view size
+x the iPad's scale on every screen, 1280x960 on that AirPlay window,
+stretched by 1.125 to fit, and the change was not logged. The `[Device]`
+start line repeats the external screen's facts, its modes and the 720p
+setting's outcome, or says "no AirPlay screen". Each connect or disconnect of
+AirPlay also stalls the game for three to six seconds while the audio route
+changes (iterations of 0.6-1.8 s "waiting for audio room", 150-300
+underruns): that is the transition, not a fault in play. AirPlay itself
 (capture, H.264 encode, the network and the receiver's decode) runs outside
 the app and is not measurable from here: these lines only tell an AirPlay
 window of `[Frame] Stats` from an on-device one, so the two can be compared
@@ -165,15 +187,22 @@ on the core, display and audio figures.
    with a deflected stick). In the 2026-11-04 walk test those windows were
    clean on the device and on AirPlay alike: 60.0 iterations/s, 0-1
    iterations over 20 ms, no "no new frame", no audio wait. So the hitch is
-   not in the frame loop, and the place to read it is the "Screen:" section:
-   "shown for 2+ refreshes" at a steady mean spacing (about 500 ms for a
-   hitch every half second) while the Pacing fields stay clean means the
-   frames left on time and the screen held some, which is the swapchain on
-   that screen or the screen's own clock. "Shown for 2+ refreshes" near
-   zero while the hitch is visible on the TV puts it after the screen's
-   compositor, in the AirPlay stream. A window at 60/s with "held 2+ slots"
-   at a steady spacing and a half-full buffer is a periodic cost inside the
-   core or the present.
+   not in the frame loop. On the device screen, and on a wired display, the
+   place to read it is the "Screen:" section: "shown for 2+ refreshes" at a
+   steady mean spacing (about 500 ms for a hitch every half second) while
+   the Pacing fields stay clean means the frames left on time and the screen
+   held some, which is the swapchain on that screen or the screen's own
+   clock. On AirPlay the section is blind (no presented times), so the
+   verdict there rests on the Pacing fields plus what the player sees. The
+   2026-11-05 walk test settled this case: with the swapchain at 1:1
+   (1440x1080) the AirPlay walking windows were as clean as the device's,
+   the device screen showed 601 frames per window at an even 16.665 ms with
+   none held, and the player still saw the hitch on AirPlay only. The hitch
+   is in the AirPlay path to the TV (capture and encode, Wi-Fi, the
+   receiver), not in the app. What the app can still vary is how much there
+   is to send: the "AirPlay 720p Stream" setting, when the screen offers
+   such a mode. A window at 60/s with "held 2+ slots" at a steady spacing
+   and a half-full buffer is a periodic cost inside the core or the present.
    Not the hitch: a window at 61 iterations/s with 30-90 iterations in the
    20-25 ms bucket, about as many "no new frame", a present wait under
    10 ms and the audio buffer at 90-100% at the start of those iterations.
@@ -206,8 +235,13 @@ on the core, display and audio figures.
   (`cocoa_vk_view_scale`); the presented-time counters in
   `manic_frame_timing.c/.h`, fed by `ManicMetalLayer` (`ui_cocoatouch.m`).
 - DeltaCore fork (`Dependencies/DeltaCore`): `InputDiagnostics`.
-- App: `PlayDiagnosticsLogger` (its `screenFacts` / `presentScreenName`
-  helpers feed the `[AirPlay]` lines in `PlayViewController.updateAirPlay` and
-  `ExternalSceneDelegate`) and the option plumbing
+- App: `PlayDiagnosticsLogger` (its `screenFacts` / `screenModes` /
+  `presentScreenName` helpers feed the `[AirPlay]` lines in
+  `PlayViewController.updateAirPlay` and `ExternalSceneDelegate`); the
+  "AirPlay 720p Stream" setting (`ExtraKey.airPlayLowRes`,
+  `SettingItem.ItemType.airPlayLowRes`, applied in
+  `ExternalSceneDelegate.applyStreamMode`, with
+  `AirPlayViewController.viewDidLayoutSubviews` rescaling the game view when
+  the window changes size); and the option plumbing
   (`ExtraKey.inputDiagnostics`, `GameOption.inputDiagnostics`,
   `PlayViewController.updateInputDiagnosticsConfigs`).

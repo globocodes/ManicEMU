@@ -1070,3 +1070,6 @@ Hvis du vil forbedre dit setup, er PlayCase et perfekt match til dette skin.";
 "AutoEnableJITSuccess" = "JIT aktiveret";
 "AutoEnableJITFailed" = "JIT blev ikke aktiveret. Kontrollér, at LocalDevVPN er forbundet, og at StikDebug er konfigureret.";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

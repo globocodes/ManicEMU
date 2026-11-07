@@ -1078,3 +1078,6 @@ PlayCase 專注於高品質 iPhone 保護殼，設計時充分考慮了配件與
 "AutoEnableJITSuccess" = "JIT 已開啟";
 "AutoEnableJITFailed" = "JIT 未開啟。請確認 LocalDevVPN 已連線且 StikDebug 已完成設定。";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

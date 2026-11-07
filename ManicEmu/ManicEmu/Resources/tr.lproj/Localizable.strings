@@ -1072,3 +1072,6 @@ Kurulumunuzu bir üst seviyeye taşımak istiyorsanız, PlayCase bu kaplama içi
 "AutoEnableJITSuccess" = "JIT etkinleştirildi";
 "AutoEnableJITFailed" = "JIT etkinleştirilemedi. LocalDevVPN'in bağlı olduğunu ve StikDebug'ın kurulu olduğunu kontrol edin.";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

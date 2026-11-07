@@ -1076,3 +1076,6 @@ PlayCase는 액세서리 및 스킨 호환성을 고려하여 제작된 고품�
 "AutoEnableJITSuccess" = "JIT가 활성화되었습니다";
 "AutoEnableJITFailed" = "JIT가 활성화되지 않았습니다. LocalDevVPN이 연결되어 있고 StikDebug가 설정되어 있는지 확인하세요.";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";

@@ -73,6 +73,7 @@ class SettingsListView: BaseView {
             } else if section == .advance {
 #if SIDE_LOAD
                 datas[section] = [.init(type: .airPlay),
+                                  .init(type: .airPlayLowRes),
                                   .init(type: .fullScreenWhenConnectController),
                                   .init(type: .bios),
                                   .init(type: .respectSilentMode),
@@ -87,6 +88,7 @@ class SettingsListView: BaseView {
                 ]
 #else
                 datas[section] = [.init(type: .airPlay),
+                                  .init(type: .airPlayLowRes),
                                   .init(type: .iCloud),
                                   .init(type: .fullScreenWhenConnectController),
                                   .init(type: .bios),
@@ -445,6 +447,11 @@ class SettingsListView: BaseView {
                         case .skinSound:
                             let value = upateSwitchSettings(extraValue: subActions?.extraValue, cellData: cellData, indexPath: indexPath)
                             Settings.defalut.updateExtra(key: ExtraKey.skinSoundEffects.rawValue, value: value)
+
+                        case .airPlayLowRes:
+                            // Manic MP: read when the external screen connects (ExternalSceneDelegate).
+                            let value = upateSwitchSettings(extraValue: subActions?.extraValue, cellData: cellData, indexPath: indexPath)
+                            Settings.defalut.updateExtra(key: ExtraKey.airPlayLowRes.rawValue, value: value)
                             
                         case .coverScraping:
                             if UIDevice.isPad {

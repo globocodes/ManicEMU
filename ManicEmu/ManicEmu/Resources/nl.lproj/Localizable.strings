@@ -1073,3 +1073,6 @@ Als je je setup naar een hoger niveau wilt tillen, is PlayCase de perfecte match
 "AutoEnableJITSuccess" = "JIT ingeschakeld";
 "AutoEnableJITFailed" = "JIT is niet ingeschakeld. Controleer of LocalDevVPN is verbonden en StikDebug is ingesteld.";
 "JITDebuggerDetached" = "JIT is off for this session: StikDebug is no longer attached. Open StikDebug and enable JIT again to use it.";
+
+"AirPlayLowRes" = "AirPlay 720p Stream";
+"AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";
