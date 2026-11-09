@@ -74,6 +74,7 @@ class SettingsListView: BaseView {
 #if SIDE_LOAD
                 datas[section] = [.init(type: .airPlay),
                                   .init(type: .airPlayLowRes),
+                                  .init(type: .airPlayAudioBuffer),
                                   .init(type: .fullScreenWhenConnectController),
                                   .init(type: .bios),
                                   .init(type: .respectSilentMode),
@@ -89,6 +90,7 @@ class SettingsListView: BaseView {
 #else
                 datas[section] = [.init(type: .airPlay),
                                   .init(type: .airPlayLowRes),
+                                  .init(type: .airPlayAudioBuffer),
                                   .init(type: .iCloud),
                                   .init(type: .fullScreenWhenConnectController),
                                   .init(type: .bios),
@@ -452,6 +454,13 @@ class SettingsListView: BaseView {
                             // Manic MP: read when the external screen connects (ExternalSceneDelegate).
                             let value = upateSwitchSettings(extraValue: subActions?.extraValue, cellData: cellData, indexPath: indexPath)
                             Settings.defalut.updateExtra(key: ExtraKey.airPlayLowRes.rawValue, value: value)
+
+                        case .airPlayAudioBuffer:
+                            // Manic MP: read at the next game launch with an external screen connected (AirPlayAudioBuffer).
+                            if let index = subActions?.extraValue as? Int, index < AirPlayAudioBuffer.choices.count {
+                                Settings.defalut.updateExtra(key: ExtraKey.airPlayAudioBuffer.rawValue, value: AirPlayAudioBuffer.choices[index])
+                                listPageView?.updateCellData(cellData.updateNormalSegment(index: index), indexPath: indexPath)
+                            }
                             
                         case .coverScraping:
                             if UIDevice.isPad {

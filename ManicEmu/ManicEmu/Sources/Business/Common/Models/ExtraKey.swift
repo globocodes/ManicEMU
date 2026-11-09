@@ -30,6 +30,8 @@ enum ExtraKey: String {
     case airPlayLayout
     /// Manic MP: app setting "AirPlay 720p Stream" (ask the external screen for its smallest mode at or above 1280x720)
     case airPlayLowRes
+    /// Manic MP: app setting "AirPlay Audio Buffer" (RetroArch audio_latency in ms for a launch with an external screen connected; 96, 200 or 320)
+    case airPlayAudioBuffer
     case pspRenderer
     case globalAchievements
     case globalHardcore
