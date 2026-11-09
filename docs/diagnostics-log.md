@@ -2,7 +2,7 @@
 
 A per-game option for GameCube and Wii titles. While it is on, every launch
 of the game writes one RetroArch log to `Documents/Netplay Logs/retroarch__<date>.log`
-(visible in the Files app under Manic MP) with four kinds of lines besides
+(visible in the Files app under Manic MP) with the tagged lines below besides
 RetroArch's own. It exists to tell a slow emulator from a slow device, a slow
 game build or a slow controller without guessing. Leave it off otherwise: the
 log costs a line per second and a few `stat()` calls every two seconds.
@@ -127,7 +127,12 @@ height of a 1920x1080 @1x AirPlay window (960x720 when that window is in a
 a 4:3 core on this iPad, not the full 2360x1640 screen. The moves therefore
 log "2185x1640 -> 1440x1080" and back. Before fork d077cc34 it was view size
 x the iPad's scale on every screen, 1280x960 on that AirPlay window,
-stretched by 1.125 to fit, and the change was not logged. The `[Device]`
+stretched by 1.125 to fit, and the change was not logged. A new size has to
+hold for two checks and 50 ms before the swapchain follows it, and on an
+external screen a size larger than the screen is dropped outright: the
+2026-11-08 session logged "2185x1640 -> 3278x2460 -> 1920x1080" within
+22 ms at a connect (the view measured under the AirPlay container's
+transform before its layout), which the two-check rule alone let through. The `[Device]`
 start line repeats the external screen's facts, its modes and the 720p
 setting's outcome, or says "no AirPlay screen". Each connect or disconnect of
 AirPlay also stalls the game for three to six seconds while the audio route
@@ -137,6 +142,23 @@ underruns): that is the transition, not a fault in play. AirPlay itself
 the app and is not measurable from here: these lines only tell an AirPlay
 window of `[Frame] Stats` from an on-device one, so the two can be compared
 on the core, display and audio figures.
+
+`[Audio]` (the app, `PlayDiagnosticsLogger`): where the sound goes and how
+late the system says it comes out. "route Speaker 'iPad Speakers': output
+latency 8.3 ms, IO buffer 23.2 ms, 48000 Hz" at start, at every
+`AVAudioSession` route change (with its reason: "new device available",
+"old device unavailable", "category change", ...), at each `[AirPlay]`
+connect and disconnect (the route usually follows the screen a moment later,
+so the change line is the one that shows the AirPlay route), and once every
+10 s. The port type is AVAudioSession's (`Speaker`, `AirPlay`,
+`BluetoothA2DP`, `HDMI`, `Headphones`) with the device's name. The output
+latency is the route's own figure, the time between the audio unit handing
+a buffer to the system and the sound leaving the output as the system
+estimates it; the RetroArch buffer (`audio_latency`, 200 ms by default,
+"buffer never below N%" in the `[Frame] Stats` line) sits in front of it.
+The `[Device]` start line also says which RetroArch audio buffer this
+launch got and why ("RetroArch audio buffer 96 ms (AirPlay Audio Buffer
+setting 96 ms, applied: external screen connected at launch)"); see step 9.
 
 ## Reading a stall
 
@@ -219,6 +241,38 @@ on the core, display and audio figures.
    A display wait that grows on AirPlay (for example to a 30 Hz cadence) means
    the external screen's refresh rate or the swapchain on it is pacing the
    core: check the `[AirPlay]` line's "up to N Hz".
+9. An audio/video offset (the sound ahead of or behind the picture). The log
+   sees the audio half only. Inside the app the sound runs behind the core by
+   the RetroArch buffer's fill: rate control holds the buffer about half
+   full, so with the default `audio_latency` of 200 ms that is about 100 ms
+   (47% = 94 ms in every playing window of the 2026-11-08 session), and the
+   `[Audio]` line's output latency comes on top of it. The picture's own
+   latency - the swapchain present, then on AirPlay the capture, encode,
+   network and the TV's decode - is not measurable here, so the offset the
+   player sees cannot be computed from the log; it can be measured by
+   filming the TV with a phone at 60 fps on a sound-tied event (a menu
+   click, a tree hit) and counting frames between the picture and the sound.
+   What the log does tell: (a) whether the offset is constant - a steady
+   buffer fill and a steady output latency mean the audio side is constant
+   and the offset is the AirPlay path; (b) a varying offset - in windows
+   where the core dupes frames (title, loading, dialogs: "no new frame"
+   30-90, 60.4-61.1 iterations/s, "waited" 0.5-1.9 s, buffer 93-95% at the
+   over-20 ms iterations) audio pacing holds the buffer at ~190 ms instead of
+   ~94 ms, so the sound runs about 100 ms later than in play until rate
+   control (2% per second of audio) pulls the buffer back over about 5 s;
+   (c) a route change mid-session ("route changed (new device available):
+   route AirPlay ...") marks where the output latency jumped. The lever is
+   the "AirPlay Audio Buffer" setting (Settings, next to "AirPlay 720p
+   Stream"): 96, 200 or 320 ms of RetroArch buffer for a game launched while
+   an external screen is connected (200 everywhere else). The sound runs
+   about half the chosen value behind the core, so 96 ms takes about 50 ms
+   off the audio lag when the sound comes after the picture, and 320 ms adds
+   about 60 ms when it comes first. 96 ms leaves headroom above the 34 ms
+   worst in-play iteration of the 2026-11-08 session but not above a menu
+   pause or a synchronous shader compile, which underrun at any size. The
+   value is read once at launch (RetroArch applies `audio_latency` only when
+   its audio driver is created), so the A/B is: connect AirPlay, then start
+   the game, and read the `[Device]` start line for the value in effect.
 
 ## Where the code is
 
@@ -242,6 +296,13 @@ on the core, display and audio figures.
   `SettingItem.ItemType.airPlayLowRes`, applied in
   `ExternalSceneDelegate.applyStreamMode`, with
   `AirPlayViewController.viewDidLayoutSubviews` rescaling the game view when
-  the window changes size); and the option plumbing
+  the window changes size); the `[Audio]` lines (`audioRouteFacts`,
+  `routeChangeReason`, the route-change observer in `start(game:)`, the
+  10 s line from the shader poll, and the connect/disconnect lines in
+  `ExternalSceneDelegate`); the "AirPlay Audio Buffer" setting (`enum
+  AirPlayAudioBuffer` in `ExternalSceneDelegate.swift`, `ExtraKey.airPlayAudioBuffer`,
+  `SettingItem.ItemType.airPlayAudioBuffer`, applied as `audio_latency` in
+  `PlayViewController.updateLibretroConfigs` and noted on the `[Device]`
+  start line through `PlayDiagnosticsLogger.audioLatencyNote`); and the option plumbing
   (`ExtraKey.inputDiagnostics`, `GameOption.inputDiagnostics`,
   `PlayViewController.updateInputDiagnosticsConfigs`).

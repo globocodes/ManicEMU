@@ -42,6 +42,9 @@ class ExternalSceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Manic MP: the Diagnostics Log (while a logged game runs) says when the external screen came and went.
             PlayDiagnosticsLogger.shared.log("AirPlay", "external screen connected: \(PlayDiagnosticsLogger.screenFacts(windowScene.screen)); \(modesBefore); game window \(window?.isHidden == false ? "shown" : "hidden") (member \(PurchaseManager.isMember), AirPlay setting \(Settings.defalut.airPlay ? "on" : "off"))")
             PlayDiagnosticsLogger.shared.log("AirPlay", streamModeNote)
+            // The audio route usually follows the screen a moment later; the
+            // logger's route-change observer records that switch and its reason.
+            PlayDiagnosticsLogger.shared.log("Audio", "at AirPlay connect: \(PlayDiagnosticsLogger.audioRouteFacts())")
             screenModeNotification = NotificationCenter.default.addObserver(forName: UIScreen.modeDidChangeNotification, object: windowScene.screen, queue: .main) { notification in
                 guard let screen = notification.object as? UIScreen else { return }
                 PlayDiagnosticsLogger.shared.log("AirPlay", "external screen mode changed: \(PlayDiagnosticsLogger.screenFacts(screen)); \(PlayDiagnosticsLogger.screenModes(screen))")
@@ -76,6 +79,7 @@ class ExternalSceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidDisconnect(_ scene: UIScene) {
         if let screen = (scene as? UIWindowScene)?.screen {
             PlayDiagnosticsLogger.shared.log("AirPlay", "external screen disconnected: \(PlayDiagnosticsLogger.screenFacts(screen))")
+            PlayDiagnosticsLogger.shared.log("Audio", "at AirPlay disconnect: \(PlayDiagnosticsLogger.audioRouteFacts())")
         } else {
             PlayDiagnosticsLogger.shared.log("AirPlay", "external screen disconnected")
         }
@@ -142,5 +146,48 @@ class ExternalSceneDelegate: UIResponder, UIWindowSceneDelegate {
             // Mirror the phone instead
             window?.isHidden = true
         }
+    }
+}
+
+/// Manic MP: the app setting "AirPlay Audio Buffer" - the RetroArch output
+/// buffer (`audio_latency`, ms) for a game launched while an external screen is
+/// connected. Rate control keeps that buffer about half full, so the sound runs
+/// about half the value behind the picture inside the app: 200 ms (the value
+/// used everywhere else) is about 100 ms of lag, 96 ms about 50 ms, 320 ms
+/// about 160 ms. Smaller is for a TV whose sound comes after its picture,
+/// larger for one whose sound comes first. The value is read once, at launch;
+/// RetroArch applies a new buffer only when its audio driver is re-created, so
+/// connect AirPlay first and then start the game. 96 ms leaves headroom above
+/// the 34 ms worst in-play iteration of the 2026-11-08 session but not above a
+/// menu pause or a synchronous shader compile, which underrun at any size.
+enum AirPlayAudioBuffer {
+    /// The choices, in the order the Settings segment shows them.
+    static let choices = [96, 200, 320]
+    static let standard = 200
+
+    /// The chosen buffer in ms (200 unless the operator picked another).
+    static var selected: Int {
+        let value = Settings.defalut.getExtraInt(key: ExtraKey.airPlayAudioBuffer.rawValue) ?? standard
+        return choices.contains(value) ? value : standard
+    }
+
+    static var selectedIndex: Int {
+        choices.firstIndex(of: selected) ?? 1
+    }
+
+    /// Whether a screen other than the device's is connected right now.
+    static var externalScreenConnected: Bool {
+        ExternalSceneDelegate.externalWindow != nil || UIScreen.screens.count > 1
+    }
+
+    /// The `audio_latency` to hand RetroArch for a launch happening now.
+    static func latencyForLaunch() -> Int {
+        externalScreenConnected ? selected : standard
+    }
+
+    /// The clause the Diagnostics Log prints on its [Device] start line.
+    static func diagnosticsNote() -> String {
+        let external = externalScreenConnected
+        return "RetroArch audio buffer \(external ? selected : standard) ms (AirPlay Audio Buffer setting \(selected) ms, \(external ? "applied: external screen connected at launch" : "not applied: no external screen at launch"))"
     }
 }
