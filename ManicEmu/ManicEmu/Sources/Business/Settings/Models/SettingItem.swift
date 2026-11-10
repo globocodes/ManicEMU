@@ -10,7 +10,7 @@
 struct SettingItem {
     
     enum ItemType: String {
-        case appearance, theme, quickGame, autoSaveState, skin, airPlay, airPlayLowRes, iCloud, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
+        case appearance, theme, quickGame, autoSaveState, skin, airPlay, airPlayLowRes, airPlayAudioBuffer, iCloud, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
     }
     
     var type: ItemType
@@ -46,6 +46,9 @@ struct SettingItem {
                 .symbolImage(R.image.auto_iconSymbols())
             ]
             styles.append(.segment(.iconSegment(icons: icons, index: Settings.appearance.rawValue)))
+        } else if type == .airPlayAudioBuffer {
+            // Manic MP: 96 / 200 / 320 ms, read at the next game launch with an external screen connected.
+            styles.append(.segment(.textSegment(titles: AirPlayAudioBuffer.choices.map { "\($0) ms" }, index: AirPlayAudioBuffer.selectedIndex)))
         }
         return ASListPage.Cell.normal(styles, enablePressEffect: enablePressEffect)
     }
@@ -80,6 +83,7 @@ struct SettingItem {
                 .autoSaveState,
                 .airPlay,
                 .airPlayLowRes,
+                .airPlayAudioBuffer,
                 .fullScreenWhenConnectController,
                 .respectSilentMode,
                 .rumble,
@@ -108,7 +112,7 @@ struct SettingItem {
             [R.Color.Green]
         case .skin, .skinSound, .about:
             [R.Color.Pink]
-        case .airPlay, .airPlayLowRes, .qq, .telegram, .shareApp, .coverScraping:
+        case .airPlay, .airPlayLowRes, .airPlayAudioBuffer, .qq, .telegram, .shareApp, .coverScraping:
             [R.Color.Indigo]
         case .quickGame, .iCloud, .triggerPro, .clearCache:
             [R.Color.Yellow]
@@ -127,7 +131,7 @@ struct SettingItem {
             ASIcon.symbolImage(R.image.themeRegular_iconSymbols(), colors: iconColors)
         case .quickGame:
             ASIcon.symbolImage(R.image.games_iconSymbols(), colors: iconColors)
-        case .airPlay, .airPlayLowRes:
+        case .airPlay, .airPlayLowRes, .airPlayAudioBuffer:
             ASIcon.symbolImage(R.image.airplay_iconSymbols(), colors: iconColors)
         case .iCloud:
             ASIcon.symbolImage(R.image.icloudsync_iconSymbols(), colors: iconColors)
@@ -198,6 +202,8 @@ struct SettingItem {
             R.string.localizable.airPlayTitle()
         case .airPlayLowRes:
             R.string.localizable.airPlayLowRes()
+        case .airPlayAudioBuffer:
+            R.string.localizable.airPlayAudioBuffer()
         case .iCloud:
             R.string.localizable.iCloudTitle()
         case .FAQ:
@@ -264,6 +270,8 @@ struct SettingItem {
             return R.string.localizable.airPlayDetail()
         } else if type == .airPlayLowRes {
             return R.string.localizable.airPlayLowResDetail()
+        } else if type == .airPlayAudioBuffer {
+            return R.string.localizable.airPlayAudioBufferDetail()
         } else if type == .fullScreenWhenConnectController {
             return R.string.localizable.fullScreenWhenConnectControllerDetail()
         } else if type == .theme {

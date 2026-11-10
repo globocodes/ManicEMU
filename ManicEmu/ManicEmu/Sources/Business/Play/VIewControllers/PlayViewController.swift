@@ -2266,7 +2266,12 @@ extension PlayViewController {
                 "camera_driver": "avfoundation",
                 "microphone_enable": enableMircophone ? "true" : "false",
                 "microphone_driver": "coreaudio",
-                "audio_latency": "200",
+                // Manic MP: the RetroArch output buffer in ms. 200 everywhere, except
+                // that the "AirPlay Audio Buffer" setting applies when an external
+                // screen is connected at launch (AirPlayAudioBuffer.latencyForLaunch).
+                // Rate control keeps the buffer about half full, so the sound runs
+                // about half this value behind the picture inside the app.
+                "audio_latency": "\(AirPlayAudioBuffer.latencyForLaunch())",
                 // Dynamic rate control may stretch the audio by at most this fraction
                 // to keep the output buffer half full. RetroArch's default 0.005 cannot
                 // absorb Dolphin's deficit: the 2026-10-26 Diagnostics Log of Animal
@@ -2280,6 +2285,7 @@ extension PlayViewController {
             if let core = manicGame.libretroCore {
                 LibretroCore.sharedInstance().updateLibretroConfigs(core.netplayLaunchConfigs)
             }
+            PlayDiagnosticsLogger.audioLatencyNote = AirPlayAudioBuffer.diagnosticsNote()
             if manicGame.isN64ParaLLEl {
                 LibretroCore.sharedInstance().setReloadDelay(1)
             } else {
@@ -4572,6 +4578,13 @@ extension PlayViewController {
 ///   (a throttled device explains a run of slow frames).
 /// - "[App]": the app going inactive, to the background and back, memory
 ///   warnings, and each auto save state with the time it took.
+/// - "[Audio]": the output route (speaker, AirPlay, Bluetooth, HDMI) with its
+///   port names, the route's output latency, the I/O buffer and the sample rate
+///   at start, at every route change (with the reason) and every 10 s. The
+///   in-app audio lag is the RetroArch buffer's fill (half of audio_latency
+///   under rate control) plus that output latency; the AirPlay picture's own
+///   latency is not visible from here, so these lines bound the audio half of
+///   an audio/video offset.
 /// - "[Shaders]": Dolphin's shader caches for this game (pixel, vertex, the
 ///   pipeline UID list, the driver pipeline cache) at start, then every growth
 ///   while playing. With ShaderCompilationMode 0 (Manic's default for JIT runs)
@@ -4599,6 +4612,12 @@ final class PlayDiagnosticsLogger {
     private var dolphinCacheDir: String?
     private var dolphinGameID: String?
     private var dolphinModeLine: String?
+    /// Shader polls since the last [Audio] route line (one line per 10 s).
+    private var pollsSinceAudioLine = 0
+    /// Manic MP: set by PlayViewController.updateLibretroConfigs: the RetroArch
+    /// audio buffer handed to this launch and the setting behind it, for the
+    /// [Device] start line.
+    static var audioLatencyNote: String?
 
     private init() {}
 
@@ -4647,6 +4666,7 @@ final class PlayDiagnosticsLogger {
         }
         shaderSizes = [:]
         shaderPaths = []
+        pollsSinceAudioLine = 0
 
         let center = NotificationCenter.default
         observers.append(center.addObserver(forName: ProcessInfo.thermalStateDidChangeNotification, object: nil, queue: nil) { [weak self] _ in
@@ -4654,6 +4674,9 @@ final class PlayDiagnosticsLogger {
         })
         observers.append(center.addObserver(forName: .NSProcessInfoPowerStateDidChange, object: nil, queue: nil) { [weak self] _ in
             self?.log("Device", "Low Power Mode \(ProcessInfo.processInfo.isLowPowerModeEnabled ? "on" : "off")")
+        })
+        observers.append(center.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: nil) { [weak self] notification in
+            self?.log("Audio", "route changed (\(PlayDiagnosticsLogger.routeChangeReason(notification))): \(PlayDiagnosticsLogger.audioRouteFacts())")
         })
         let lifecycle: [(Notification.Name, String)] = [
             (UIApplication.willResignActiveNotification, "app resigning active"),
@@ -4676,13 +4699,20 @@ final class PlayDiagnosticsLogger {
             if !announced {
                 announced = true
                 let p = ProcessInfo.processInfo
-                self.log("Device", "\(model) iOS \(os), display up to \(maxFPS) Hz, thermal state \(Self.thermalName(p.thermalState)), Low Power Mode \(p.isLowPowerModeEnabled ? "on" : "off"), \(p.activeProcessorCount) cores, \(p.physicalMemory / 1_073_741_824) GB; \(airPlayAtStart)")
+                let audioLatency = Self.audioLatencyNote.map { "; \($0)" } ?? ""
+                self.log("Device", "\(model) iOS \(os), display up to \(maxFPS) Hz, thermal state \(Self.thermalName(p.thermalState)), Low Power Mode \(p.isLowPowerModeEnabled ? "on" : "off"), \(p.activeProcessorCount) cores, \(p.physicalMemory / 1_073_741_824) GB; \(airPlayAtStart)\(audioLatency)")
+                self.log("Audio", "at start: \(Self.audioRouteFacts())")
                 if let line = self.dolphinModeLine {
                     self.log("Shaders", line)
                 }
                 self.measureShaderCaches(announce: true)
             } else {
                 self.measureShaderCaches(announce: false)
+                self.pollsSinceAudioLine += 1
+                if Double(self.pollsSinceAudioLine) * Self.shaderPollInterval >= 10 {
+                    self.pollsSinceAudioLine = 0
+                    self.log("Audio", Self.audioRouteFacts())
+                }
             }
         }
         self.timer = timer
@@ -4755,6 +4785,37 @@ final class PlayDiagnosticsLogger {
         guard airPlay, let screen = externalScreen else { return "device" }
         let size = screen.bounds.size
         return "AirPlay \(Int(size.width * screen.scale))x\(Int(size.height * screen.scale)) @ \(screen.maximumFramesPerSecond) Hz"
+    }
+
+    /// "route AirPlay 'Living Room' (AirPlay): output latency 120.0 ms, IO buffer
+    /// 23.2 ms, 48000 Hz" for the [Audio] lines: where the sound goes and how
+    /// far behind the app's writes the system says it comes out. The output
+    /// latency is what AVAudioSession reports for the route; the RetroArch
+    /// buffer's fill (see the [Frame] Stats "buffer never below N%") sits in
+    /// front of it. Any thread (AVAudioSession reads are thread-safe).
+    static func audioRouteFacts() -> String {
+        let session = AVAudioSession.sharedInstance()
+        let outputs = session.currentRoute.outputs
+        let route = outputs.isEmpty ? "no output" : outputs.map { "\($0.portType.rawValue) '\($0.portName)'" }.joined(separator: " + ")
+        let ms = { (seconds: TimeInterval) in String(format: "%.1f ms", seconds * 1000) }
+        return "route \(route): output latency \(ms(session.outputLatency)), IO buffer \(ms(session.ioBufferDuration)), \(Int(session.sampleRate)) Hz"
+    }
+
+    /// The reason of an AVAudioSession route change, in words.
+    static func routeChangeReason(_ notification: Notification) -> String {
+        guard let raw = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              let reason = AVAudioSession.RouteChangeReason(rawValue: raw) else { return "unknown reason" }
+        switch reason {
+        case .newDeviceAvailable: return "new device available"
+        case .oldDeviceUnavailable: return "old device unavailable"
+        case .categoryChange: return "category change"
+        case .override: return "override"
+        case .wakeFromSleep: return "wake from sleep"
+        case .noSuitableRouteForCategory: return "no suitable route for category"
+        case .routeConfigurationChange: return "route configuration change"
+        case .unknown: return "unknown reason"
+        @unknown default: return "reason \(raw)"
+        }
     }
 
     private static func thermalName(_ state: ProcessInfo.ThermalState) -> String {

@@ -1076,3 +1076,6 @@ Si vous souhaitez améliorer votre configuration, PlayCase est le complément id
 
 "AirPlayLowRes" = "AirPlay 720p Stream";
 "AirPlayLowResDetail" = "Asks the TV for a 1280x720 picture instead of 1080p, which is lighter to send and decode. Takes effect the next time AirPlay connects.";
+
+"AirPlayAudioBuffer" = "AirPlay Audio Buffer";
+"AirPlayAudioBufferDetail" = "How much sound RetroArch keeps queued when a game starts with an AirPlay screen connected. 200 ms is the usual value; 96 ms brings the sound closer to the picture but risks gaps, 320 ms delays it. Takes effect the next time a game starts.";
