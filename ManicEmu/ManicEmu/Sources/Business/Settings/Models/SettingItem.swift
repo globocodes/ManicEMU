@@ -10,7 +10,7 @@
 struct SettingItem {
     
     enum ItemType: String {
-        case appearance, theme, quickGame, autoSaveState, skin, airPlay, airPlayLowRes, airPlayAudioBuffer, iCloud, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
+        case appearance, theme, quickGame, autoSaveState, skin, airPlay, airPlayLowRes, airPlayAudioBuffer, iCloud, driveSync, fullScreenWhenConnectController, bios, respectSilentMode, onlinePlay, rumble, skinSound, retro, triggerPro, jit, shaders, globalCoreSwitch, FAQ, feedback, qq, telegram, discord, about, shareApp, clearCache, language, userAgreement, privacyPolicy, featuredItems, coverScraping
     }
     
     var type: ItemType
@@ -114,7 +114,7 @@ struct SettingItem {
             [R.Color.Pink]
         case .airPlay, .airPlayLowRes, .airPlayAudioBuffer, .qq, .telegram, .shareApp, .coverScraping:
             [R.Color.Indigo]
-        case .quickGame, .iCloud, .triggerPro, .clearCache:
+        case .quickGame, .iCloud, .driveSync, .triggerPro, .clearCache:
             [R.Color.Yellow]
         case .fullScreenWhenConnectController, .jit, .language:
             [R.Color.Cyan]
@@ -133,7 +133,7 @@ struct SettingItem {
             ASIcon.symbolImage(R.image.games_iconSymbols(), colors: iconColors)
         case .airPlay, .airPlayLowRes, .airPlayAudioBuffer:
             ASIcon.symbolImage(R.image.airplay_iconSymbols(), colors: iconColors)
-        case .iCloud:
+        case .iCloud, .driveSync:
             ASIcon.symbolImage(R.image.icloudsync_iconSymbols(), colors: iconColors)
         case .fullScreenWhenConnectController:
             ASIcon.symbolImage(R.image.fullscreen_iconSymbols(), colors: iconColors)
@@ -206,6 +206,8 @@ struct SettingItem {
             R.string.localizable.airPlayAudioBuffer()
         case .iCloud:
             R.string.localizable.iCloudTitle()
+        case .driveSync:
+            "Google Drive sync"
         case .FAQ:
             R.string.localizable.qaTitle()
         case .feedback:
@@ -286,6 +288,12 @@ struct SettingItem {
             return Settings.appearance.desc
         } else if type == .triggerPro {
             return R.string.localizable.triggerProDesc()
+        } else if type == .driveSync {
+            // Manic MP: GameCube memory cards shared between devices (BP-I44)
+            if DriveSyncAccount.isSignedIn {
+                return "GameCube saves follow you between devices. Signed in as \(DriveSyncAccount.accountName ?? "a Google account")."
+            }
+            return "Keep GameCube saves in your Google Drive and continue on another device."
         }
         return nil
     }

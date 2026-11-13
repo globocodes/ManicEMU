@@ -1,0 +1,1 @@
+../../../../ManicEmu/ManicEmu/Sources/Business/DriveSync/DriveSyncCore.swift

@@ -144,7 +144,16 @@ class PlayViewController: GameViewController {
     //皮肤中的Switch绑定数据
     private var skinSwitchBindDatas = [String: Bool]()
     
-    static func startGame(game: Game, saveState: GameSaveState? = nil) {
+    static func startGame(game: Game, saveState: GameSaveState? = nil, driveSyncDone: Bool = false) {
+#if SIDE_LOAD
+        //Manic MP: a GameCube title waits for its memory card from Google Drive (BP-D22)
+        if !driveSyncDone {
+            DriveSync.shared.prepareToPlay(game: game) {
+                startGame(game: game, saveState: saveState, driveSyncDone: true)
+            }
+            return
+        }
+#endif
         if game.gameType == .ns {
             EmulatorInteractionKit.startGame(type: .meloNX, id: game.id)
             return
@@ -827,6 +836,10 @@ class PlayViewController: GameViewController {
         repeatTimer.suspend()
         //Manic MP: Animal Crossing event notifications follow the play session
         ACNotificationScheduler.shared.playSessionEnded(game: manicGame)
+#if SIDE_LOAD
+        //Manic MP: the memory card goes to Google Drive once the core has let go of it
+        DriveSync.shared.playSessionEnded(game: manicGame)
+#endif
         //清理AirPlay画面
         if let airPlayViewController = ExternalSceneDelegate.airPlayViewController, let airPlayGameView = airPlayViewController.libretroView {
             if manicGame.isLibretroType || manicGame.isJGenesisCore || manicGame.isJ2MECore {

@@ -37,6 +37,7 @@ class SettingsListView: BaseView {
     private var membershipNotification: Any? = nil
     private var iCloudDriveSyncChangeNotification: Any? = nil
     private var iCloudEnableChangeNotification: Any? = nil
+    private var driveSyncAccountNotification: Any? = nil
     
     var didTapDetailView: ((UIView)->Void)? = nil
     
@@ -75,6 +76,7 @@ class SettingsListView: BaseView {
                 datas[section] = [.init(type: .airPlay),
                                   .init(type: .airPlayLowRes),
                                   .init(type: .airPlayAudioBuffer),
+                                  .init(type: .driveSync),
                                   .init(type: .fullScreenWhenConnectController),
                                   .init(type: .bios),
                                   .init(type: .respectSilentMode),
@@ -150,6 +152,10 @@ class SettingsListView: BaseView {
             self?.reloadCell(for: .init(type: .iCloud))
         }
         
+        //Manic MP: the Google Drive sync row names the signed-in account
+        driveSyncAccountNotification = NotificationCenter.default.addObserver(forName: DriveSyncAccount.didChange, object: nil, queue: .main) { [weak self] _ in
+            self?.reloadData()
+        }
         iCloudEnableChangeNotification = NotificationCenter.default.addObserver(forName: R.NotificationName.iCloudEnableChange, object: nil, queue: .main) { [weak self] _ in
             self?.reloadCell(for: .init(type: .iCloud))
         }
@@ -165,6 +171,9 @@ class SettingsListView: BaseView {
         }
         if let iCloudDriveSyncChangeNotification {
             NotificationCenter.default.removeObserver(iCloudDriveSyncChangeNotification)
+        }
+        if let driveSyncAccountNotification {
+            NotificationCenter.default.removeObserver(driveSyncAccountNotification)
         }
         if let iCloudEnableChangeNotification {
             NotificationCenter.default.removeObserver(iCloudEnableChangeNotification)
@@ -388,6 +397,13 @@ class SettingsListView: BaseView {
                                 didTapDetailView?(JITSettingView(showClose: false))
                             } else {
                                 JITSettingView.show()
+                            }
+
+                        case .driveSync:
+                            if UIDevice.isPad {
+                                didTapDetailView?(DriveSyncSettingView(showClose: false))
+                            } else {
+                                DriveSyncSettingView.show()
                             }
                             
                         case .shaders:
