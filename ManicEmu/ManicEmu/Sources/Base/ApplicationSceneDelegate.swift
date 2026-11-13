@@ -44,6 +44,8 @@ class ApplicationSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     ACNotificationScheduler.shared.databaseDidBecomeReady()
 #if SIDE_LOAD
                     JITAutoEnabler.appDidBecomeReady(launchedByURL: connectionOptions.urlContexts.count > 0)
+                    //Manic MP: a memory card an earlier session could not send to Google Drive goes now
+                    DriveSync.shared.pushLeftovers(reason: "launch")
 #endif
                     
                     //设置RetroAchievement

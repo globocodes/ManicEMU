@@ -13,3 +13,12 @@ DEVELOPMENT_TEAM = ABCDE12345
 // sessions use Dolphin's fastmem arena again. Leave it commented on a free
 // Apple ID (the entitlement is refused and the arena can fail at boot).
 // APP_EXTENDED_VA_CONDITION =
+
+// Google Drive sync (GameCube memory cards shared between devices): the
+// Client ID of your own Google OAuth client, type iOS, bundle id
+// com.globocodes.manicemu, WITHOUT its .apps.googleusercontent.com ending
+// (see the runbook "Google Drive sync signed in on both devices"). Not a
+// secret, but it is yours, so it stays out of the tracked tree. Leave it
+// out and the id can be pasted into Settings, Google Drive sync, instead
+// (needed for a build made by CI, which has no Config-Local.xcconfig).
+// MANIC_GOOGLE_CLIENT_ID = 123456789-abcdefghijklmnop

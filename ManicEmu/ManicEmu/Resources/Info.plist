@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ManicGoogleClientID</key>
+	<string>$(MANIC_GOOGLE_CLIENT_ID)</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_manicemu._tcp</string>

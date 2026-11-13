@@ -18,3 +18,9 @@ APP_VERSION = 2.0.0
 // Prebuilt cores under ProjectManicEMU/Cores (Citra.framework, *.libretro.framework, …)
 FRAMEWORK_SEARCH_PATHS = $(inherited) $(PROJECT_DIR)/../Cores
 OTHER_LDFLAGS = $(inherited) -framework SQLCipher
+
+// Manic MP: the Google OAuth client the memory-card sync signs in with
+// (Info.plist key ManicGoogleClientID). Empty here; the sideload build sets
+// it in the untracked Config-Local.xcconfig. A build without it asks for the
+// id in Settings, Google Drive sync.
+MANIC_GOOGLE_CLIENT_ID =

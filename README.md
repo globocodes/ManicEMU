@@ -92,7 +92,27 @@ What the fork changes, in order of landing:
    Files: `Sources/Business/GameInfo/Models/SpecialCoreOption.swift`,
    `Sources/Business/Play/VIewControllers/PlayViewController.swift`,
    `Sources/Business/GameInfo/VIews/GameInfoDetailView.swift`.
-4. A lobby, Google Drive save sync and a Pi save hub follow in later phases; see the
+4. **GameCube saves follow you between devices** (Phase K). Sign in under
+   Settings → Google Drive sync and the memory cards
+   (`Documents/dolphin-emu/User/GC/<region>/Card A/*.gci`) are kept in a
+   `Manic MP` folder in your own Google Drive: before a GameCube game boots,
+   the app loads the newest save from Drive; when the game closes (and when
+   the app goes to the background) it sends yours. Play Animal Crossing on the
+   iPad, close it, continue in the same town on the iPhone. Nothing is ever
+   overwritten without a copy: the last ten versions of each save stay in
+   `Manic MP/history/` and, on the device, in `GC/.history/`. If both devices
+   saved since they last synced, the app asks which save to keep; if the game
+   is still open on the other device, it says so before you start. The app
+   asks Google only for the `drive.file` scope, so it sees nothing in your
+   Drive but the folder it created. It needs your own free Google OAuth client
+   (type iOS, bundle id `com.globocodes.manicemu`, consent screen published):
+   put its id in `Config-Local.xcconfig` as `MANIC_GOOGLE_CLIENT_ID` (see
+   `Config-Local.xcconfig.example`) or paste it into Settings → Google Drive
+   sync → Google client id on a build made without it. Design and the
+   as-built notes: `docs/google-drive-save-sync-scoping-2026-09-28.md`. Files:
+   `Sources/Business/DriveSync/`; tests run on the Mac with
+   `swift test --package-path Tests/DriveSyncCore`.
+5. A lobby and a Pi mirror of the Drive folder follow in later phases; see the
    blueprint in magic-mirror.
 
 ### Build the fork (Mac, Xcode 26)

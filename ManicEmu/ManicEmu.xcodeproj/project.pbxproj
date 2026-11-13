@@ -1599,6 +1599,21 @@
 		AC3225179F5F1ACBE4F576FB /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
 		AC32768F9D3295B5B15AED2C /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
 		AC3256F7DCA46C43D535A768 /* ACEventSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */; };
+		D51CB09CD5BFF881999E7594 /* DriveSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC9E83B7D36D4030C2279 /* DriveSyncCore.swift */; };
+		D51C08B8BC3E5B25E7525D86 /* DriveSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC9E83B7D36D4030C2279 /* DriveSyncCore.swift */; };
+		D51CB286CD839C0AD9460D72 /* DriveSyncCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC9E83B7D36D4030C2279 /* DriveSyncCore.swift */; };
+		D51CBC52423AF675F241CFAD /* GoogleDriveClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CA7030EAF99F492F6822B /* GoogleDriveClient.swift */; };
+		D51CC78AAF5EF939FC1DF84D /* GoogleDriveClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CA7030EAF99F492F6822B /* GoogleDriveClient.swift */; };
+		D51C74B8FB605191AE363581 /* GoogleDriveClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CA7030EAF99F492F6822B /* GoogleDriveClient.swift */; };
+		D51CB94E7AFDFD98CE524138 /* DriveSyncAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC30B3FE9900A4F1E2291 /* DriveSyncAccount.swift */; };
+		D51C73FFA13FF6C3BD05B2FB /* DriveSyncAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC30B3FE9900A4F1E2291 /* DriveSyncAccount.swift */; };
+		D51C8049759F183246882EB7 /* DriveSyncAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CC30B3FE9900A4F1E2291 /* DriveSyncAccount.swift */; };
+		D51CCEDAD48BF182DD107870 /* DriveSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CEAE6B8B58A0EAA111A66 /* DriveSync.swift */; };
+		D51CD73C15D9FC3D8594DC7B /* DriveSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CEAE6B8B58A0EAA111A66 /* DriveSync.swift */; };
+		D51C87FB74D45A3F032B0910 /* DriveSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51CEAE6B8B58A0EAA111A66 /* DriveSync.swift */; };
+		D51C0361F4C6DA47125191E8 /* DriveSyncSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51C4CF903AC06225463B644 /* DriveSyncSettingView.swift */; };
+		D51CB09E84634407824E3CB5 /* DriveSyncSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51C4CF903AC06225463B644 /* DriveSyncSettingView.swift */; };
+		D51C839CF4208741C2FE3798 /* DriveSyncSettingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D51C4CF903AC06225463B644 /* DriveSyncSettingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -6637,6 +6652,11 @@
 		AC32BFC80AC2CEE056BFDFAB /* ACSaveReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACSaveReader.swift; sourceTree = "<group>"; };
 		AC3241FC107BA899AE7A1315 /* ACNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACNotificationScheduler.swift; sourceTree = "<group>"; };
 		AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ACEventSettingsView.swift; sourceTree = "<group>"; };
+		D51CC9E83B7D36D4030C2279 /* DriveSyncCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveSyncCore.swift; sourceTree = "<group>"; };
+		D51CA7030EAF99F492F6822B /* GoogleDriveClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleDriveClient.swift; sourceTree = "<group>"; };
+		D51CC30B3FE9900A4F1E2291 /* DriveSyncAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveSyncAccount.swift; sourceTree = "<group>"; };
+		D51CEAE6B8B58A0EAA111A66 /* DriveSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveSync.swift; sourceTree = "<group>"; };
+		D51C4CF903AC06225463B644 /* DriveSyncSettingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveSyncSettingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -12891,6 +12911,7 @@
 				570CF87D2EEB092B00696C1B /* Shaders */,
 				578F28712F377FBB00D2D998 /* OnlinePlay */,
 				AC32E5E45CF62B34DC3FDD6B /* ACEvents */,
+				D51C3459A7F38FBDE74B35ED /* DriveSync */,
 			);
 			path = Business;
 			sourceTree = "<group>";
@@ -13142,6 +13163,18 @@
 				AC32692ED11991DE7EFA7F5D /* ACEventSettingsView.swift */,
 			);
 			path = ACEvents;
+			sourceTree = "<group>";
+		};
+		D51C3459A7F38FBDE74B35ED /* DriveSync */ = {
+			isa = PBXGroup;
+			children = (
+				D51CC9E83B7D36D4030C2279 /* DriveSyncCore.swift */,
+				D51CA7030EAF99F492F6822B /* GoogleDriveClient.swift */,
+				D51CC30B3FE9900A4F1E2291 /* DriveSyncAccount.swift */,
+				D51CEAE6B8B58A0EAA111A66 /* DriveSync.swift */,
+				D51C4CF903AC06225463B644 /* DriveSyncSettingView.swift */,
+			);
+			path = DriveSync;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -13519,6 +13552,11 @@
 				AC32E2F26D8F508B65502C4E /* ACNotificationScheduler.swift in Sources */,
 				AC3243702CABEBCD932F5953 /* ACSaveReader.swift in Sources */,
 				AC3225179F5F1ACBE4F576FB /* ACEventSettingsView.swift in Sources */,
+				D51CB09CD5BFF881999E7594 /* DriveSyncCore.swift in Sources */,
+				D51CBC52423AF675F241CFAD /* GoogleDriveClient.swift in Sources */,
+				D51CB94E7AFDFD98CE524138 /* DriveSyncAccount.swift in Sources */,
+				D51CCEDAD48BF182DD107870 /* DriveSync.swift in Sources */,
+				D51C0361F4C6DA47125191E8 /* DriveSyncSettingView.swift in Sources */,
 				57909385303C7D9100A53656 /* Amiga.swift in Sources */,
 				57909386303C7D9100A53656 /* C64.swift in Sources */,
 				57909387303C7D9100A53656 /* NGP.swift in Sources */,
@@ -13974,6 +14012,11 @@
 				AC32D1DEE0110417BAF23E48 /* ACNotificationScheduler.swift in Sources */,
 				AC3213AA37BDA77FF51289BB /* ACSaveReader.swift in Sources */,
 				AC32768F9D3295B5B15AED2C /* ACEventSettingsView.swift in Sources */,
+				D51C08B8BC3E5B25E7525D86 /* DriveSyncCore.swift in Sources */,
+				D51CC78AAF5EF939FC1DF84D /* GoogleDriveClient.swift in Sources */,
+				D51C73FFA13FF6C3BD05B2FB /* DriveSyncAccount.swift in Sources */,
+				D51CD73C15D9FC3D8594DC7B /* DriveSync.swift in Sources */,
+				D51CB09E84634407824E3CB5 /* DriveSyncSettingView.swift in Sources */,
 				0965D1CD6E9344C18E3454A6 /* Amiga.swift in Sources */,
 				C77604CEA6544406AAC031FA /* C64.swift in Sources */,
 				A672B510CD9141B18392D564 /* NGP.swift in Sources */,
@@ -14392,6 +14435,11 @@
 				AC32F61EAF4BD6EF47F95E26 /* ACNotificationScheduler.swift in Sources */,
 				AC320A6AC66DAD4D2FD7ABCD /* ACSaveReader.swift in Sources */,
 				AC3256F7DCA46C43D535A768 /* ACEventSettingsView.swift in Sources */,
+				D51CB286CD839C0AD9460D72 /* DriveSyncCore.swift in Sources */,
+				D51C74B8FB605191AE363581 /* GoogleDriveClient.swift in Sources */,
+				D51C8049759F183246882EB7 /* DriveSyncAccount.swift in Sources */,
+				D51C87FB74D45A3F032B0910 /* DriveSync.swift in Sources */,
+				D51C839CF4208741C2FE3798 /* DriveSyncSettingView.swift in Sources */,
 				8CFD19E8FFCB46D79A392284 /* Amiga.swift in Sources */,
 				3CC0A81B407547FBA1CF0693 /* C64.swift in Sources */,
 				1186ADAD578A4FAC9E5337EA /* NGP.swift in Sources */,
